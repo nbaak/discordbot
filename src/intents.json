@@ -1,0 +1,28 @@
+{
+	"intents" : [
+		{
+			"tag" : "greeting",
+		    "patterns" : ["Hallo", "Hi", "Ist da jemand?", "Hello?", "Guten Tag", "Guten Tag!", "Grüße", "Grüsse"],
+		    "responses" : ["Guten Tag", "Hallo", "Willkommen", "Grüß dich!", "Schön das du da bist!"],
+		    "context_set" : "greeting"
+		},
+		{
+			"tag" : "goodbye",
+		    "patterns" : ["Bye", "Bis dann", "Tschüss", "Goodbye", "Auf wiedersehen"],
+		    "responses" : ["Bis bald", "besuch uns mal wieder!", "ich wünsche dir noch einen schönen Tag/Abend"],
+		    "context_set" : ""
+		},
+		{
+			"tag" : "identity",
+		    "patterns" : ["Wer bist du?", "Wie ist dein Name?", "Was machst du?", "hast du einen Namen?"],
+		    "responses" : ["Mein Name ist Bottler", "Ich bin ein Bot", "Ich bin der Server Bot", "Mein name ist Nigel Bottler.", "Nenn mich einfach Bottler"],
+		    "context_set" : ""
+		},
+		{
+			"tag" : "games",
+		    "patterns" : ["Was spielst du gerne?", "Was spielst du so?", "Was spielt ihr so?", "Was sind deine lieblings Spiele?"],
+		    "responses" : ["z.B. Guild Wars 2", "z.B. Star Citizen", "z.B. League of Maidens", "z.B. Conan Exiles", "z.B. Mount your Friends 3D", "z.B. Valheim"],
+		    "context_set" : "games"
+		}
+	]
+}
