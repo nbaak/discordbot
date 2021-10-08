@@ -21,7 +21,7 @@ class AI(commands.Cog):
     @commands.Cog.listener('on_message')
     async def answer(self, message):
         if not message.author.bot:
-            channel = message.channel
+            channel = message.channel.name
             if not CONFIG.AI_CHANNELS:
                 await self._answer(message)
             elif channel in CONFIG.AI_CHANNELS:
