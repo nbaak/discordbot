@@ -20,7 +20,7 @@ class AI(commands.Cog):
     
     @commands.Cog.listener('on_message')
     async def answer(self, message):
-        if not message.author.bot:
+        if not message.author.bot and not message.content.startswith(self.bot.command_prefix):
             channel = message.channel.name
             if not CONFIG.AI_CHANNELS:
                 await self._answer(message)

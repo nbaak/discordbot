@@ -7,4 +7,4 @@ if [ ! -d ./data ]; then
 fi
 
 docker rm -f discordbot
-docker run -it -v ${THIS_DIR}/src/:/bot -d k3nny/discordbot python main.py
+docker run -it -v ${THIS_DIR}/src/:/bot --name discordbot -d k3nny/discordbot python main.py
