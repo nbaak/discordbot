@@ -6,6 +6,7 @@
   * requests
   * wikipedia
   * nltk
+  * tensorflow
 
 ## Usage
 todo
