@@ -13,7 +13,11 @@ class Rhymes():
     
     @staticmethod 
     def reime(word):
-        return Rhymes.rhyme_de(word)
+        rhyme =  Rhymes.rhyme_de(word)
+        if rhyme:
+            return rhyme
+        else:
+            return "kein Reim gefunden"
     
     @staticmethod
     def rhyme_en(word):
@@ -31,18 +35,25 @@ class Rhymes():
         
         req = requests.get(url)
         soup = bs(req.content, 'html.parser')
+
+
+        elements = soup.find_all(class_='good-rhyme')
         
-        elements = soup.find(class_='rhymes').find_all('li')
+        if not elements:
+            elements = soup.find(class_='rhymes').find_all('li')
         
-        rhymes = []
-        for element in elements:
-            try:
-                if word != element['data-rhyme']:
-                    rhymes.append(element['data-rhyme'])
-            except:
-                pass
-            
-        return random.choice(rhymes)
+        if elements:
+            rhymes = []
+            for element in elements:
+                try:
+                    if word != element['data-rhyme']:
+                        rhymes.append(element['data-rhyme'])
+                except:
+                    pass
+                
+            return random.choice(rhymes)
+        else:
+            return None
         
 
     @staticmethod 
