@@ -28,7 +28,15 @@ class Model():
         return self.model.predict(data)
     
     def predict_max(self, data):
-        return int(np.argmax(self.predict(data)))
+        probabilities_data = self.predict(data)[0]              # get probabilites for all possible outcomes
+        probability_index = np.argmax(probabilities_data)       # returns the index with the highest probability
+        probability_of_index = probabilities_data[probability_index]
+        
+        # debug..
+        print(f"index: {probability_index}, probability: {probability_of_index}")
+        print(probabilities_data)
+        
+        return probability_index, probability_of_index
     
     def get_model(self):
         return self.model

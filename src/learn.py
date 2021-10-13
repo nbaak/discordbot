@@ -9,11 +9,7 @@ from ai.Bottler import Bottler
 #from lib.FileGuard import FileGuard
 
 import numpy as np
-import tflearn
-import tensorflow as tf
-import random
 import json
-import os
 
 MODEL_FILE_NAME = 'model/chatbot.model'
 TOKEN_FILE_NAME = 'pattern.tokens'
@@ -91,10 +87,10 @@ def chat():
     recv = ""
     while True:
         recv = input("> ")
-        if recv.lower() == 'quit':
+        if recv.lower() == 'quit' or recv.lower() == '':
             break
         
-        result = bottler.answer(recv.lower(), 'Lauch')
+        result = bottler.answer(recv.lower(), 'Lauch', .9)
         print(result)
             
 if __name__ == '__main__':

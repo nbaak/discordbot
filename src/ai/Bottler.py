@@ -23,22 +23,23 @@ class Bottler:
         self.intents = json_load(intents)
         
         
-    def answer(self, text, user = None):
+    def answer(self, text, user = None, threshold = .75):
         prolly_tokens = self.tokenizer.sentence_to_1hot(text)
         # print(prolly_tokens)
         if max(prolly_tokens):
-            result = self.model.predict_max([prolly_tokens])        
+            result, probability = self.model.predict_max([prolly_tokens])        
             label = self.label_tokenizer.get_value([result])[0]
             
-            for intent in self.intents['intents']:
-                if intent['tag'] == label:
-                    if label == "greeting" and user:
-                        if random.random() > .5:
-                            return f"Hallo {user}!"
+            if probability >= threshold:
+                for intent in self.intents['intents']:
+                    if intent['tag'] == label:
+                        if label == "greeting" and user:
+                            if random.random() > .5:
+                                return f"Hallo {user}!"
+                            else:
+                                return random.choice(intent['responses'])
                         else:
                             return random.choice(intent['responses'])
-                    else:
-                        return random.choice(intent['responses'])
         
         return None
         
