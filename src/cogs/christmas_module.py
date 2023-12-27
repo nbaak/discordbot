@@ -4,6 +4,24 @@ from discord.ext import commands, tasks
 from datetime import datetime, timedelta
 
 
+class ChristmasCountdown:
+
+    def __init__(self):
+        pass
+
+    def calculate_days_remaining(self):
+        self.current_date = datetime.now()
+        self.christmas_date = datetime(self.current_date.year, 12, 25)
+
+        # Check if Christmas already passed this year, if yes, calculate for the next year
+        if self.current_date > self.christmas_date:
+            self.christmas_date = datetime(self.current_date.year + 1, 12, 25)
+            
+        # Calculate the remaining days until Christmas
+        remaining_time = self.christmas_date - self.current_date
+        return remaining_time.days
+
+
 class ChristmasModule(commands.Cog):
 
     def __init__(self, bot):
@@ -14,17 +32,16 @@ class ChristmasModule(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print(f'Extension {self.__class__.__name__} loaded')
-        await self.ensure_christmas_channel()
+        print(f'{self.christmas_countdown.calculate_days_remaining()}')
+        # Ensure that the Christmas channel exists or create it for all guilds
+        for guild in self.bot.guilds:
+            await self.ensure_christmas_channel(guild)
 
-    async def ensure_christmas_channel(self):
-        # Access the guild ID from the command context
-        guild_id = self.bot.guilds[0].id  # Assuming the bot is only in one guild, adjust accordingly
-
+    async def ensure_christmas_channel(self, guild):
         # Replace 'christmas' with your actual channel name
         channel_name = 'christmas'
 
         # Check if the channel already exists
-        guild = self.bot.get_guild(guild_id)
         christmas_channel = discord.utils.get(guild.channels, name=channel_name, type=discord.ChannelType.text)
 
         if christmas_channel is None:
@@ -33,20 +50,23 @@ class ChristmasModule(commands.Cog):
                 guild.default_role: discord.PermissionOverwrite(read_messages=True)
             }
             christmas_channel = await guild.create_text_channel(channel_name, overwrites=overwrites)
-            print(f"Created Christmas channel: {christmas_channel.name}")
+            print(f"Created Christmas channel '{christmas_channel.name}' in guild '{guild.name}' (ID: {guild.id})")
         else:
-            print(f"Christmas channel found: {christmas_channel.name}")
+            print(f"Christmas channel found: '{christmas_channel.name}' in guild '{guild.name}' (ID: {guild.id})")
 
         # Check if the bot has the necessary permissions in the channel
         bot_member = guild.get_member(self.bot.user.id)
         if not christmas_channel.permissions_for(bot_member).read_messages:
-            print(f"Bot doesn't have read message permissions in {christmas_channel.name}, fixing...")
+            print(f"Bot doesn't have read message permissions in '{christmas_channel.name}', fixing...")
             await christmas_channel.set_permissions(bot_member, read_messages=True)
 
-    @tasks.loop(minutes=1)  # Run the task every 24 hours
+    @tasks.loop(hours=24)
     async def daily_countdown(self):
         # Get the Christmas countdown message
         days_remaining = self.christmas_countdown.calculate_days_remaining()
+
+        print(f"it's christmas in: {days_remaining} days")
+        
         if days_remaining == 0:
             message = "Merry Christmas! 🎄🎅🎁"
         elif days_remaining == 1:
@@ -54,14 +74,13 @@ class ChristmasModule(commands.Cog):
         else:
             message = f"{days_remaining} days left until Christmas! 🎄🎅🎁"
 
-        # Get the channel where you want to send the countdown message
-        guild_id = self.bot.guilds[0].id  # Assuming the bot is only in one guild, adjust accordingly
-        channel_name = 'christmas'
-        guild = self.bot.get_guild(guild_id)
-        christmas_channel = discord.utils.get(guild.channels, name=channel_name, type=discord.ChannelType.text)
+        # Send the countdown message to all Christmas channels in all guilds
+        for guild in self.bot.guilds:
+            channel_name = 'christmas'
+            christmas_channel = discord.utils.get(guild.channels, name=channel_name, type=discord.ChannelType.text)
 
-        # Send the countdown message to the channel
-        await christmas_channel.send(message)
+            if christmas_channel:
+                await christmas_channel.send(message)
 
     @daily_countdown.before_loop
     async def before_daily_countdown(self):
@@ -69,25 +88,14 @@ class ChristmasModule(commands.Cog):
         now = datetime.now()
         tomorrow = datetime(now.year, now.month, now.day) + timedelta(days=1)
         time_until_midnight = (tomorrow - now).seconds
+
         # Sleep until midnight
         await discord.utils.sleep_until(datetime.now() + timedelta(seconds=time_until_midnight))
 
+    @commands.command()
+    async def hoho(self, ctx):
+        await ctx.send(f"HOHO, {ctx.message.author.display_name}!")
 
-class ChristmasCountdown:
-
-    def __init__(self):
-        self.current_date = datetime.now()
-        self.christmas_date = datetime(self.current_date.year, 12, 25)
-
-        # Check if Christmas already passed this year, if yes, calculate for the next year
-        if self.current_date > self.christmas_date:
-            self.christmas_date = datetime(self.current_date.year + 1, 12, 25)
-
-    def calculate_days_remaining(self):
-        # Calculate the remaining days until Christmas
-        remaining_time = self.christmas_date - self.current_date
-        return remaining_time.days
-    
 
 async def setup(bot):
     await bot.add_cog(ChristmasModule(bot))
