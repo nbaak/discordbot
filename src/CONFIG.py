@@ -1,5 +1,5 @@
 # Configuration
-API_TOKEN = 'NzIyNTA3NTQ3NjU4OTQ0NTgz.G0l4Fz.dnpZ7Jt9RUGilaVap-OwjGPBx6BzHfUrVz52Dg'
+API_TOKEN = ''
 PREFIX = '!'
 
 # AI
