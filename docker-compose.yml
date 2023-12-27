@@ -1,0 +1,10 @@
+version: '3.1'
+
+services:
+  bot:
+    build: .
+    image: 'k3nny/discordbot'
+    container_name: 'discordbot'
+    volumes:
+        - ./src:/bot
+            

@@ -1,0 +1,9 @@
+
+nltk
+numpy
+tklearn
+tensorflow
+duden
+pronouncing
+discord
+wikipedia
