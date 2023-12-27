@@ -1,9 +1,5 @@
 
-nltk
-numpy
-tklearn
-tensorflow
 duden
 pronouncing
-discord
+discord.py
 wikipedia
