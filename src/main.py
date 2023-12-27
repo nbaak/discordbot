@@ -7,40 +7,55 @@ from discord.ext import commands
 import CONFIG
 
 intents = discord.Intents.default()
+intents = discord.Intents(messages=True, guilds=True)
+intents.message_content = True
 
-bot = commands.Bot(
+client = commands.Bot(
     command_prefix=CONFIG.PREFIX,
     intents=intents
-
 )
 
 
-@bot.command()
+@client.event
+async def on_ready():
+    print(f'We have logged in as {client.user}')
+
+
+# @client.event
+# async def on_message(message):
+#     if message.author == client.user:
+#         return
+#
+#     if message.content.startswith('hello'):
+#         await message.channel.send('Hello!')
+
+
+@client.command()
 @commands.is_owner()
 async def load(ctx, extension):
-    bot.load_extension(f'cogs.{extension}')
+    client.load_extension(f'cogs.{extension}')
 
 
-@bot.command()
+@client.command()
 @commands.is_owner()
 async def unload(ctx, extension):
-    bot.unload_extension(f'cogs.{extension}')
+    client.unload_extension(f'cogs.{extension}')
 
 
-@bot.command()
+@client.command()
 @commands.is_owner()
 async def reload(ctx, extension):
-    bot.reload_extension(f'cogs.{extension}')
+    client.reload_extension(f'cogs.{extension}')
 
 
 async def main():
     for filename in os.listdir('./cogs'):
         if filename.endswith('.py'):
-            await bot.load_extension(f'cogs.{filename[:-3]}')
-            
-    async with bot:
-        # bot.loop.create_task(background_task())
-        await bot.start(CONFIG.API_TOKEN)
+            await client.load_extension(f'cogs.{filename[:-3]}')
+
+    async with client:
+        # client.loop.create_task(background_task())
+        await client.start(CONFIG.API_TOKEN)
 
 
 if __name__ == "__main__":

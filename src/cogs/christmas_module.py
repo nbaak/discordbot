@@ -13,8 +13,7 @@ class ChristmasModule(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print(f'We have logged in as {self.bot.user.name}')
-        # Ensure that the Christmas channel exists or create it
+        print(f'Extension {self.__class__.__name__} loaded')
         await self.ensure_christmas_channel()
 
     async def ensure_christmas_channel(self):
@@ -44,7 +43,7 @@ class ChristmasModule(commands.Cog):
             print(f"Bot doesn't have read message permissions in {christmas_channel.name}, fixing...")
             await christmas_channel.set_permissions(bot_member, read_messages=True)
 
-    @tasks.loop(hours=24)  # Run the task every 24 hours
+    @tasks.loop(minutes=1)  # Run the task every 24 hours
     async def daily_countdown(self):
         # Get the Christmas countdown message
         days_remaining = self.christmas_countdown.calculate_days_remaining()
