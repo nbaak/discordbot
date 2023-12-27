@@ -16,7 +16,7 @@ class ChristmasCountdown:
         # Check if Christmas already passed this year, if yes, calculate for the next year
         if self.current_date > self.christmas_date:
             self.christmas_date = datetime(self.current_date.year + 1, 12, 25)
-            
+
         # Calculate the remaining days until Christmas
         remaining_time = self.christmas_date - self.current_date
         return remaining_time.days
@@ -65,8 +65,14 @@ class ChristmasModule(commands.Cog):
         # Get the Christmas countdown message
         days_remaining = self.christmas_countdown.calculate_days_remaining()
 
+        # check date
+        current_year = datetime.now().year
+        current_month = datetime.now().month
+        current_day = datetime.now().day
+
         print(f"it's christmas in: {days_remaining} days")
-        
+
+        messages = []
         if days_remaining == 0:
             message = "Merry Christmas! 🎄🎅🎁"
         elif days_remaining == 1:
@@ -74,13 +80,23 @@ class ChristmasModule(commands.Cog):
         else:
             message = f"{days_remaining} days left until Christmas! 🎄🎅🎁"
 
+        messages.append(message)
+
+        # AoC Reminder
+        if current_month == 12:
+            if current_day in range(1, 26):
+                aoc_url = f"https://adventofcode.com/{current_year}/day/{current_day}"
+                aoc_message = f"Visit the [Advent of Code - {current_year} - Day {current_day}]({aoc_url}) "
+                messages.append(aoc_message)
+
         # Send the countdown message to all Christmas channels in all guilds
         for guild in self.bot.guilds:
             channel_name = 'christmas'
             christmas_channel = discord.utils.get(guild.channels, name=channel_name, type=discord.ChannelType.text)
 
             if christmas_channel:
-                await christmas_channel.send(message)
+                for msg in messages:
+                    await christmas_channel.send(msg)
 
     @daily_countdown.before_loop
     async def before_daily_countdown(self):
