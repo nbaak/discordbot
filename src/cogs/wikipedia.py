@@ -19,5 +19,5 @@ class Wikipedia(commands.Cog):
         await ctx.send(WikipediaWrapper.search(topic))
 
 
-def setup(bot):
-    bot.add_cog(Wikipedia(bot))
+async def setup(bot):
+    await bot.add_cog(Wikipedia(bot))

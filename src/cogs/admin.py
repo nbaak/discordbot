@@ -39,5 +39,5 @@ class Admin(commands.Cog):
         await ctx.author.send('Deleted {} Messages'.format(len(deleted)))
 
 
-def setup(bot):
-    bot.add_cog(Admin(bot))
+async def setup(bot):
+    await bot.add_cog(Admin(bot))

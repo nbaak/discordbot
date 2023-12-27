@@ -21,5 +21,5 @@ class Rhyme(commands.Cog):
     async def rhyme(self, ctx, word):
         await ctx.send(Rhymes.rhyme(word))
 
-def setup(bot):
-    bot.add_cog(Rhyme(bot))
+async def setup(bot):
+    await bot.add_cog(Rhyme(bot))

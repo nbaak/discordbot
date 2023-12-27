@@ -18,5 +18,5 @@ class Dice(commands.Cog):
         await ctx.send(f"{ctx.message.author.display_name} used a {dice} and got {result}")
 
 
-def setup(bot):
-    bot.add_cog(Dice(bot))
+async def setup(bot):
+    await bot.add_cog(Dice(bot))

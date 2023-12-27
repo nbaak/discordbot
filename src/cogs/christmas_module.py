@@ -88,6 +88,10 @@ class ChristmasCountdown:
         # Calculate the remaining days until Christmas
         remaining_time = self.christmas_date - self.current_date
         return remaining_time.days
+    
+
+async def setup(bot):
+    await bot.add_cog(ChristmasModule(bot))
 
 
 def test():
