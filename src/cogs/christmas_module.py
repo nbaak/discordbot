@@ -1,7 +1,11 @@
 
 import discord
 from discord.ext import commands, tasks
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
+import pytz
+
+cet = pytz.timezone('CET')
+trigger_time = time(hour=6, minute=1, tzinfo=cet)
 
 
 class ChristmasCountdown:
@@ -60,7 +64,7 @@ class ChristmasModule(commands.Cog):
             print(f"Bot doesn't have read message permissions in '{christmas_channel.name}', fixing...")
             await christmas_channel.set_permissions(bot_member, read_messages=True)
 
-    @tasks.loop(hours=24)
+    @tasks.loop(time=trigger_time)
     async def daily_countdown(self):
         # Get the Christmas countdown message
         days_remaining = self.christmas_countdown.calculate_days_remaining()

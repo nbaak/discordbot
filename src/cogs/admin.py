@@ -1,6 +1,8 @@
 from datetime import datetime
 from typing import Optional
 
+import discord
+from discord import app_commands
 from discord import Embed, Member
 from discord.ext import commands
 
@@ -37,6 +39,12 @@ class Admin(commands.Cog):
     async def purge_messages(self, ctx, count: Optional[int]):
         deleted = await ctx.channel.purge(limit=count)
         await ctx.author.send('Deleted {} Messages'.format(len(deleted)))
+
+    @app_commands.command()
+    async def serverinfo(self, interaction: discord.Interaction):
+        now = datetime.now()
+        current_time = now.strftime("%H:%M:%S")
+        await interaction.response.send_message(f"it is {current_time}")
 
 
 async def setup(bot):
