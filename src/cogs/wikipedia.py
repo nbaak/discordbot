@@ -26,7 +26,7 @@ class Wikipedia(commands.Cog):
     async def wiki(self, ctx, topic):
         await ctx.send(WikipediaWrapper.search(topic))
 
-    @app_commands.command(name='iwiki')
+    @app_commands.command(name='wiki')
     async def swiki(self, interaction: discord.Interaction, topic:str):
         await interaction.response.send_message(WikipediaWrapper.search(topic))
 
