@@ -21,18 +21,18 @@ class Admin(commands.Cog):
     async def user_info(self, ctx, target: Optional[Member]):
         target = target or ctx.author
 
-        e = Embed(title="User Information", color=target.color, timestamp=datetime.utcnow())
-        e.set_thumbnail(url=target.avatar_url)
+        panel = Embed(title="User Information", color=target.color, timestamp=datetime.utcnow())
+        panel.set_thumbnail(url=target.avatar)
 
-        e.set_author(name=target.display_name)
-        e.add_field(name='ID', value=target.id)
-        e.add_field(name='Bot', value=target.bot)
+        panel.set_author(name=target.display_name)
+        panel.add_field(name='ID', value=target.id)
+        panel.add_field(name='Bot', value=target.bot)
 
-        e.add_field(name='Created at', value=target.created_at.strftime("%d/%m/%Y %H:%M:%S"), inline=False)
+        panel.add_field(name='Created at', value=target.created_at.strftime("%d/%m/%Y %H:%M:%S"), inline=False)
         if hasattr(target, 'joined_at'):
-            e.add_field(name='Joined at', value=target.joined_at.strftime("%d/%m/%Y %H:%M:%S"))
+            panel.add_field(name='Joined at', value=target.joined_at.strftime("%d/%m/%Y %H:%M:%S"))
 
-        await ctx.send(embed=e)
+        await ctx.send(embed=panel)
 
     @commands.command(name='clear', brief='delete <x> messages', help='delete last <x> messages')
     @commands.is_owner()
