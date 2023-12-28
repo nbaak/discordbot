@@ -1,37 +1,21 @@
 
 import discord
 from discord.ext import commands, tasks
-from datetime import datetime, timedelta, time
+from datetime import datetime, time
 import pytz
-from discord import app_commands, interactions
+from discord import app_commands
+
+from lib.progressbar import print_progress_bar
+from lib.christmas_module import ChristmasCountdown
 
 cet = pytz.timezone('CET')
 trigger_time = time(hour=6, minute=1, tzinfo=cet)
-
-
-class ChristmasCountdown:
-
-    def __init__(self):
-        pass
-
-    def calculate_days_remaining(self):
-        self.current_date = datetime.now()
-        self.christmas_date = datetime(self.current_date.year, 12, 25)
-
-        # Check if Christmas already passed this year, if yes, calculate for the next year
-        if self.current_date > self.christmas_date:
-            self.christmas_date = datetime(self.current_date.year + 1, 12, 25)
-
-        # Calculate the remaining days until Christmas
-        remaining_time = self.christmas_date - self.current_date
-        return remaining_time.days
 
 
 class ChristmasModule(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.christmas_countdown = ChristmasCountdown()
         self.daily_countdown.start()
 
     @commands.Cog.listener()
@@ -68,7 +52,7 @@ class ChristmasModule(commands.Cog):
     @tasks.loop(time=trigger_time)
     async def daily_countdown(self):
         # Get the Christmas countdown message
-        days_remaining = self.christmas_countdown.calculate_days_remaining()
+        days_remaining = ChristmasCountdown.calculate_days_remaining()
 
         # check date
         current_year = datetime.now().year
@@ -86,6 +70,7 @@ class ChristmasModule(commands.Cog):
             message = f"{days_remaining} days left until Christmas! 🎄🎅🎁"
 
         messages.append(message)
+        messages.append(print_progress_bar(365-days_remaining, 365, 50))
 
         # AoC Reminder
         if current_month == 12:
@@ -103,23 +88,13 @@ class ChristmasModule(commands.Cog):
                 for msg in messages:
                     await christmas_channel.send(msg)
 
-    # @daily_countdown.before_loop
-    # async def before_daily_countdown(self):
-    #     # Calculate the time until the next day (midnight)
-    #     now = datetime.now()
-    #     tomorrow = datetime(now.year, now.month, now.day) + timedelta(days=1)
-    #     time_until_midnight = (tomorrow - now).seconds
-    #
-    #     # Sleep until midnight
-    #     await discord.utils.sleep_until(datetime.now() + timedelta(seconds=time_until_midnight))
-
     @commands.command()
     async def hoho(self, ctx):
         await ctx.send(f"HOHO, {ctx.message.author.display_name}!")
-        
+
     @app_commands.command()
-    async def gift(self, interaction: discord.Interaction, recipient:str):
-        await interaction.response.send_message(f"{interaction.user} sends a gift to {recipient} 🎁")
+    async def gift(self, interaction: discord.Interaction, recipient:discord.Member):
+        await interaction.response.send_message(f"{interaction.user} sends a gift to {recipient.display_name} 🎁")
 
 
 async def setup(bot):
@@ -127,9 +102,9 @@ async def setup(bot):
 
 
 def test():
-    cc = ChristmasCountdown()
-    print(cc.christmas_date)
-    print(cc.calculate_days_remaining())
+    days_remaining = ChristmasCountdown.calculate_days_remaining()
+    print(days_remaining)
+    print(print_progress_bar(365-days_remaining, 365, 50))
 
 
 if __name__ == "__main__":
