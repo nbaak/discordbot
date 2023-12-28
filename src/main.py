@@ -22,7 +22,7 @@ async def on_ready():
 
     try:
         synced = await client.tree.sync()
-        print('synced', len(synced))
+        print('synced', len(synced), 'from main')
     except Exception as e:
         print(e)
 
@@ -43,7 +43,16 @@ async def unload(ctx, extension):
 @commands.is_owner()
 async def reload(ctx, extension):
     client.reload_extension(f'cogs.{extension}')
-
+    
+    
+@client.command()
+@commands.is_owner()
+async def sync(ctx):
+    # A Sync Functionm just in case..
+    print("sync command")
+    synced = await client.tree.sync()
+    print(synced)
+    await ctx.send(f'Command tree ({len(synced)}) synced.')
 
 async def main():
     for filename in os.listdir('./cogs'):

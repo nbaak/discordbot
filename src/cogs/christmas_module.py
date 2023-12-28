@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands, tasks
 from datetime import datetime, timedelta, time
 import pytz
+from discord import app_commands, interactions
 
 cet = pytz.timezone('CET')
 trigger_time = time(hour=6, minute=1, tzinfo=cet)
@@ -40,6 +41,12 @@ class ChristmasModule(commands.Cog):
         # Ensure that the Christmas channel exists or create it for all guilds
         for guild in self.bot.guilds:
             await self.ensure_christmas_channel(guild)
+            
+        # try:
+        #     synced = await self.bot.tree.sync()
+        #     print('synced', len(synced), 'from', self.__class__.__name__)
+        # except Exception as e:
+        #     print(e)
 
     async def ensure_christmas_channel(self, guild):
         # Replace 'christmas' with your actual channel name
@@ -115,6 +122,10 @@ class ChristmasModule(commands.Cog):
     @commands.command()
     async def hoho(self, ctx):
         await ctx.send(f"HOHO, {ctx.message.author.display_name}!")
+        
+    @app_commands.command()
+    async def gift(self, interaction: discord.Interaction, recipient:str):
+        await interaction.response.send_message(f"{interaction.user} sends a gift to {recipient} 🎁")
 
 
 async def setup(bot):
