@@ -15,12 +15,6 @@ class Admin(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print(f'Extension {self.__class__.__name__} loaded')
-        
-        # try:
-        #     synced = await self.bot.tree.sync()
-        #     print('synced', len(synced), 'from', self.__class__.__name__)
-        # except Exception as e:
-        #     print(e)
 
     @commands.command(name='userinfo', brief='Userinfo', help='get info for user')
     @commands.is_owner()

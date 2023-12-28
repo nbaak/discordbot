@@ -15,18 +15,13 @@ class Wikipedia(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         print(f'Extension {self.__class__.__name__} loaded')
-        
-        # try:
-        #     synced = await self.bot.tree.sync()
-        #     print('synced', len(synced), 'from', self.__class__.__name__)
-        # except Exception as e:
-        #     print(e)
 
     @commands.command(name="wiki", brief="wiki <topic>", help='Search Wikipedia for a topic')
     async def wiki(self, ctx, topic):
         await ctx.send(WikipediaWrapper.search(topic))
 
     @app_commands.command(name='wiki')
+    @app_commands.describe(topic='The topic you want to look for')
     async def swiki(self, interaction: discord.Interaction, topic:str):
         await interaction.response.send_message(WikipediaWrapper.search(topic))
 

@@ -41,12 +41,6 @@ class ChristmasModule(commands.Cog):
         # Ensure that the Christmas channel exists or create it for all guilds
         for guild in self.bot.guilds:
             await self.ensure_christmas_channel(guild)
-            
-        # try:
-        #     synced = await self.bot.tree.sync()
-        #     print('synced', len(synced), 'from', self.__class__.__name__)
-        # except Exception as e:
-        #     print(e)
 
     async def ensure_christmas_channel(self, guild):
         # Replace 'christmas' with your actual channel name
