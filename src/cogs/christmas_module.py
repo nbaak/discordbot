@@ -102,15 +102,15 @@ class ChristmasModule(commands.Cog):
                 for msg in messages:
                     await christmas_channel.send(msg)
 
-    @daily_countdown.before_loop
-    async def before_daily_countdown(self):
-        # Calculate the time until the next day (midnight)
-        now = datetime.now()
-        tomorrow = datetime(now.year, now.month, now.day) + timedelta(days=1)
-        time_until_midnight = (tomorrow - now).seconds
-
-        # Sleep until midnight
-        await discord.utils.sleep_until(datetime.now() + timedelta(seconds=time_until_midnight))
+    # @daily_countdown.before_loop
+    # async def before_daily_countdown(self):
+    #     # Calculate the time until the next day (midnight)
+    #     now = datetime.now()
+    #     tomorrow = datetime(now.year, now.month, now.day) + timedelta(days=1)
+    #     time_until_midnight = (tomorrow - now).seconds
+    #
+    #     # Sleep until midnight
+    #     await discord.utils.sleep_until(datetime.now() + timedelta(seconds=time_until_midnight))
 
     @commands.command()
     async def hoho(self, ctx):
