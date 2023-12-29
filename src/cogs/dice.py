@@ -23,7 +23,7 @@ class Dice(commands.Cog):
     @app_commands.describe(dice='Roll a dice. Default 1d6. (dices)d(eyes)')
     async def s_roll(self, interaction: discord.Interaction, dice:str='1d6'):
         dice, result = D.roll(dice)
-        await interaction.response.send_message(f"{interaction.user} used a {dice} and got {result}")
+        await interaction.response.send_message(f"{interaction.display_name} used a {dice} and got {result}")
 
 
 async def setup(bot):
