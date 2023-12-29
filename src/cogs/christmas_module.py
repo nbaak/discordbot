@@ -6,7 +6,7 @@ import pytz
 from discord import app_commands
 
 from lib.progressbar import print_progress_bar
-from lib.christmas_module import ChristmasCountdown
+from lib.christmas_countdown import ChristmasCountdown
 
 cet = pytz.timezone('CET')
 trigger_time = time(hour=6, minute=1, tzinfo=cet)
