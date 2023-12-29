@@ -42,18 +42,18 @@ class ProgressBar:
         image = Image.new("RGB", (400, 50), "white")
         draw = ImageDraw.Draw(image)
 
-        # Draw black outline for the progress bar
-        draw.rectangle([(5, 5), (395, 45)], outline="black")
-
         # Calculate the width of the green passed part
         progress = float(current_value) / self.max_value
-        passed_width = int((390 - 10) * progress)  # Adjusted width to stop 10px before the end
+        passed_width = int((395 - 5) * progress)  # Adjusted width to stop 10px before the end
 
         # Draw the white upcoming part
-        draw.rectangle([(10 + passed_width, 10), (395, 40)], fill="white")
+        draw.rectangle([(5 + passed_width, 5), (395, 40)], fill="white")
 
         # Draw the green passed part
-        draw.rectangle([(10, 10), (10 + passed_width, 40)], fill="green")
+        draw.rectangle([(5, 10), (5 + passed_width, 40)], fill="green")
+
+        # Draw black outline for the progress bar
+        draw.rectangle([(5, 5), (395, 45)], outline="black")
 
         # Add text label in the middle
         percentage = round(progress * 100, 2)
@@ -76,7 +76,9 @@ def test():
     max_value = 365
     progress_bar = ProgressBar(max_value)
 
+    progress_bar.image(0, f"pb-0.png")
     progress_bar.image(8, f"pb-8.png")
+    progress_bar.image(180, f"pb-180.png")
     progress_bar.image(365, f"pb-365.png")
 
     for i in range(max_value + 1):
