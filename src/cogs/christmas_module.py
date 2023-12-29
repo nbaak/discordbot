@@ -5,8 +5,9 @@ from datetime import datetime, time
 import pytz
 from discord import app_commands
 
-from lib.progressbar import print_progress_bar
+from lib.progressbar import ProgressBar
 from lib.christmas_countdown import ChristmasCountdown
+import os
 
 cet = pytz.timezone('CET')
 trigger_time = time(hour=6, minute=1, tzinfo=cet)
@@ -51,6 +52,9 @@ class ChristmasModule(commands.Cog):
 
     @tasks.loop(time=trigger_time)
     async def daily_countdown(self):
+        await self.run_daily_countdown()
+        
+    async def run_daily_countdown(self):
         # Get the Christmas countdown message
         days_remaining = ChristmasCountdown.calculate_days_remaining()
 
@@ -70,7 +74,15 @@ class ChristmasModule(commands.Cog):
             message = f"{days_remaining} days left until Christmas! 🎄🎅🎁"
 
         messages.append(message)
-        messages.append(print_progress_bar(365-days_remaining, 365, 50))
+        
+        # Progress Bar
+        progress_bar = ProgressBar(365, 50)
+        try:
+            progress_bar.image(365-days_remaining, 'progress.png')
+        except Exception as e:
+            print(e)
+        # messages.append(progress_bar.get(365-days_remaining))
+        messages.append(discord.File('progress.png'))
 
         # AoC Reminder
         if current_month == 12:
@@ -86,7 +98,18 @@ class ChristmasModule(commands.Cog):
 
             if christmas_channel:
                 for msg in messages:
-                    await christmas_channel.send(msg)
+                    if type(msg) == str:
+                        await christmas_channel.send(msg)
+                    if type(msg) == discord.File:
+                        await christmas_channel.send(file=msg)
+        try:
+            os.remove('progress.png')
+        except Exception as e:
+            print(e)
+    
+    @commands.command()
+    async def testprogress(self, ctx):
+        return await self.run_daily_countdown()
 
     @commands.command()
     async def hoho(self, ctx):
@@ -102,9 +125,10 @@ async def setup(bot):
 
 
 def test():
+    pb = ProgressBar(365, 50)
     days_remaining = ChristmasCountdown.calculate_days_remaining()
     print(days_remaining)
-    print(print_progress_bar(365-days_remaining, 365, 50))
+    print(pb.get(365-days_remaining))
 
 
 if __name__ == "__main__":

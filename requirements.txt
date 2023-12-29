@@ -4,3 +4,4 @@ pronouncing
 discord.py
 wikipedia
 pytz
+Pillow
