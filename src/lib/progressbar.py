@@ -50,7 +50,7 @@ class ProgressBar:
         draw.rectangle([(5 + passed_width, 5), (395, 40)], fill="white")
 
         # Draw the green passed part
-        draw.rectangle([(5, 10), (5 + passed_width, 40)], fill="green")
+        draw.rectangle([(5, 5), (5 + passed_width, 45)], fill="green")
 
         # Draw black outline for the progress bar
         draw.rectangle([(5, 5), (395, 45)], outline="black")
