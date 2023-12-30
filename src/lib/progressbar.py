@@ -1,6 +1,8 @@
 from PIL import Image, ImageDraw, ImageFont
+from lib.random_color import random_color_picker
 
 class ProgressBar:
+
     def __init__(self, max_value, bar_length=30):
         """
         Initialize the ProgressBar.
@@ -28,7 +30,7 @@ class ProgressBar:
         percentage = round(progress * 100, 2)
         return f"{bar} {percentage}%"
 
-    def image(self, current_value, output_file="progress_bar.png"):
+    def image(self, current_value, output_file="progress_bar.png", progress_color=None):
         """
         Render the progress bar as an image with a transparent background.
 
@@ -39,6 +41,7 @@ class ProgressBar:
         # Create an image with RGBA mode for transparency
         image = Image.new("RGBA", (400, 50), (0, 0, 0, 0))
         draw = ImageDraw.Draw(image)
+        progress_color = progress_color or random_color_picker()
 
         # Calculate the width of the green passed part
         progress = float(current_value) / self.max_value
@@ -48,7 +51,7 @@ class ProgressBar:
         draw.rectangle([(5 + passed_width, 5), (395, 45)], fill=(255, 255, 255, 155))
 
         # Draw the green passed part
-        draw.rectangle([(5, 5), (5 + passed_width, 45)], fill=(0, 255, 0, 255))
+        draw.rectangle([(5, 5), (5 + passed_width, 45)], fill=progress_color)
 
         # Draw black outline for the progress bar
         draw.rectangle([(5, 5), (395, 45)], outline="black")
@@ -67,6 +70,7 @@ class ProgressBar:
         # Save the image to a file
         image.save(output_file)
 
+
 # Example usage:
 def test():
     current_value = 363
@@ -81,6 +85,7 @@ def test():
     for i in range(max_value + 1):
         progress_bar_str = progress_bar.get(i)
         print(i, progress_bar_str)
+
 
 if __name__ == "__main__":
     test()
