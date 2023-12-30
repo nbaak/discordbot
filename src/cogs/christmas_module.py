@@ -111,9 +111,10 @@ class ChristmasModule(commands.Cog):
         except Exception as e:
             print(e)
 
-    @commands.command()
-    async def testprogress(self, ctx):
-        return await self.run_daily_countdown()
+    # @commands.command()
+    # @commands.is_owner()
+    # async def testprogress(self, ctx):
+    #     return await self.run_daily_countdown()
 
     @commands.command()
     async def hoho(self, ctx):
