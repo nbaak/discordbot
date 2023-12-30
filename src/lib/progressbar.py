@@ -1,6 +1,7 @@
 from PIL import Image, ImageDraw, ImageFont
 from lib.random_color import random_color_picker
 
+
 class ProgressBar:
 
     def __init__(self, max_value, bar_length=30):

@@ -1,7 +1,5 @@
-import time
 import random
-import tkinter as tk
-from PIL import Image, ImageTk
+from PIL import Image
 
 
 def is_grey(color):
@@ -40,6 +38,9 @@ def test_single():
 
 
 def test():
+    import tkinter as tk
+    from PIL import ImageTk
+    
 
     class ColorDisplayApp:
 
