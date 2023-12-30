@@ -5,6 +5,7 @@ services:
     build: .
     image: 'k3nny/discordbot'
     container_name: 'discordbot'
+    restart: unless-stopped
     volumes:
         - ./src:/bot
             
