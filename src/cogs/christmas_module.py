@@ -1,4 +1,5 @@
 
+import os
 import discord
 from discord.ext import commands, tasks
 from datetime import datetime, time
@@ -7,7 +8,7 @@ from discord import app_commands
 
 from lib.progressbar import ProgressBar
 from lib.christmas_countdown import ChristmasCountdown
-import os
+from lib.calendar import Calendar
 
 cet = pytz.timezone('CET')
 trigger_time = time(hour=6, minute=1, tzinfo=cet)
@@ -62,6 +63,8 @@ class ChristmasModule(commands.Cog):
         current_year = datetime.now().year
         current_month = datetime.now().month
         current_day = datetime.now().day
+        
+        next_christmas_year = ChristmasCountdown.next_christmas_year()
 
         print(f"it's christmas in: {days_remaining} days")
 
@@ -76,7 +79,7 @@ class ChristmasModule(commands.Cog):
         messages.append(message)
 
         # Progress Bar
-        progress_bar = ProgressBar(365, 50)
+        progress_bar = ProgressBar(366 if Calendar.is_leap_year(next_christmas_year) else 365, 50)
         try:
             progress_bar.image(365 - days_remaining, 'progress.png')
         except Exception as e:
@@ -108,9 +111,9 @@ class ChristmasModule(commands.Cog):
         except Exception as e:
             print(e)
 
-    # @commands.command()
-    # async def testprogress(self, ctx):
-    #     return await self.run_daily_countdown()
+    @commands.command()
+    async def testprogress(self, ctx):
+        return await self.run_daily_countdown()
 
     @commands.command()
     async def hoho(self, ctx):

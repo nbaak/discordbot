@@ -15,6 +15,17 @@ class ChristmasCountdown:
         # Calculate the remaining days until Christmas
         remaining_time = christmas_date - current_date
         return remaining_time.days
+    
+    @staticmethod
+    def next_christmas_year():
+        current_date = datetime(datetime.today().year, datetime.today().month, datetime.today().day)
+        christmas_date = datetime(current_date.year, 12, 25)
+
+        # If Christmas has already passed this year, return the next year
+        if current_date > christmas_date:
+            return current_date.year + 1
+        else:
+            return current_date.year
 
 
 def test():
