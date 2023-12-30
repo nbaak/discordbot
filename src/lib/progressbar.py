@@ -45,7 +45,7 @@ class ProgressBar:
         passed_width = int((395 - 5) * progress)  # Adjusted width to stop 10px before the end
 
         # Draw the white upcoming part with transparency
-        draw.rectangle([(5 + passed_width, 5), (395, 40)], fill=(255, 255, 255, 0))
+        draw.rectangle([(5 + passed_width, 5), (395, 45)], fill=(255, 255, 255, 155))
 
         # Draw the green passed part
         draw.rectangle([(5, 5), (5 + passed_width, 45)], fill=(0, 255, 0, 255))
