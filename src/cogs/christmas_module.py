@@ -53,7 +53,7 @@ class ChristmasModule(commands.Cog):
     @tasks.loop(time=trigger_time)
     async def daily_countdown(self):
         await self.run_daily_countdown()
-        
+
     async def run_daily_countdown(self):
         # Get the Christmas countdown message
         days_remaining = ChristmasCountdown.calculate_days_remaining()
@@ -74,15 +74,15 @@ class ChristmasModule(commands.Cog):
             message = f"{days_remaining} days left until Christmas! 🎄🎅🎁"
 
         messages.append(message)
-        
+
         # Progress Bar
         progress_bar = ProgressBar(365, 50)
         try:
-            progress_bar.image(365-days_remaining, 'progress.png')
+            progress_bar.image(365 - days_remaining, 'progress.png')
         except Exception as e:
             print(e)
         # messages.append(progress_bar.get(365-days_remaining))
-        messages.append(discord.File('progress.png'))
+        messages.append(('progress', 'progress.png'))
 
         # AoC Reminder
         if current_month == 12:
@@ -100,13 +100,14 @@ class ChristmasModule(commands.Cog):
                 for msg in messages:
                     if type(msg) == str:
                         await christmas_channel.send(msg)
-                    if type(msg) == discord.File:
-                        await christmas_channel.send(file=msg)
+                    elif type(msg) == tuple:
+                        await christmas_channel.send(file=discord.File(msg[1]))
+
         try:
             os.remove('progress.png')
         except Exception as e:
             print(e)
-    
+
     # @commands.command()
     # async def testprogress(self, ctx):
     #     return await self.run_daily_countdown()
@@ -128,7 +129,7 @@ def test():
     pb = ProgressBar(365, 50)
     days_remaining = ChristmasCountdown.calculate_days_remaining()
     print(days_remaining)
-    print(pb.get(365-days_remaining))
+    print(pb.get(365 - days_remaining))
 
 
 if __name__ == "__main__":
