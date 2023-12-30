@@ -1,8 +1,6 @@
 from PIL import Image, ImageDraw, ImageFont
 
-
 class ProgressBar:
-
     def __init__(self, max_value, bar_length=30):
         """
         Initialize the ProgressBar.
@@ -32,25 +30,25 @@ class ProgressBar:
 
     def image(self, current_value, output_file="progress_bar.png"):
         """
-        Render the progress bar as an image.
+        Render the progress bar as an image with a transparent background.
 
         Parameters:
         - current_value: Current value for the progress.
         - output_file: File name for the output image (default is "progress_bar.png").
         """
-        # Create an image with white background
-        image = Image.new("RGB", (400, 50), "white")
+        # Create an image with RGBA mode for transparency
+        image = Image.new("RGBA", (400, 50), (0, 0, 0, 0))
         draw = ImageDraw.Draw(image)
 
         # Calculate the width of the green passed part
         progress = float(current_value) / self.max_value
         passed_width = int((395 - 5) * progress)  # Adjusted width to stop 10px before the end
 
-        # Draw the white upcoming part
-        draw.rectangle([(5 + passed_width, 5), (395, 40)], fill="white")
+        # Draw the white upcoming part with transparency
+        draw.rectangle([(5 + passed_width, 5), (395, 40)], fill=(255, 255, 255, 0))
 
         # Draw the green passed part
-        draw.rectangle([(5, 5), (5 + passed_width, 45)], fill="green")
+        draw.rectangle([(5, 5), (5 + passed_width, 45)], fill=(0, 255, 0, 255))
 
         # Draw black outline for the progress bar
         draw.rectangle([(5, 5), (395, 45)], outline="black")
@@ -69,9 +67,8 @@ class ProgressBar:
         # Save the image to a file
         image.save(output_file)
 
-
+# Example usage:
 def test():
-    # Example usage:
     current_value = 363
     max_value = 365
     progress_bar = ProgressBar(max_value)
@@ -84,7 +81,6 @@ def test():
     for i in range(max_value + 1):
         progress_bar_str = progress_bar.get(i)
         print(i, progress_bar_str)
-
 
 if __name__ == "__main__":
     test()
