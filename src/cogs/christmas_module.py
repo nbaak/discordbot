@@ -79,9 +79,10 @@ class ChristmasModule(commands.Cog):
         messages.append(message)
 
         # Progress Bar
-        progress_bar = ProgressBar(366 if Calendar.is_leap_year(next_christmas_year) else 365, 50)
+        days_in_year = 366 if Calendar.is_leap_year(next_christmas_year) else 365
+        progress_bar = ProgressBar(days_in_year, 50)
         try:
-            progress_bar.image(365 - days_remaining, 'progress.png')
+            progress_bar.image(days_in_year-days_remaining, 'progress.png')
         except Exception as e:
             print(e)
         # messages.append(progress_bar.get(365-days_remaining))
@@ -130,10 +131,11 @@ async def setup(bot):
 
 
 def test():
-    pb = ProgressBar(365, 50)
+    next_christmas_year = ChristmasCountdown.next_christmas_year()
+    pb = ProgressBar(366 if Calendar.is_leap_year(next_christmas_year) else 365, 50)
     days_remaining = ChristmasCountdown.calculate_days_remaining()
     print(days_remaining)
-    print(pb.get(365 - days_remaining))
+    print(pb.get((366 if Calendar.is_leap_year(next_christmas_year) else 365) - days_remaining))
 
 
 if __name__ == "__main__":
