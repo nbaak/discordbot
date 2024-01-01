@@ -17,3 +17,8 @@
     2. Start Container docker-compose up -d
     3. Stop Container docker-compose down
     
+    
+## Christmas Countdown
+
+If you want to enable the Christmas Countdown in one of your Channels, just go in the Channel and type /setchristmaschannel. You need at least Administator Permissions for this.
+    
