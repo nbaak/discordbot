@@ -34,6 +34,17 @@ class Calendar:
         """Return True for leap years, False for non-leap years."""
         return year % 4 == 0 and (year % 100 != 0 or year % 400 == 0)
 
+    @staticmethod
+    def is_valid(day:int, month:int, year:int) -> bool:
+        # you can not be born in the future
+        if year > datetime.today().year: return False
+        
+        try:
+            dt = datetime(year=year, month=month, day=day)
+            return True
+        except:
+            return False
+
 
 def test():
     start_time = datetime(2023, 12, 24)
