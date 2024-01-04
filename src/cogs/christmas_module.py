@@ -132,6 +132,7 @@ class ChristmasModule(commands.Cog):
             del self.channels[guild.id]
 
             await interaction.response.send_message(f"Christmas Messages are over.. for now")
+            save(self.channel_file, self.channels)
         else:
             await interaction.response.send_message(f"no need!")
 
