@@ -7,6 +7,7 @@ from discord import Embed, Member
 from discord.ext import commands
 
 from lib.admin_tools import is_owner, access_denied_message
+from discord.interactions import Interaction
 
 
 class Admin(commands.Cog):
@@ -30,7 +31,7 @@ class Admin(commands.Cog):
     @app_commands.command(name='userinfo')
     @app_commands.describe(target='User')
     @is_owner()
-    async def s_user_info(self, interaction: discord.Interaction, target: Optional[Member]):
+    async def s_user_info(self, interaction:Interaction, target: Optional[Member]):
         target = target or interaction.user
 
         panel = self.build_user_info(target)
@@ -38,7 +39,7 @@ class Admin(commands.Cog):
         await interaction.response.send_message(embed=panel)
 
     @s_user_info.error
-    async def s_user_info_error(self, interaction: discord.Interaction, error):
+    async def s_user_info_error(self, interaction:Interaction, error):
         await interaction.response.send_message(access_denied_message())
 
     def build_user_info(self, user:Member) -> Embed:
@@ -57,12 +58,20 @@ class Admin(commands.Cog):
 
     @commands.command(name='clear', brief='delete <x> messages', help='delete last <x> messages')
     @commands.is_owner()
-    async def purge_messages(self, ctx, count: Optional[int]):
+    async def purge_messages(self, ctx, count:Optional[int]):
         deleted = await ctx.channel.purge(limit=count)
         await ctx.author.send('Deleted {} Messages'.format(len(deleted)))
 
+    @app_commands.command(name='clear')
+    @app_commands.checks.has_permissions(administrator=True)
+    async def s_purge_messges(self, interaction:Interaction, count:Optional[int]):
+        await interaction.response.defer()
+        deleted = await interaction.channel.purge(limit=count)
+        await interaction.channel.send('deleting...', ephemeral=True)
+        await interaction.user.send(f'Deleted {len(deleted)} Messaged')
+
     @app_commands.command()
-    async def servertime(self, interaction: discord.Interaction):
+    async def servertime(self, interaction:Interaction):
         now = datetime.now()
         current_time = now.strftime("%H:%M:%S")
         await interaction.response.send_message(f"it is {current_time}")
