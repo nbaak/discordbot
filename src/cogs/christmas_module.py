@@ -4,7 +4,7 @@ import discord
 from discord.ext import commands, tasks
 from datetime import datetime, time
 import pytz
-from discord import app_commands
+from discord import app_commands, interactions
 
 from lib.progressbar import ProgressBar
 from lib.christmas_countdown import ChristmasCountdown
@@ -33,7 +33,7 @@ class ChristmasModule(commands.Cog):
     async def daily_countdown(self):
         await self.run_daily_countdown()
 
-    async def run_daily_countdown(self):
+    async def run_daily_countdown(self, guild_id=None):
         # Get the Christmas countdown message
         days_remaining = ChristmasCountdown.calculate_days_remaining()
 
@@ -74,7 +74,10 @@ class ChristmasModule(commands.Cog):
                 messages.append(aoc_message)
 
         # Send the countdown message to all known Christmas channels
-        for _, cid in self.channels.items():
+        for gid, cid in self.channels.items():
+            if guild_id != None and gid != guild_id:
+                continue
+
             channel = discord.utils.get(self.bot.get_all_channels(), id=cid)
 
             for msg in messages:
@@ -88,13 +91,15 @@ class ChristmasModule(commands.Cog):
         except Exception as e:
             print(e)
 
-    @commands.command()
-    @commands.has_permissions(administrator=True)
-    async def testxmas(self, ctx):
-        for g, c in self.channels.items():
-            print(g, c, end='\n')
-
-        return await self.run_daily_countdown()
+    @app_commands.command()
+    @app_commands.checks.has_permissions(administrator=True)
+    async def testxmas(self, interaction: discord.Interaction):
+        await self.run_daily_countdown(interaction.guild.id)
+        await interaction.response.send_message('running test...')
+        
+    @testxmas.error
+    async def error_testxmas(self, interaction: discord.Interaction, error):
+        await interaction.response.send_message(access_denied_message())
 
     @app_commands.command(name="setchristmaschannel")
     @app_commands.describe(channel='Christmas Channel')
@@ -113,9 +118,25 @@ class ChristmasModule(commands.Cog):
             print(e)
 
         await interaction.response.send_message(f'Xmas Channel is now {channel}')
-        
+
     @set_christmas_channel.error
     async def set_christmas_channel_error(self, interaction: discord.Interaction, error):
+        await interaction.response.send_message(access_denied_message())
+
+    @app_commands.command(name="endchristmas")
+    @app_commands.checks.has_permissions(administrator=True)
+    async def end_christmas(self, interaction: discord.Interaction):
+        guild = interaction.guild
+
+        if guild.id in self.channels:
+            del self.channels[guild.id]
+
+            await interaction.response.send_message(f"Christmas Messages are over.. for now")
+        else:
+            await interaction.response.send_message(f"no need!")
+
+    @end_christmas.error
+    async def error_end_christmas(self, interaction: discord.Interaction, error):
         await interaction.response.send_message(access_denied_message())
 
     @app_commands.command(name='checkchristmaschannel')
