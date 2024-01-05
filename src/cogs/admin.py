@@ -63,10 +63,11 @@ class Admin(commands.Cog):
         await ctx.author.send('Deleted {} Messages'.format(len(deleted)))
 
     @app_commands.command(name='clear')
+    @app_commands.describe(count='the amount of messages you want to delete')
     @app_commands.checks.has_permissions(administrator=True)
     async def s_purge_messges(self, interaction:Interaction, count:Optional[int]):
         await interaction.response.defer()
-        deleted = await interaction.channel.purge(limit=count)
+        deleted = await interaction.channel.purge(limit=count+1)
         await interaction.channel.send('deleting...', ephemeral=True)
         await interaction.user.send(f'Deleted {len(deleted)} Messaged')
 

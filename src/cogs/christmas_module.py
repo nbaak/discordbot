@@ -95,7 +95,7 @@ class ChristmasModule(commands.Cog):
     @app_commands.checks.has_permissions(administrator=True)
     async def testxmas(self, interaction: discord.Interaction):
         await self.run_daily_countdown(interaction.guild.id)
-        await interaction.response.send_message('running test...')
+        await interaction.response.send_message('running test...', ephemeral=True)
         
     @testxmas.error
     async def error_testxmas(self, interaction: discord.Interaction, error):
