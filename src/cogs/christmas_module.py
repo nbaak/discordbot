@@ -11,6 +11,7 @@ from lib.christmas_countdown import ChristmasCountdown
 from lib.calendar import Calendar
 from lib.admin_tools import load, save, access_denied_message
 from typing import Optional
+from discord.interactions import Interaction
 
 cet = pytz.timezone('CET')
 trigger_time = time(hour=6, minute=1, tzinfo=cet)
@@ -31,21 +32,20 @@ class ChristmasModule(commands.Cog):
 
     @tasks.loop(time=trigger_time)
     async def daily_countdown(self):
-        await self.run_daily_countdown()
+        messages = self.build_xmas_message()
+        await self.send_xmas_messages(messages, list(self.channels.values()))
 
-    async def run_daily_countdown(self, guild_id=None):
+    def build_xmas_message(self, progress=True):
         # Get the Christmas countdown message
         days_remaining = ChristmasCountdown.calculate_days_remaining()
+        next_christmas_year = ChristmasCountdown.next_christmas_year()
 
         # check date
         current_year = datetime.now().year
         current_month = datetime.now().month
         current_day = datetime.now().day
 
-        next_christmas_year = ChristmasCountdown.next_christmas_year()
-
         print(f"it's christmas in: {days_remaining} days")
-
         messages = []
         if days_remaining == 0:
             message = "Merry Christmas! 🎄🎅🎁"
@@ -56,16 +56,6 @@ class ChristmasModule(commands.Cog):
 
         messages.append(message)
 
-        # Progress Bar
-        days_in_year = 366 if Calendar.is_leap_year(next_christmas_year) else 365
-        progress_bar = ProgressBar(days_in_year, 50)
-        try:
-            progress_bar.image(days_in_year - days_remaining, 'progress.png')
-        except Exception as e:
-            print(e)
-
-        messages.append(('progress', 'progress.png'))
-
         # AoC Reminder
         if current_month == 12:
             if current_day in range(1, 26):
@@ -73,18 +63,25 @@ class ChristmasModule(commands.Cog):
                 aoc_message = f"Visit the [Advent of Code - {current_year} - Day {current_day}]({aoc_url}) "
                 messages.append(aoc_message)
 
+        # Progress Bar
+        if progress:
+            days_in_year = 366 if Calendar.is_leap_year(next_christmas_year) else 365
+            progress_bar = ProgressBar(days_in_year, 50)
+            try:
+                progress_bar.image(days_in_year - days_remaining, 'progress.png')
+            except Exception as e:
+                print(e)
+
+        return messages
+
+    async def send_xmas_messages(self, messages:list, channels:list):
         # Send the countdown message to all known Christmas channels
-        for gid, cid in self.channels.items():
-            if guild_id != None and gid != guild_id:
-                continue
-
+        for cid in channels:
             channel = discord.utils.get(self.bot.get_all_channels(), id=cid)
-
-            for msg in messages:
-                if type(msg) == str:
-                    await channel.send(msg)
-                elif type(msg) == tuple:
-                    await channel.send(file=discord.File(msg[1]))
+            if os.path.isfile('progress.png'):            
+                await channel.send(content='\n'.join(messages), file=discord.File('progress.png'))
+            else:
+                await channel.send(content='\n'.join(messages))
 
         try:
             os.remove('progress.png')
@@ -94,9 +91,14 @@ class ChristmasModule(commands.Cog):
     @app_commands.command()
     @app_commands.checks.has_permissions(administrator=True)
     async def testxmas(self, interaction: discord.Interaction):
-        await self.run_daily_countdown(interaction.guild.id)
+        try:
+            messages = self.build_xmas_message()
+            channels = [self.channels[interaction.guild.id]]
+            await self.send_xmas_messages(messages, channels)
+        except Exception as e:
+            await interaction.response.send_message(f'ERROR: {e}', ephemeral=True)
         await interaction.response.send_message('running test...', ephemeral=True)
-        
+
     @testxmas.error
     async def error_testxmas(self, interaction: discord.Interaction, error):
         await interaction.response.send_message(access_denied_message())
@@ -139,6 +141,11 @@ class ChristmasModule(commands.Cog):
     @end_christmas.error
     async def error_end_christmas(self, interaction: discord.Interaction, error):
         await interaction.response.send_message(access_denied_message())
+
+    @app_commands.command(name='whenischristmas')
+    async def when_is_christmas(self, interaction:Interaction):
+        messages = self.build_xmas_message(progress=False)
+        await interaction.response.send_message('\n'.join(messages), ephemeral=True)
 
     @app_commands.command(name='checkchristmaschannel')
     async def check_christmas_channel(self, interaction: discord.Interaction):
