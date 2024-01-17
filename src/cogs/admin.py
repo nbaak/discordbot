@@ -67,7 +67,11 @@ class Admin(commands.Cog):
     @app_commands.checks.has_permissions(administrator=True)
     async def s_purge_messges(self, interaction:Interaction, count:Optional[int]):
         await interaction.response.defer()
-        deleted = await interaction.channel.purge(limit=count+1)
+        if count:
+            deleted = await interaction.channel.purge(limit=count+1)
+        else:
+            deleted = await interaction.channel.purge(limit=count)
+            
         await interaction.channel.send('deleting...', ephemeral=True)
         await interaction.user.send(f'Deleted {len(deleted)} Messaged')
 
