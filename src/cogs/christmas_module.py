@@ -4,7 +4,7 @@ import discord
 from discord.ext import commands, tasks
 from datetime import datetime, time
 import pytz
-from discord import app_commands, interactions
+from discord import app_commands
 
 from lib.progressbar import ProgressBar
 from lib.christmas_countdown import ChristmasCountdown
