@@ -17,10 +17,11 @@ class AutoReaction(commands.Cog):
         self.bot = bot
         self.channel_file = 'autolike.dat'
         self.enabled_servers = load(self.channel_file) or set()
+        self.reaction_threshold = .05
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        if not message.author.bot and message.guild.id in self.enabled_servers:
+        if not message.author.bot and message.guild.id in self.enabled_servers and self.reaction_threshold >= round(random.random(), 2):
             try:
                 await message.add_reaction(random_reaction())
             except discord.errors.HTTPException:
