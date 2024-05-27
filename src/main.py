@@ -54,10 +54,16 @@ async def sync(ctx):
     print(synced)
     await ctx.send(f'Command tree ({len(synced)}) synced.')
 
+
 async def main():
-    for filename in os.listdir('./cogs'):
-        if filename.endswith('.py'):
-            await client.load_extension(f'cogs.{filename[:-3]}')
+    for path_object in os.listdir('./cogs'):
+        # load cog from folder
+        if os.path.isdir(f'./cogs/{path_object}') and os.path.exists(f'./cogs/{path_object}/cog.py'):
+            await client.load_extension(f'cogs.{path_object}.cog')
+        
+        # load cog from file
+        if path_object.endswith('.py'):
+            await client.load_extension(f'cogs.{path_object[:-3]}')
 
     async with client:
         # client.loop.create_task(background_task())
