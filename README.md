@@ -5,7 +5,10 @@
   * discord.py
   * requests
   * wikipedia
-  
+
+```bash
+python3 -m pip install -r requiremetns.txt
+```
 
 ## Usage
 1. Get your API Key for your Bot Application from the [Developers Page](https://discord.com/developers/applications).
