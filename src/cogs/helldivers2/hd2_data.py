@@ -21,10 +21,8 @@ class HD2DataService():
         mo_data = api.get_major_order()
         if not self.major_order or mo_data[0]['id32'] != self.major_order[0]['id32']:
             self.major_order = mo_data
-            print('New MO')
             return True
         
-        print('no new MO')
         return False
         
     def update_campaign(self):
