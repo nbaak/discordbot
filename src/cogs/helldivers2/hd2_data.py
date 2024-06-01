@@ -39,8 +39,8 @@ class HD2DataService():
     def update_all(self):
         self.update_campaign()
         self.update_major_order()
-        self.update_war_info()
-        self.update_war_status()
+        # self.update_war_info()
+        # self.update_war_status()
         
     def save_all(self):
         with open('hd2.bin', 'wb') as f:
@@ -68,7 +68,7 @@ class HD2DataService():
         tasks = major_order['setting']['tasks']
         planets = [self.planets[str(task['values'][2])]['name'] for task in tasks]
         
-        text = ""
+        text = f"{major_order['setting']['taskDescription']}\n"
         for planet, prog in list(zip(planets, progress)):
             text += f"{planet} {prog}%\n"
         
@@ -87,9 +87,9 @@ class HD2DataService():
         
     def get_campaign(self):
         if self.campaign:
-            text = ""
+            text = "War Campaign:\n"
             
-            for entry in self.campaign:
+            for entry in sorted(self.campaign, key=lambda c: c['players'], reverse=True):
                 defense = "🛡️" if entry['defense'] else "⚔️"
                 percentage = float(entry['percentage'])
                 text += f"{entry['name']} {defense}: liberation: {percentage:3.2f}, active Helldivers: {entry['players']}\n"
