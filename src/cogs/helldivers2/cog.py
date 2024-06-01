@@ -7,6 +7,9 @@ from lib.admin_tools import load, save, access_denied_message
 import cogs.helldivers2.api as api
 from cogs.helldivers2.tmt import TrainingManualTips
 from typing import Optional
+import datetime
+from cogs.helldivers2 import hd2_data
+from cogs.helldivers2.hd2_data import HD2DataService
 
 
 class Helldivers2(commands.Cog):
@@ -15,8 +18,50 @@ class Helldivers2(commands.Cog):
         self.bot = bot
         self.channels_file = 'hd2_channels.dat'
         self.channels = load(self.channels_file) or {}
+        self.messages_file = 'hd2_message_ids.dat'
+        self.messages = load(self.messages_file) or {}
         self.tmt = TrainingManualTips()
+        self.hd2dataservice = HD2DataService()
+        self.countdown.start()
+    
+    @commands.Cog.listener()
+    async def on_ready(self):
+        print(f'Extension {self.__class__.__name__} loaded')
         
+    @tasks.loop(minutes=1.0)
+    async def countdown(self):
+        self.hd2dataservice.update_all()
+        
+        message_mo = self.hd2dataservice.get_major_order()        
+        await self.send_channel_message(message_mo, 'major_order')
+        
+        message_campaign = self.hd2dataservice.get_campaign()
+        await self.send_channel_message(message_campaign, 'campaign') 
+        
+    async def send_channel_message(self, message:str, identifier:str):
+        for cid in self.channels.values():
+            channel = discord.utils.get(self.bot.get_all_channels(), id=cid)
+            
+            if channel:
+                channel_to_message_identifier = (channel.guild.id, channel.id, identifier)
+                if channel_to_message_identifier in self.messages:
+                    try:
+                        msg = await channel.fetch_message(self.messages[channel_to_message_identifier])
+                    except Exception as e:
+                        msg = await channel.send(content=message)
+                        self.messages[channel_to_message_identifier] = msg.id
+                        save(self.messages_file, self.messages)
+                    
+                    try:
+                        await msg.edit(content=f'{message}')                        
+                    except Exception as e:
+                        print("ERR" + e)
+                    
+                else:
+                    msg = await channel.send(content=message)
+                    self.messages[channel_to_message_identifier] = msg.id
+                    save(self.messages_file, self.messages)
+                           
     @app_commands.command(name="sethelldiverschannel")
     @app_commands.describe(channel='Helldivers 2 Channel')
     @app_commands.checks.has_permissions(administrator=True)
@@ -38,7 +83,6 @@ class Helldivers2(commands.Cog):
     @app_commands.command(name='trainingmanualtips')
     async def trainingmanualtips(self, interaction:Interaction):
         message = self.tmt.random()
-        print(message)
         await interaction.response.send_message(message, ephemeral=True)
 
 

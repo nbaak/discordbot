@@ -1,5 +1,6 @@
 from cogs.helldivers2 import api
 import pickle
+from tracemalloc import BaseFilter
 
 
 class HD2DataService():
@@ -13,8 +14,18 @@ class HD2DataService():
         self.major_order = None
         self.planets = api.planets()
         
-    def update_major_order(self):
-        self.major_order = api.get_major_order()
+        self.load_all()
+        self.update_all()
+        
+    def update_major_order(self) -> bool:
+        mo_data = api.get_major_order()
+        if not self.major_order or mo_data[0]['id32'] != self.major_order[0]['id32']:
+            self.major_order = mo_data
+            print('New MO')
+            return True
+        
+        print('no new MO')
+        return False
         
     def update_campaign(self):
         self.campaign = api.get_campaign()
@@ -51,28 +62,55 @@ class HD2DataService():
         except:
             print('no data file found')
             return False
+    
+    def mo_progress(self, major_order:dict):
+        progress = major_order['progress']
+        tasks = major_order['setting']['tasks']
+        planets = [self.planets[str(task['values'][2])]['name'] for task in tasks]
         
-    def get_major_order(self):
-        mo = self.major_order[0]
-        expires = int(self.major_order[0]['expiresIn'])
-        progress = self.major_order[0]['progress']
-        
-        title = f"{self.major_order[0]['setting']['overrideTitle']}\n{self.major_order[0]['setting']['overrideBrief']}\n"
-        text = f"{title}\n"
+        text = ""
+        for planet, prog in list(zip(planets, progress)):
+            text += f"{planet} {prog}%\n"
         
         return text
+        
+    def get_major_order(self):
+        if self.major_order:
+            mo = self.major_order[0]
+            expires = int(self.major_order[0]['expiresIn'])
+            progress = self.mo_progress(mo)
+            
+            title = f"{self.major_order[0]['setting']['overrideTitle']}\n{self.major_order[0]['setting']['overrideBrief']}\n"
+            text = f"{title}\n{progress}" 
+            
+            return text
+        
+    def get_campaign(self):
+        if self.campaign:
+            text = ""
+            
+            for entry in self.campaign:
+                defense = "🛡️" if entry['defense'] else "⚔️"
+                percentage = float(entry['percentage'])
+                text += f"{entry['name']} {defense}: liberation: {percentage:3.2f}, active Helldivers: {entry['players']}\n"
+                
+            return text
             
 
 def main():
     data = HD2DataService()
-    # data.update_all()
-    # data.save_all()
-    data.load_all()
-    for k,v in data.major_order[0].items():
+    data.update_all()
+    for k, v in data.major_order[0].items():
+        if type(v) == dict:
+            for kk, vv in v.items():
+                print(f'  {kk} {vv}')
         print(k, v)
 
     print()        
     print(data.get_major_order())
+    print(data.get_campaign())
+
+    data.save_all()
     
 
 if __name__ == "__main__":
