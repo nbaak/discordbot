@@ -7,8 +7,7 @@ from lib.admin_tools import load, save, access_denied_message
 import cogs.helldivers2.api as api
 from cogs.helldivers2.tmt import TrainingManualTips
 from typing import Optional
-import datetime
-from cogs.helldivers2 import hd2_data
+
 from cogs.helldivers2.hd2_data import HD2DataService
 
 
@@ -28,7 +27,7 @@ class Helldivers2(commands.Cog):
     async def on_ready(self):
         print(f'Extension {self.__class__.__name__} loaded')
         
-    @tasks.loop(minutes=1.0)
+    @tasks.loop(minutes=10.0)
     async def countdown(self):
         self.hd2dataservice.update_all()
         

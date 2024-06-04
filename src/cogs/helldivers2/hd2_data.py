@@ -1,6 +1,7 @@
 from cogs.helldivers2 import api
 import pickle
-from tracemalloc import BaseFilter
+import datetime
+import time
 
 
 class HD2DataService():
@@ -71,6 +72,11 @@ class HD2DataService():
             text += f"{planet} {prog}%\n"
         
         return text
+    
+    def mo_time_remaining(self, major_order:dict) -> str:
+        remaining = int(major_order['expiresIn'])
+        delta = datetime.timedelta(seconds=remaining)
+        return delta
         
     def get_major_order(self):
         if self.major_order:
@@ -79,7 +85,8 @@ class HD2DataService():
             progress = self.mo_progress(mo)
             
             title = f"{self.major_order[0]['setting']['overrideTitle']}\n{self.major_order[0]['setting']['overrideBrief']}\n"
-            text = f"{title}\n{progress}" 
+            text = f"{title}\n{progress}\n" 
+            text += f"ends in {self.mo_time_remaining(mo)}"            
             
             return text
         
@@ -91,6 +98,9 @@ class HD2DataService():
                 defense = "🛡️" if entry['defense'] else "⚔️"
                 percentage = float(entry['percentage'])
                 text += f"{entry['name']} {defense}: liberation: {percentage:3.2f}, active Helldivers: {entry['players']}\n"
+            
+            helldivers_online_total = sum([planet['players'] for planet in self.campaign])
+            text += f"\nHelldivers active: {helldivers_online_total}"
                 
             return text
             
