@@ -61,15 +61,32 @@ class HD2DataService():
         except:
             print('no data file found')
             return False
+        
+    def find_ind_campain_dict(self, search_key, search_value:str) -> dict:
+        
+        for planet in self.campaign:
+            for k, v in planet.items():
+                if k == search_key and v == search_value:
+                    return planet
+        
+        return None
     
     def mo_progress(self, major_order:dict):
         progress = major_order['progress']
         tasks = major_order['setting']['tasks']
         planets = [self.planets[str(task['values'][2])]['name'] for task in tasks]
+        planet_ids = [task['values'][2] for task in tasks]
         
         text = f"{major_order['setting']['taskDescription']}\n"
-        for planet, prog in list(zip(planets, progress)):
-            text += f"{planet} {prog}%\n"
+        for planet_name, prog, planet_id in list(zip(planets, progress, planet_ids)):
+            
+            if prog:
+                progress = prog * 100
+            else:
+                planet = self.find_ind_campain_dict('planetIndex', planet_id)
+                progress = planet['percentage']
+                
+            text += f"{planet_name} {progress:3.2f}%\n"
         
         return text
     
