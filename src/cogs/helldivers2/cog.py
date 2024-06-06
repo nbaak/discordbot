@@ -27,7 +27,7 @@ class Helldivers2(commands.Cog):
     async def on_ready(self):
         print(f'Extension {self.__class__.__name__} loaded')
         
-    @tasks.loop(minutes=10.0)
+    @tasks.loop(minutes=2.0)
     async def countdown(self):
         self.hd2dataservice.update_all()
         
@@ -35,7 +35,9 @@ class Helldivers2(commands.Cog):
         await self.send_channel_message(message_mo, 'major_order')
         
         message_campaign = self.hd2dataservice.get_campaign()
-        await self.send_channel_message(message_campaign, 'campaign') 
+        await self.send_channel_message(message_campaign, 'campaign')
+        
+        self.hd2dataservice.save_all()
         
     async def send_channel_message(self, message:str, identifier:str):
         for cid in self.channels.values():
