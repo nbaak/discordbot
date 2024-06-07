@@ -40,8 +40,8 @@ class HD2DataService():
     def update_all(self):
         self.update_campaign()
         self.update_major_order()
+        self.update_war_status()
         # self.update_war_info()
-        # self.update_war_status()
         
     def save_all(self):
         with open('hd2.bin', 'wb') as f:
@@ -73,6 +73,12 @@ class HD2DataService():
         
         return None
     
+    def get_faction_for_planet(self, planet_id:int) -> str:
+        owner = self.war_status["planetStatus"][planet_id]["owner"]
+        factions = {1: "🌎", 2: "🪲", 3: "🤖"}
+        
+        return factions[owner] if owner in factions else "?" 
+    
     def mo_progress(self, major_order:dict):
         progress = major_order['progress']
         tasks = major_order['setting']['tasks']
@@ -87,8 +93,9 @@ class HD2DataService():
             else:
                 planet = self.find_in_campain_dict('planetIndex', planet_id)
                 progress = planet['percentage'] if planet else 0
-                
-            text += f"{planet_name}: {progress:3.2f}%\n"
+            
+            owner = self.get_faction_for_planet(planet_id)
+            text += f"{owner} {planet_name}: {progress:3.2f}%\n"
         
         return text
     
@@ -114,9 +121,10 @@ class HD2DataService():
             text = "War Campaign:\n"
             
             for entry in sorted(self.campaign, key=lambda c: c['players'], reverse=True):
+                owner = self.get_faction_for_planet(entry['planetIndex'])
                 defense = "🛡️" if entry['defense'] else "⚔️"
                 percentage = float(entry['percentage'])
-                text += f"{entry['name']} {defense}: liberation: {percentage:3.2f}, active Helldivers: {entry['players']}\n"
+                text += f"{owner} {entry['name']} {defense}: liberation: {percentage:3.2f}, active Helldivers: {entry['players']}\n"
             
             helldivers_online_total = sum([planet['players'] for planet in self.campaign])
             text += f"\nHelldivers active: {helldivers_online_total}"
