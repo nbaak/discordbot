@@ -64,7 +64,7 @@ class HD2DataService():
             print('no data file found')
             return False
         
-    def find_ind_campain_dict(self, search_key, search_value:str) -> dict:
+    def find_in_campain_dict(self, search_key, search_value:str) -> dict:
         
         for planet in self.campaign:
             for k, v in planet.items():
@@ -85,10 +85,10 @@ class HD2DataService():
             if prog:
                 progress = prog * 100
             else:
-                planet = self.find_ind_campain_dict('planetIndex', planet_id)
-                progress = planet['percentage']
+                planet = self.find_in_campain_dict('planetIndex', planet_id)
+                progress = planet['percentage'] if planet else 0
                 
-            text += f"{planet_name} {progress:3.2f}%\n"
+            text += f"{planet_name}: {progress:3.2f}%\n"
         
         return text
     
