@@ -27,8 +27,7 @@ class Helldivers2(commands.Cog):
     async def on_ready(self):
         print(f'Extension {self.__class__.__name__} loaded')
         
-    @tasks.loop(minutes=2.0)
-    async def countdown(self):
+    async def update_warsatus(self):
         self.hd2dataservice.update_all()
         
         message_mo = self.hd2dataservice.get_major_order()  
@@ -38,6 +37,10 @@ class Helldivers2(commands.Cog):
         await self.send_channel_message(message_campaign, 'campaign')
         
         self.hd2dataservice.save_all()
+        
+    @tasks.loop(minutes=2.0)
+    async def countdown(self):
+        await self.update_warsatus()
         
     async def send_channel_message(self, message:str, identifier:str):
         for cid in self.channels.values():
@@ -81,6 +84,12 @@ class Helldivers2(commands.Cog):
             print(e)
 
         await interaction.response.send_message(f'HD2 Channel is now {channel}')
+    
+    @app_commands.command(name="updatewarstatus")
+    @app_commands.checks.has_permissions(administrator=True)
+    async def update_warstatus_now(self, interaction: discord.Interaction):
+        await self.update_warsatus()
+        await interaction.response.send_message('updating war status', ephemeral=True)
     
     @app_commands.command(name='trainingmanualtips')
     async def trainingmanualtips(self, interaction:Interaction):
