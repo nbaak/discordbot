@@ -23,19 +23,26 @@ class HD2DataService():
         new_mo = False
         if not self.major_order or mo_data[0]['id32'] != self.major_order[0]['id32']:
             new_mo = True
-            
-        self.major_order = mo_data
+        
+        if mo_data:
+            self.major_order = mo_data
         
         return new_mo
         
     def update_campaign(self):
-        self.campaign = api.get_campaign()
+        new_campaign = api.get_campaign()
+        if new_campaign:
+            self.campaign = new_campaign
         
     def update_war_status(self):
-        self.war_status = api.get_war_status()
+        new_war_status = api.get_war_status()
+        if new_war_status:
+            self.war_status = new_war_status
         
     def update_war_info(self):
-        self.war_info = api.get_war_info()
+        new_war_inf0 = api.get_war_info()
+        if new_war_inf0:
+            self.war_info = new_war_inf0
         
     def update_all(self):
         self.update_campaign()
