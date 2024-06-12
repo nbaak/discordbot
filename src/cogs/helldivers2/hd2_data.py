@@ -131,7 +131,7 @@ class HD2DataService():
                 owner = self.get_faction_for_planet(entry['planetIndex'])
                 defense = "🛡️" if entry['defense'] else "⚔️"
                 percentage = float(entry['percentage'])
-                text += f"{owner} {entry['name']} {defense}: liberation: {percentage:3.2f}, active Helldivers: {entry['players']}\n"
+                text += f"{owner} {entry['name']} {defense}: liberation: {percentage:3.2f}%, active Helldivers: {entry['players']}\n"
             
             helldivers_online_total = sum([planet['players'] for planet in self.campaign])
             text += f"\nHelldivers active: {helldivers_online_total}"
