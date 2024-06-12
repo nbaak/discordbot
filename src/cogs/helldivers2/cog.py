@@ -38,7 +38,7 @@ class Helldivers2(commands.Cog):
         
         self.hd2dataservice.save_all()
         
-    @tasks.loop(minutes=2.0)
+    @tasks.loop(minutes=5.0)
     async def countdown(self):
         await self.update_warsatus()
         
