@@ -36,8 +36,6 @@ class Helldivers2(commands.Cog):
         message_campaign = self.hd2dataservice.get_campaign()
         await self.send_channel_message(message_campaign, 'campaign')
         
-        self.hd2dataservice.save_all()
-        
     @tasks.loop(minutes=5.0)
     async def countdown(self):
         await self.update_warsatus()

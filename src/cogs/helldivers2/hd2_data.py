@@ -15,19 +15,10 @@ class HD2DataService():
         self.major_order = None
         self.planets = api.planets()
         
-        self.load_all()
         self.update_all()
         
-    def update_major_order(self) -> bool:
-        mo_data = api.get_major_order()
-        new_mo = False
-        if not self.major_order or mo_data[0]['id32'] != self.major_order[0]['id32']:
-            new_mo = True
-        
-        if mo_data:
-            self.major_order = mo_data
-        
-        return new_mo
+    def update_major_order(self):
+        self.major_order = api.get_major_order()
         
     def update_campaign(self):
         new_campaign = api.get_campaign()
@@ -49,27 +40,6 @@ class HD2DataService():
         self.update_major_order()
         self.update_war_status()
         # self.update_war_info()
-        
-    def save_all(self):
-        with open('hd2.bin', 'wb') as f:
-            pickle.dump(self, f)
-            
-    def load_all(self):
-        try:
-            with open('hd2.bin', 'rb') as f:
-                data = pickle.load(f)
-                print(type(data))
-                self.war_status = data.war_status
-                self.war_info = data.war_info
-                self.news = data.news
-                self.campaign = data.campaign
-                self.planet_index = data.planet_index
-                self.major_order = data.major_order                
-                
-                return True
-        except:
-            print('no data file found')
-            return False
         
     def find_in_campain_dict(self, search_key, search_value:str) -> dict:
         
@@ -119,9 +89,12 @@ class HD2DataService():
             
             title = f"{self.major_order[0]['setting']['overrideTitle']}\n{self.major_order[0]['setting']['overrideBrief']}\n"
             text = f"{title}\n{progress}\n" 
-            text += f"ends in {self.mo_time_remaining(mo)}"            
+            text += f"ends in {self.mo_time_remaining(mo)}"
             
             return text
+        
+        else:
+            return f"MAJOR ORDER\nNo Major Order active!"
         
     def get_campaign(self):
         if self.campaign:
@@ -142,18 +115,15 @@ class HD2DataService():
 def main():
     data = HD2DataService()
     data.update_all()
-    for k, v in data.major_order[0].items():
-        if type(v) == dict:
-            for kk, vv in v.items():
-                print(f'  {kk} {vv}')
-        print(k, v)
-
-    print()        
+    # for k, v in data.major_order[0].items():
+    #     if type(v) == dict:
+    #         for kk, vv in v.items():
+    #             print(f'  {kk} {vv}')
+    #     print(k, v)
+        
     print(data.get_major_order())
-    print(data.get_campaign())
+    print(data.get_campaign())    
 
-    data.save_all()
-    
 
 if __name__ == "__main__":
     main()
