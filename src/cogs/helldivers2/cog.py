@@ -28,13 +28,16 @@ class Helldivers2(commands.Cog):
         print(f'Extension {self.__class__.__name__} loaded')
         
     async def update_warsatus(self):
-        self.hd2dataservice.update_all()
-        
-        message_mo = self.hd2dataservice.get_major_order()  
-        await self.send_channel_message(message_mo, 'major_order')
-        
-        message_campaign = self.hd2dataservice.get_campaign()
-        await self.send_channel_message(message_campaign, 'campaign')
+        try:
+            self.hd2dataservice.update_all()
+            
+            message_mo = self.hd2dataservice.get_major_order()  
+            await self.send_channel_message(message_mo, 'major_order')
+            
+            message_campaign = self.hd2dataservice.get_campaign()
+            await self.send_channel_message(message_campaign, 'campaign')
+        except Exception as e:
+            print(e)
         
     @tasks.loop(minutes=5.0)
     async def countdown(self):
