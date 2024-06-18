@@ -1,4 +1,6 @@
 import discord
+import datetime
+
 from discord import app_commands
 from discord.ext import commands, tasks
 from discord.interactions import Interaction
@@ -36,6 +38,12 @@ class Helldivers2(commands.Cog):
             
             message_campaign = self.hd2dataservice.get_campaign()
             await self.send_channel_message(message_campaign, 'campaign')
+            
+            current_datetime = datetime.datetime.now()
+            timestamp = current_datetime.timestamp()
+            formatted_string = datetime.datetime.fromtimestamp(timestamp).strftime("%Y-%m-%d %H:%M:%S")
+            print(f"time remaining: {self.hd2dataservice.mo_time_remaining()}, updated: {formatted_string}")
+            
         except Exception as e:
             print(e)
         
