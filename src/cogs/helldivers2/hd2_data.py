@@ -74,12 +74,13 @@ class HD2DataService():
             
             planet = self.find_in_campain_dict('planetIndex', planet_id)
             progress = planet['percentage'] if planet else prog*100
-            print(planet_name, planet)
             try:
+                # inside campaign
                 defense = "🛡️" if planet['defense'] else "⚔️"
                 holder = self.faction_icon(planet['faction'])
             except Exception as e:
-                defense = "  "        
+                # not inside campaign (reachable via supply lines)
+                defense = ""        
                 holder = self.get_faction_for_planet(planet_id)
                 
             text += f"{holder}{defense} {planet_name}: {progress:3.2f}%\n"
