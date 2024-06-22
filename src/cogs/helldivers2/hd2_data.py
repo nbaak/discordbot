@@ -2,6 +2,7 @@ from cogs.helldivers2 import api
 import pickle
 import datetime
 import time
+from typing import Union
 
 
 class HD2DataService():
@@ -41,20 +42,26 @@ class HD2DataService():
         self.update_war_status()
         # self.update_war_info()
         
-    def find_in_campain_dict(self, search_key, search_value:str) -> dict:
-        
+    def find_in_campain_dict(self, search_key, search_value:str) -> dict:        
         for planet in self.campaign:
             for k, v in planet.items():
                 if k == search_key and v == search_value:
-                    return planet
-        
+                    return planet        
         return None
     
     def get_faction_for_planet(self, planet_id:int) -> str:
         owner = self.war_status["planetStatus"][planet_id]["owner"]
         factions = {1: "🌎", 2: "🪲", 3: "🤖"}
+        return factions[owner] if owner in factions else "?"
+    
+    def faction_icon(self, faction:Union[int, str]):
+        if type(faction) == int:
+            factions = {1: "🌎", 2: "🪲", 3: "🤖", 4: "🦑"}
+        else:
+            # TODO: rework as soon as we have squiods as faction.. or something else
+            factions = {"Helldivers": "🌎", "Terminids": "🪲", "Automatons": "🤖", "Squids": "🦑"}
         
-        return factions[owner] if owner in factions else "?" 
+        return factions[faction] if faction in factions else "?"
     
     def mo_progress(self, major_order:dict):
         progress = major_order['progress']
@@ -65,14 +72,17 @@ class HD2DataService():
         text = f"{major_order['setting']['taskDescription']}\n"
         for planet_name, prog, planet_id in list(zip(planets, progress, planet_ids)):
             
-            if prog:
-                progress = prog * 100
-            else:
-                planet = self.find_in_campain_dict('planetIndex', planet_id)
-                progress = planet['percentage'] if planet else 0
-            
-            owner = self.get_faction_for_planet(planet_id)
-            text += f"{owner} {planet_name}: {progress:3.2f}%\n"
+            planet = self.find_in_campain_dict('planetIndex', planet_id)
+            progress = planet['percentage'] if planet else prog*100
+            print(planet_name, planet)
+            try:
+                defense = "🛡️" if planet['defense'] else "⚔️"
+                holder = self.faction_icon(planet['faction'])
+            except Exception as e:
+                defense = "  "        
+                holder = self.get_faction_for_planet(planet_id)
+                
+            text += f"{holder}{defense} {planet_name}: {progress:3.2f}%\n"
         
         return text
     
