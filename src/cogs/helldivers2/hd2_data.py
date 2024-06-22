@@ -115,11 +115,11 @@ class HD2DataService():
         if self.campaign:
             text = "War Campaign:\n"
             
-            for entry in sorted(self.campaign, key=lambda c: c['players'], reverse=True):
-                owner = self.get_faction_for_planet(entry['planetIndex'])
-                defense = "🛡️" if entry['defense'] else "⚔️"
-                percentage = float(entry['percentage'])
-                text += f"{owner} {entry['name']} {defense}: liberation: {percentage:3.2f}%, active Helldivers: {entry['players']}\n"
+            for planet in sorted(self.campaign, key=lambda c: c['players'], reverse=True):
+                defense = "🛡️" if planet['defense'] else "⚔️"
+                holder = self.faction_icon(planet['faction'])
+                percentage = float(planet['percentage'])
+                text += f"{holder}{defense} {planet['name']}: liberation: {percentage:3.2f}%, active Helldivers: {planet['players']}\n"
             
             helldivers_online_total = sum([planet['players'] for planet in self.campaign])
             text += f"\nHelldivers active: {helldivers_online_total}"
