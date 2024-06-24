@@ -1,18 +1,17 @@
 from cogs.helldivers2 import api
 import datetime
-from typing import Union
+from typing import Union, Dict, List, Tuple
 
 
 class HD2DataService():
     
     def __init__(self):
-        self.war_status = None
-        self.war_info = None
-        self.news = None
-        self.campaign = None
-        self.planet_index = None
-        self.major_order = None
-        self.planets = api.planets()
+        self.war: Union[Dict, None] = None
+        self.news: Union[Dict, None] = None
+        self.campaign: Union[List[Dict], None] = None
+        self.planet_index: Union[Dict, None] = None
+        self.major_order: Union[Dict, None] = None
+        self.planets: Dict = api.planets()
         
         self.update_all()
         
@@ -24,41 +23,33 @@ class HD2DataService():
         if new_campaign:
             self.campaign = new_campaign
         
-    def update_war_status(self):
-        new_war_status = api.get_war_status()
-        if new_war_status:
-            self.war_status = new_war_status
-        
-    def update_war_info(self):
-        new_war_inf0 = api.get_war_info()
-        if new_war_inf0:
-            self.war_info = new_war_inf0
+    def update_war(self):
+        new_war_data = api.get_war()
+        if new_war_data:
+            self.war = new_war_data
         
     def update_all(self):
         self.update_campaign()
         self.update_major_order()
-        self.update_war_status()
-        # self.update_war_info()
+        self.update_war()
         
-    def find_in_campain_dict(self, search_key, search_value:str) -> Union[dict, None]: 
+    def find_in_campain_dict(self, search_key, search_value:str) -> Union[Dict, None]: 
         for planet in self.campaign:
             for k, v in planet.items():
                 if k == search_key and v == search_value:
                     return planet        
         return None
     
-    def get_faction_for_planet(self, planet_id:int) -> tuple[str, str]:
-        owner = self.war_status["planetStatus"][planet_id]["owner"]
-        factions = {1: "🌎", 2: "🪲", 3: "🤖"}
-        icon = factions[owner] if owner in factions else "?"
-        return owner, icon 
+    def get_faction_for_planet(self, planet_id:int) -> Tuple[str, str]:
+        owner_id = self.war["planetStatus"][planet_id]["owner"]
+        icon = self.faction_icon(owner_id)
+        return owner_id, icon 
     
     def faction_icon(self, faction:Union[int, str]) -> str:
-        if type(faction) == int:
+        if isinstance(faction, int):
             factions = {1: "🌎", 2: "🪲", 3: "🤖", 4: "🦑"}
         else:
-            # TODO: rework as soon as we have squiods as faction.. or something else
-            factions = {"Helldivers": "🌎", "Terminids": "🪲", "Automatons": "🤖", "Squids": "🦑"}
+            factions = {"Humans": "🌎", "Terminids": "🪲", "Automatons": "🤖", "Illuminates": "🦑"}
         
         return factions[faction] if faction in factions else "?"
     
@@ -80,8 +71,8 @@ class HD2DataService():
                 holder_icon = self.faction_icon(planet['faction'])
             else:
                 # not part of campaign
-                current_owner, holder_icon = self.get_faction_for_planet(planet_id)
-                progress = 100 if current_owner == 1 else prog * 100
+                current_owner_id, holder_icon = self.get_faction_for_planet(planet_id)
+                progress = 100 if current_owner_id == 1 else prog * 100
                 defense = ""            
             
             # print(planet_name, planet, prog)                
@@ -102,7 +93,6 @@ class HD2DataService():
     def get_major_order(self) -> str:
         if self.major_order:
             mo = self.major_order[0]
-            expires = int(self.major_order[0]['expiresIn'])
             progress = self.mo_progress(mo)
             
             title = f"{self.major_order[0]['setting']['overrideTitle']}\n{self.major_order[0]['setting']['overrideBrief']}\n"
@@ -128,6 +118,8 @@ class HD2DataService():
             text += f"\nHelldivers active: {helldivers_online_total}"
                 
             return text
+        else:
+            return f"No campaign data available."
             
 
 def main():

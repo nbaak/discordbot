@@ -2,8 +2,7 @@ import cogs.helldivers2.httpclient as httpclient
 
 
 class Endpoints:
-    war_status = 'https://helldiverstrainingmanual.com/api/v1/war/status'
-    war_info = 'https://helldiverstrainingmanual.com/api/v1/war/info'
+    war = 'https://helldiverstrainingmanual.com/api/v1/war/status'
     news = 'https://helldiverstrainingmanual.com/api/v1/war/news'
     campaign = 'https://helldiverstrainingmanual.com/api/v1/war/campaign'
     planet_index = 'https://helldiverstrainingmanual.com/api/v1/war/history'
@@ -15,12 +14,8 @@ def get_major_order():
     return httpclient.get(Endpoints.major_order)
 
 
-def get_war_status():
-    return httpclient.get(Endpoints.war_status)
-
-
-def get_war_info():
-    return  httpclient.get(Endpoints.war_info)
+def get_war():
+    return httpclient.get(Endpoints.war)
 
 
 def get_news():
