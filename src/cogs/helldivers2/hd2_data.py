@@ -33,17 +33,20 @@ class HD2DataService():
         self.update_major_order()
         self.update_war()
         
-    def find_in_campain_dict(self, search_key, search_value:str) -> Union[Dict, None]: 
+    def find_in_campaign_dict(self, search_key, search_value:str) -> Union[Dict, None]: 
         for planet in self.campaign:
             for k, v in planet.items():
                 if k == search_key and v == search_value:
                     return planet        
         return None
     
-    def get_faction_for_planet(self, planet_id:int) -> Tuple[str, str]:
-        owner_id = self.war["planetStatus"][planet_id]["owner"]
-        icon = self.faction_icon(owner_id)
-        return owner_id, icon 
+    def get_faction_for_planet(self, planet_id:int) -> Tuple[int, str]:
+        try:
+            owner_id:int = self.war["planetStatus"][planet_id]["owner"]
+            icon:str = self.faction_icon(owner_id)
+            return owner_id, icon
+        except KeyError:
+            return 0, "?"
     
     def faction_icon(self, faction:Union[int, str]) -> str:
         if isinstance(faction, int):
@@ -62,7 +65,7 @@ class HD2DataService():
         text = f"{major_order['setting']['taskDescription']}\n"
         for planet_name, prog, planet_id in list(zip(planets, progress, planet_ids)):
             
-            planet = self.find_in_campain_dict('planetIndex', planet_id)
+            planet = self.find_in_campaign_dict('planetIndex', planet_id)
             
             if planet:
                 # part of campaign (attack of defense)
