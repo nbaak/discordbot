@@ -7,6 +7,7 @@ class HD2DataService():
     
     def __init__(self):
         self.war: Union[Dict, None] = None
+        self.war_statistics: Union[Dict, None] = None
         self.news: Union[Dict, None] = None
         self.campaign: Union[List[Dict], None] = None
         self.planet_index: Union[Dict, None] = None
@@ -27,11 +28,17 @@ class HD2DataService():
         new_war_data = api.get_war()
         if new_war_data:
             self.war = new_war_data
+    
+    def update_war_statistics(self):
+        new_war_data = api.get_war_statistics()
+        if new_war_data:
+            self.war_statistics = new_war_data
         
     def update_all(self):
         self.update_campaign()
         self.update_major_order()
         self.update_war()
+        self.update_war_statistics()
         
     def find_in_campaign_dict(self, search_key, search_value:str) -> Union[Dict, None]: 
         for planet in self.campaign:
@@ -112,6 +119,9 @@ class HD2DataService():
         
         else:
             return f"MAJOR ORDER\nNo Major Order active!"
+    
+    def get_current_onlie_players(self):
+        return self.war_statistics['statistics']['playerCount'] if self.war_statistics else 0
         
     def get_campaign(self) -> str:
         if self.campaign:
@@ -123,7 +133,7 @@ class HD2DataService():
                 percentage = float(planet['percentage'])
                 text += f"{holder}{defense} {planet['name']}: liberation: {percentage:3.2f}%, active Helldivers: {planet['players']}\n"
             
-            helldivers_online_total = sum([planet['players'] for planet in self.campaign])
+            helldivers_online_total = self.get_current_onlie_players()
             text += f"\nHelldivers active: {helldivers_online_total}"
                 
             return text
