@@ -85,7 +85,13 @@ class HD2DataService():
         return text
     
     def mo_time_remaining(self, major_order:dict=None) -> str:
-        major_order = major_order or self.major_order[0]
+        if major_order:
+            major_order = major_order
+        elif major_order == None and self.major_order:
+            major_order = self.major_order[0]
+        else:
+            major_order = None
+            
         if major_order: 
             remaining = int(major_order['expiresIn'])
             delta = datetime.timedelta(seconds=remaining)
