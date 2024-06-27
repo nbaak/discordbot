@@ -11,6 +11,7 @@ from cogs.helldivers2.tmt import TrainingManualTips
 from typing import Optional
 
 from cogs.helldivers2.hd2_data import HD2DataService
+from cogs.helldivers2.WalkingCoutner import WalkingCounter
 
 
 class Helldivers2(commands.Cog):
@@ -24,6 +25,7 @@ class Helldivers2(commands.Cog):
         self.tmt = TrainingManualTips()
         self.hd2dataservice = HD2DataService()
         self.countdown.start()
+        self.walkingcounter = WalkingCounter(24)
     
     @commands.Cog.listener()
     async def on_ready(self):
@@ -46,10 +48,22 @@ class Helldivers2(commands.Cog):
             
         except Exception as e:
             print(e)
+            
+    def update_online_helldiver_statistics(self):
+        self.walkingcounter.load()
+        online_divers = self.hd2dataservice.get_current_onlie_players()
+        day = datetime.datetime.now().day
+        hour = datetime.datetime.now().hour
+        stamp = f"{day:02}-{hour:02}"
+        # print("plotting", stamp)
+        self.walkingcounter.append(stamp, online_divers)
+        self.walkingcounter.plot()
+        self.walkingcounter.save()
         
     @tasks.loop(minutes=5.0)
     async def countdown(self):
         await self.update_warsatus()
+        self.update_online_helldiver_statistics()
         
     async def send_channel_message(self, message:str, identifier:str):
         for cid in self.channels.values():
