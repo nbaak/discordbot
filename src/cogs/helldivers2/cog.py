@@ -127,7 +127,7 @@ class Helldivers2(commands.Cog):
     
     @app_commands.command(name="news")
     @app_commands.describe(nr_samples="the last n news")
-    async def news(self, interaction: discord.Interaction, nr_samples:int):
+    async def news(self, interaction: discord.Interaction, nr_samples:int=1):
         if not isinstance(nr_samples, int): 
             nr_samples = 1
             
