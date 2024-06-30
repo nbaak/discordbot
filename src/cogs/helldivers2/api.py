@@ -5,6 +5,7 @@ class Endpoints:
     war = 'https://helldiverstrainingmanual.com/api/v1/war/status'
     war_statistics = 'https://api.helldivers2.dev/api/v1/war'
     news = 'https://helldiverstrainingmanual.com/api/v1/war/news'
+    dispatch = 'https://api.helldivers2.dev/api/v1/dispatches'
     campaign = 'https://helldiverstrainingmanual.com/api/v1/war/campaign'
     planet_index = 'https://helldiverstrainingmanual.com/api/v1/war/history'
     major_order = 'https://helldiverstrainingmanual.com/api/v1/war/major-orders'
@@ -37,6 +38,10 @@ def get_planet(index:int):
 
 def planets():
     return httpclient.get(Endpoints.planets)
+
+
+def dispatch():
+    return httpclient.get(Endpoints.dispatch)
 
 
 def test():

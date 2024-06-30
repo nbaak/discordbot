@@ -1,6 +1,7 @@
 from cogs.helldivers2 import api
 import datetime
 from typing import Union, Dict, List, Tuple
+from cogs.helldivers2.hd2_tools import convert_to_datetime, get_recent_messages
 
 
 class HD2DataService():
@@ -13,8 +14,17 @@ class HD2DataService():
         self.planet_index: Union[Dict, None] = None
         self.major_order: Union[Dict, None] = None
         self.planets: Dict = api.planets()
+        self.news: List = []
         
         self.update_all()
+        
+    def update_dispatch(self):
+        new_dispatch = api.dispatch()
+        self.news = []
+        for news in new_dispatch:
+            published_int = convert_to_datetime(news['published'])
+            news['published'] = published_int
+            self.news.append(news)  
         
     def update_major_order(self):
         self.major_order = api.get_major_order()
@@ -39,6 +49,7 @@ class HD2DataService():
         self.update_major_order()
         self.update_war()
         self.update_war_statistics()
+        self.update_dispatch()
         
     def find_in_campaign_dict(self, search_key, search_value:str) -> Union[Dict, None]: 
         for planet in self.campaign:
@@ -139,19 +150,28 @@ class HD2DataService():
             return text
         else:
             return f"No campaign data available."
+        
+    def get_news(self, days=1):
+        if self.news:
+            entries = get_recent_messages(self.news, days) 
+            message = "NEWS:\n"
+            for e_msg in entries:
+                message += e_msg + "\n"
+                
+            return message
+                
+        else:
+            return "No News!"
+                
             
 
 def main():
     data = HD2DataService()
-    data.update_all()
-    # for k, v in data.major_order[0].items():
-    #     if type(v) == dict:
-    #         for kk, vv in v.items():
-    #             print(f'  {kk} {vv}')
-    #     print(k, v)
         
-    print(data.get_major_order())
-    print(data.get_campaign())    
+    # print(data.get_major_order())
+    # print(data.get_campaign())
+    
+    print(data.get_news(5))
 
 
 if __name__ == "__main__":

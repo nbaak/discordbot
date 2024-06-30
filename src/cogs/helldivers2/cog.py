@@ -91,7 +91,7 @@ class Helldivers2(commands.Cog):
                     save(self.messages_file, self.messages)
                            
     @app_commands.command(name="sethelldiverschannel")
-    @app_commands.describe(channel='Helldivers 2 Channel')
+    @app_commands.describe(channel='Set Helldivers 2 Channel')
     @app_commands.checks.has_permissions(administrator=True)
     async def set_helldivers2_channel(self, interaction: discord.Interaction, channel:Optional[discord.channel.TextChannel]):
         channel = channel or interaction.channel
@@ -118,6 +118,21 @@ class Helldivers2(commands.Cog):
     async def trainingmanualtips(self, interaction:Interaction):
         message = self.tmt.random()
         await interaction.response.send_message(message, ephemeral=True)
+        
+    @app_commands.command(name="removehelldiverschannel")
+    @app_commands.describe(channel='Unset Helldivers 2 Channel')
+    @app_commands.checks.has_permissions(administrator=True)
+    async def remove_helldivers2_channel(self, interaction: discord.Interaction, channel:Optional[discord.channel.TextChannel]):
+        pass 
+    
+    @app_commands.command(name="news")
+    @app_commands.describe(nr_samples="the last n news")
+    async def news(self, interaction: discord.Interaction, nr_samples:int):
+        if not isinstance(nr_samples, int): 
+            nr_samples = 1
+            
+        news = self.hd2dataservice.get_news(nr_samples)
+        await interaction.response.send_message(news, ephemeral=True)
 
 
 def test():
