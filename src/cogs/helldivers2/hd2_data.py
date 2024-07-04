@@ -171,7 +171,7 @@ def main():
     # print(data.get_major_order())
     # print(data.get_campaign())
     
-    print(data.get_news(5))
+    print(data.get_news(2))
 
 
 if __name__ == "__main__":

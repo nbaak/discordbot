@@ -1,4 +1,5 @@
 import datetime
+from distutils.command.config import config
 
 
 # Function to convert timestamp to datetime object
@@ -18,10 +19,7 @@ def formatted_time(timestamp:datetime, format="%Y-%m-%d %H:%M:%S") -> str:
 
 
 def convert_to_discord_italic(text):
-    # Remove the <i=1> and </i> tags and replace them with Discord's italic syntax (*)
-    if "<i=1>" in text and "</i>" in text:
-        text = text.replace("<i=1>", "*").replace("</i>", "*")
-    return text
+    return text.replace("<i=1>", "*").replace("<i=2>", "*").replace("<i=3>", "*").replace("</i>", "*")
 
 
 def add_timestamp(message:str, ts:datetime) -> str:
@@ -57,4 +55,22 @@ def get_recent_messages(entries, nr_entries):
             recent_messages.append(entry_message)
         
     return None
+
+
+def test():
+    t_str = "2024-07-04 10:06:44: <i=3>CYBERSECURITY ALERT</i>"
+    print(convert_to_discord_italic(t_str))
+    
+    text = "normal text without any html italic shit"
+    print(convert_to_discord_italic(text))
+
+
+
+if __name__ == "__main__":
+    test()
+
+
+
+
+
 
