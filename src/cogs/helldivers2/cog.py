@@ -108,6 +108,10 @@ class Helldivers2(commands.Cog):
 
         await interaction.response.send_message(f'HD2 Channel is now {channel}')
     
+    @set_helldivers2_channel.error
+    async def error_set_helldivers2_channel(self, interaction:Interaction):
+        await interaction.response.send_message(access_denied_message())
+    
     @app_commands.command(name="updatewarstatus")
     @app_commands.checks.has_permissions(administrator=True)
     async def update_warstatus_now(self, interaction: discord.Interaction):
@@ -120,10 +124,20 @@ class Helldivers2(commands.Cog):
         await interaction.response.send_message(message, ephemeral=True)
         
     @app_commands.command(name="removehelldiverschannel")
-    @app_commands.describe(channel='Unset Helldivers 2 Channel')
     @app_commands.checks.has_permissions(administrator=True)
-    async def remove_helldivers2_channel(self, interaction: discord.Interaction, channel:Optional[discord.channel.TextChannel]):
-        pass 
+    async def remove_helldivers2_channel(self, interaction: discord.Interaction):
+        guild = interaction.guild
+        
+        if guild.id in self.channels:
+            del self.channels[guild.id]
+            save(self.channels_file, self.channels)
+            await interaction.response.send_message(f"removed {guild} from hd2 updates", ephemeral=True)
+        else:
+            await interaction.response.send_message(f"{guild} has no hd2 channel", ephemeral=True)
+            
+    @remove_helldivers2_channel.error
+    async def error_remove_helldivers2_channel(self, interaction:Interaction):
+        await interaction.response.send_message(access_denied_message())
     
     @app_commands.command(name="news")
     @app_commands.describe(nr_samples="the last n news")
