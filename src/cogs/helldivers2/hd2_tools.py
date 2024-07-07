@@ -1,14 +1,20 @@
 import datetime
-from distutils.command.config import config
+from typing import Union
+from datetime import timedelta
 
 
 # Function to convert timestamp to datetime object
-def convert_to_datetime(timestamp):
-    # Truncate the microseconds to six digits
-    timestamp = timestamp[:26] + "Z"
-    # Convert the timestamp to a datetime object
-    return datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S.%fZ")
-
+def convert_to_datetime(timestamp:Union[str, int, float]):
+    if isinstance(timestamp, str):
+        # Truncate the microseconds to six digits
+        timestamp = timestamp[:26] + "Z"
+        # Convert the timestamp to a datetime object
+        return datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S.%fZ")
+    elif isinstance(timestamp, int) or isinstance(timestamp, float):
+        return datetime.datetime.fromtimestamp(timestamp)
+    else:
+        return None
+        
 
 def formatted_time(timestamp:datetime, format="%Y-%m-%d %H:%M:%S") -> str:
     # Format the datetime object to the desired string format
@@ -51,10 +57,22 @@ def get_recent_messages(entries, nr_entries):
         if entry_time != current_time:
             current_time = entry_time
             nr_days += 1
-        if nr_days < nr_entries:  
+        if nr_days < nr_entries: 
             recent_messages.append(entry_message)
         
     return None
+
+
+def delta_to_now(timestamp:datetime.datetime):
+    now = datetime.datetime.now()
+    return timestamp - now
+
+
+def no_microseconds(delta:Union[datetime.timedelta, str]) -> str:
+    if isinstance(delta, datetime.timedelta) or isinstance(delta, str):
+        return str(delta).split('.')[0]
+    else:
+        return None
 
 
 def test():
@@ -63,14 +81,19 @@ def test():
     
     text = "normal text without any html italic shit"
     print(convert_to_discord_italic(text))
-
+    
+    ts = 1720314451.016
+    ts = int(ts)
+    dt = convert_to_datetime(ts)
+    print(dt)
+    
+    now = datetime.datetime.now()
+    delta = dt - now
+    print(str(delta)[:-7])
+    print(now)
+    print('XXX', no_microseconds(delta))
 
 
 if __name__ == "__main__":
     test()
-
-
-
-
-
 

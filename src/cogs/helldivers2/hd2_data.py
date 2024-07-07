@@ -1,7 +1,8 @@
 from cogs.helldivers2 import api
 import datetime
 from typing import Union, Dict, List, Tuple
-from cogs.helldivers2.hd2_tools import convert_to_datetime, get_recent_messages
+from cogs.helldivers2.hd2_tools import convert_to_datetime, get_recent_messages,\
+    delta_to_now, no_microseconds
 
 
 class HD2DataService():
@@ -142,7 +143,16 @@ class HD2DataService():
                 defense = "🛡️" if planet['defense'] else "⚔️"
                 holder = self.faction_icon(planet['faction'])
                 percentage = float(planet['percentage'])
-                text += f"{holder}{defense} {planet['name']}: liberation: {percentage:3.2f}%, active Helldivers: {planet['players']}\n"
+                expireDateTime = planet['expireDateTime']
+                remaining_time = ""
+                
+                if expireDateTime:
+                    timestamp = convert_to_datetime(int(expireDateTime))
+                    delta = delta_to_now(timestamp)
+                    expireDateTime = no_microseconds(delta)
+                    remaining_time = f" ({str(expireDateTime)})"                    
+                    
+                text += f"{holder}{defense} {planet['name']}{remaining_time}: liberation: {percentage:3.2f}%, active Helldivers: {planet['players']}\n"
             
             helldivers_online_total = self.get_current_onlie_players()
             text += f"\nHelldivers active: {helldivers_online_total}"
@@ -168,10 +178,10 @@ class HD2DataService():
 def main():
     data = HD2DataService()
         
-    # print(data.get_major_order())
-    # print(data.get_campaign())
+    print(data.get_major_order())
+    print(data.get_campaign())
     
-    print(data.get_news(2))
+    print(data.get_news(1))
 
 
 if __name__ == "__main__":
