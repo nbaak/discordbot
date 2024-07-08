@@ -2,7 +2,7 @@ from cogs.helldivers2 import api
 import datetime
 from typing import Union, Dict, List, Tuple
 from cogs.helldivers2.hd2_tools import convert_to_datetime, get_recent_messages,\
-    delta_to_now, no_microseconds
+    delta_to_now, formatted_delta
 
 
 class HD2DataService():
@@ -149,7 +149,7 @@ class HD2DataService():
                 if expireDateTime:
                     timestamp = convert_to_datetime(int(expireDateTime))
                     delta = delta_to_now(timestamp)
-                    expireDateTime = no_microseconds(delta)
+                    expireDateTime = formatted_delta(delta)
                     remaining_time = f" ({str(expireDateTime)})"                    
                     
                 text += f"{holder}{defense} {planet['name']}{remaining_time}: liberation: {percentage:3.2f}%, active Helldivers: {planet['players']}\n"

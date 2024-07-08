@@ -68,11 +68,19 @@ def delta_to_now(timestamp:datetime.datetime):
     return timestamp - now
 
 
-def no_microseconds(delta:Union[datetime.timedelta, str]) -> str:
-    if isinstance(delta, datetime.timedelta) or isinstance(delta, str):
-        return str(delta).split('.')[0]
-    else:
-        return None
+def days_hours_minutes(td):
+    return td.days, td.seconds//3600, (td.seconds//60)%60
+   
+        
+def formatted_delta(dt:datetime.timedelta) -> str:
+    days, hours, minutes = days_hours_minutes(dt)
+    formatted_time = ""
+    if days:
+        formatted_time += f"{days}d "
+    
+    formatted_time += f"{hours}h {minutes}m"    
+    
+    return formatted_time
 
 
 def test():
@@ -91,7 +99,7 @@ def test():
     delta = dt - now
     print(str(delta)[:-7])
     print(now)
-    print('XXX', no_microseconds(delta))
+    print('XXX', formatted_delta(delta))
 
 
 if __name__ == "__main__":
