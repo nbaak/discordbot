@@ -114,7 +114,7 @@ class HD2DataService():
         if major_order: 
             remaining = int(major_order['expiresIn'])
             delta = datetime.timedelta(seconds=remaining)
-            return delta
+            return formatted_delta(delta)
         else:
             return '---'
         
