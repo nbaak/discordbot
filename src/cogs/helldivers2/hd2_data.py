@@ -76,8 +76,9 @@ class HD2DataService():
         return factions[faction] if faction in factions else "?"
     
     def faction_name(self, faction_id:int) -> str:
-        factions = {0: "Humans", 1: "Terminids", 2: "Automatons", 3: "Illuminates"}
-        return factions[faction_id] if faction_id in factions else "Unknown"
+        # factions = {0: "Humans", 1: "Terminids", 2: "Automatons", 3: "Illuminates"}
+        factions = self.war_statistics['factions']
+        return factions[faction_id]
     
     def mo_attack_planets(self, progress, task) -> str:
         planet_name = self.planets[str(task['values'][2])]['name']
