@@ -69,14 +69,14 @@ class HD2DataService():
     
     def faction_icon(self, faction:Union[int, str]) -> str:
         if isinstance(faction, int):
-            factions = {1: "🌎", 2: "🪲", 3: "🤖", 4: "🦑"}
+            factions = {0: "🌎", 1: "🪲", 2: "🤖", 3: "🦑"}
         else:
             factions = {"Humans": "🌎", "Terminids": "🪲", "Automatons": "🤖", "Illuminates": "🦑"}
         
         return factions[faction] if faction in factions else "?"
     
     def faction_name(self, faction_id:int) -> str:
-        factions = {1: "Humans", 2: "Terminids", 3: "Automatons", 4: "Illuminates"}
+        factions = {0: "Humans", 1: "Terminids", 2: "Automatons", 3: "Illuminates"}
         return factions[faction_id] if faction_id in factions else "Unknown"
     
     def mo_attack_planets(self, progress, task) -> str:
@@ -105,7 +105,7 @@ class HD2DataService():
     def mo_kill_enemies(self, progress:int, task:dict) -> str:
         target = task['values'][2]
         progress_percent = progress / target
-        faction = self.faction_name(task['values'][0])
+        faction = self.faction_name(task['values'][1]) # I hope that 1 is the targeted faction.. atm it works..
         
         return f"{faction} killed {progress}/{target} ({progress_percent:.02}%)\n"
     
