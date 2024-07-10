@@ -105,10 +105,10 @@ class HD2DataService():
     
     def mo_kill_enemies(self, progress:int, task:dict) -> str:
         target = task['values'][2]
-        progress_percent = progress / target
+        progress_percent = progress / target * 100
         faction = self.faction_name(task['values'][1]) # I hope that 1 is the targeted faction.. atm it works..
         
-        return f"{faction} killed {progress:,}/{target:,} ({progress_percent:.02}%)\n"
+        return f"{faction} killed {progress:,}/{target:,} ({progress_percent:.2f}%)\n"
     
     def mo_progress(self, major_order:dict) -> str:
         progress = major_order['progress']
