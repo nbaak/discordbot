@@ -1,7 +1,7 @@
 from cogs.helldivers2 import api
 import datetime
 from typing import Union, Dict, List, Tuple
-from cogs.helldivers2.hd2_tools import convert_to_datetime, get_recent_messages,\
+from cogs.helldivers2.hd2_tools import convert_to_datetime, get_recent_messages, \
     delta_to_now, formatted_delta
 
 
@@ -75,31 +75,50 @@ class HD2DataService():
         
         return factions[faction] if faction in factions else "?"
     
+    def faction_name(self, faction_id:int) -> str:
+        factions = {1: "Humans", 2: "Terminids", 3: "Automatons", 4: "Illuminates"}
+        return factions[faction_id] if faction_id in factions else "Unknown"
+    
+    def mo_attack_planets(self, progress, task) -> str:
+        planet_name = self.planets[str(task['values'][2])]['name']
+        planet_id = task['values'][2]
+        prog = progress
+            
+        planet = self.find_in_campaign_dict('planetIndex', planet_id)
+        
+        if planet:
+            # part of campaign (attack of defense)
+            progress = planet['percentage']
+            defense = "🛡️" if planet['defense'] else "⚔️"
+            holder_icon = self.faction_icon(planet['faction'])
+        else:
+            # not part of campaign
+            current_owner_id, holder_icon = self.get_faction_for_planet(planet_id)
+            progress = 100 if current_owner_id == 1 else prog * 100
+            defense = ""            
+        
+        # print(planet_name, planet, prog)                
+            
+        text = f"{holder_icon}{defense} {planet_name}: {abs(progress):3.2f}%\n"
+        return text
+    
+    def mo_kill_enemies(self, progress:int, task:dict) -> str:
+        target = task['values'][2]
+        progress_percent = progress / target
+        faction = self.faction_name(task['values'][0])
+        
+        return f"{faction} killed {progress}/{target} ({progress_percent:.02}%)\n"
+    
     def mo_progress(self, major_order:dict) -> str:
         progress = major_order['progress']
         tasks = major_order['setting']['tasks']
-        planets = [self.planets[str(task['values'][2])]['name'] for task in tasks]
-        planet_ids = [task['values'][2] for task in tasks]
-        
         text = f"{major_order['setting']['taskDescription']}\n"
-        for planet_name, prog, planet_id in list(zip(planets, progress, planet_ids)):
-            
-            planet = self.find_in_campaign_dict('planetIndex', planet_id)
-            
-            if planet:
-                # part of campaign (attack of defense)
-                progress = planet['percentage']
-                defense = "🛡️" if planet['defense'] else "⚔️"
-                holder_icon = self.faction_icon(planet['faction'])
-            else:
-                # not part of campaign
-                current_owner_id, holder_icon = self.get_faction_for_planet(planet_id)
-                progress = 100 if current_owner_id == 1 else prog * 100
-                defense = ""            
-            
-            # print(planet_name, planet, prog)                
-                
-            text += f"{holder_icon}{defense} {planet_name}: {abs(progress):3.2f}%\n"
+        
+        for task, prog in zip(tasks, progress):
+            if task['type'] == 3:
+                text += self.mo_kill_enemies(prog, task)
+            elif task['type'] == 11: 
+                text += self.mo_attack_planets(prog, task)
         
         return text
     
@@ -172,7 +191,6 @@ class HD2DataService():
                 
         else:
             return "No News!"
-                
             
 
 def main():
