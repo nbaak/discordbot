@@ -6,9 +6,9 @@ class Endpoints:
     war_statistics = 'https://api.helldivers2.dev/api/v1/war'
     news = 'https://helldiverstrainingmanual.com/api/v1/war/news'
     dispatch = 'https://api.helldivers2.dev/api/v1/dispatches'
-    campaign = 'https://helldiverstrainingmanual.com/api/v1/war/campaign'
-    planet_index = 'https://helldiverstrainingmanual.com/api/v1/war/history'
-    major_order = 'https://helldiverstrainingmanual.com/api/v1/war/major-orders'
+    campaign = 'https://api.helldivers2.dev/api/v1/campaigns'
+    planet_index = 'https://api.helldivers2.dev/api/v1/planets'  # https://api.helldivers2.dev/api/v1/planets
+    major_order = 'https://helldiverstrainingmanual.com/api/v1/war/major-orders'  # https://api.helldivers2.dev/api/v1/assignments
     planets = 'https://helldiverstrainingmanual.com/api/v1/planets'
 
 
@@ -48,7 +48,8 @@ def test():
     print(get_news()[0])
     print(get_major_order())
     print(planets()['126'])
-
+    print(get_campaign())
+    
 
 if __name__ == '__main__':
     test()

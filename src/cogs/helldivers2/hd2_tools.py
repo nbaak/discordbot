@@ -1,6 +1,6 @@
 import datetime
 from typing import Union
-from datetime import timedelta
+from datetime import timedelta, timezone
 
 
 # Function to convert timestamp to datetime object
@@ -64,12 +64,15 @@ def get_recent_messages(entries, nr_entries):
 
 
 def delta_to_now(timestamp:datetime.datetime):
-    now = datetime.datetime.now()
+    tz = timezone.utc
+    now_utc:str = str(datetime.datetime.now(tz))[:19]
+    now = datetime.datetime.strptime(now_utc, "%Y-%m-%d %H:%M:%S")
+    
     return timestamp - now
 
 
 def days_hours_minutes(td):
-    return td.days, td.seconds//3600, (td.seconds//60)%60
+    return td.days, td.seconds // 3600, (td.seconds // 60) % 60
    
         
 def formatted_delta(dt:datetime.timedelta) -> str:
@@ -84,22 +87,7 @@ def formatted_delta(dt:datetime.timedelta) -> str:
 
 
 def test():
-    t_str = "2024-07-04 10:06:44: <i=3>CYBERSECURITY ALERT</i>"
-    print(convert_to_discord_italic(t_str))
-    
-    text = "normal text without any html italic shit"
-    print(convert_to_discord_italic(text))
-    
-    ts = 1720314451.016
-    ts = int(ts)
-    dt = convert_to_datetime(ts)
-    print(dt)
-    
-    now = datetime.datetime.now()
-    delta = dt - now
-    print(str(delta)[:-7])
-    print(now)
-    print('XXX', formatted_delta(delta))
+    pass
 
 
 if __name__ == "__main__":

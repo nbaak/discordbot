@@ -61,7 +61,7 @@ class HD2DataService():
     
     def get_faction_for_planet(self, planet_id:int) -> Tuple[int, str]:
         try:
-            owner_id:int = self.war["planetStatus"][planet_id]["owner"]
+            owner_id:int = self.planet_index[planet_id]["currentOwner"]
             icon:str = self.faction_icon(owner_id)
             return owner_id, icon
         except KeyError:
@@ -94,8 +94,8 @@ class HD2DataService():
             holder_icon = self.faction_icon(planet['faction'])
         else:
             # not part of campaign
-            current_owner_id, holder_icon = self.get_faction_for_planet(planet_id)
-            progress = 100 if current_owner_id == 1 else prog * 100
+            current_owner, holder_icon = self.get_faction_for_planet(planet_id)
+            progress = 100 if current_owner == 1 else prog * 100
             defense = ""            
         
         # print(planet_name, planet, prog)                
@@ -106,7 +106,7 @@ class HD2DataService():
     def mo_kill_enemies(self, progress:int, task:dict) -> str:
         target = task['values'][2]
         progress_percent = progress / target * 100
-        faction = self.faction_name(task['values'][1]) # I hope that 1 is the targeted faction.. atm it works..
+        faction = self.faction_name(task['values'][1])  # I hope that 1 is the targeted faction.. atm it works..
         
         return f"{faction} killed {progress:,}/{target:,} ({progress_percent:.2f}%)\n"
     
@@ -159,20 +159,30 @@ class HD2DataService():
         if self.campaign:
             text = "War Campaign:\n"
             
-            for planet in sorted(self.campaign, key=lambda c: c['players'], reverse=True):
-                defense = "🛡️" if planet['defense'] else "⚔️"
-                holder = self.faction_icon(planet['faction'])
-                percentage = float(planet['percentage'])
-                expireDateTime = planet['expireDateTime']
+            for campaing_object in sorted(self.campaign, key=lambda c: c['planet']['statistics']['playerCount'], reverse=True):
+                planet = campaing_object['planet']
+                defense = True if planet['event'] else False 
+                defence_icon = "🛡️" if defense else "⚔️"
+                player_count = planet['statistics']['playerCount']
+
                 remaining_time = ""
                 
-                if expireDateTime:
-                    timestamp = convert_to_datetime(int(expireDateTime))
-                    delta = delta_to_now(timestamp)
-                    expireDateTime = formatted_delta(delta)
-                    remaining_time = f" ({str(expireDateTime)})"                    
+                if defense:
+                    percentage = planet['event']['health'] / planet['event']['maxHealth'] * 100 
+                    faction = self.faction_icon(planet['event']['faction'])
+                    event_end_time = planet['event']['endTime']
                     
-                text += f"{holder}{defense} {planet['name']}{remaining_time}: liberation: {percentage:3.2f}%, active Helldivers: {planet['players']}\n"
+                    timestamp = convert_to_datetime(event_end_time)
+                    delta = delta_to_now(timestamp)
+                    event_end_time = formatted_delta(delta)
+                    remaining_time = f" ({str(event_end_time)})"
+                    
+                else:
+                    percentage = planet['health'] / planet['maxHealth'] * 100
+                    faction = self.faction_icon(planet['currentOwner'])
+                    event_end_time = None
+                    
+                text += f"{faction}{defence_icon} {planet['name']}{remaining_time}: liberation: {percentage:3.2f}%, active Helldivers: {player_count}\n"
             
             helldivers_online_total = self.get_current_onlie_players()
             text += f"\nHelldivers active: {helldivers_online_total}"
