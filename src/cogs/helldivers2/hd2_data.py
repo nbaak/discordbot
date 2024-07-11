@@ -172,7 +172,9 @@ class HD2DataService():
                 remaining_time = ""
                 
                 if defense:
-                    percentage = planet['event']['health'] / planet['event']['maxHealth'] * 100 
+                    hp = planet['event']['health']
+                    max_hp = planet['event']['maxHealth']
+                    percentage = (1 - hp / max_hp) * 100 if hp > 0 else 100 
                     faction = self.faction_icon(planet['event']['faction'])
                     event_end_time = planet['event']['endTime']
                     
@@ -182,7 +184,10 @@ class HD2DataService():
                     remaining_time = f" ({str(event_end_time)})"
                     
                 else:
-                    percentage = planet['health'] / planet['maxHealth'] * 100
+                    hp = planet['health']
+                    max_hp = planet['maxHealth']
+                    percentage = (1 - hp / max_hp) * 100 if hp > 0 else 100
+                    # percentage = planet['health'] / planet['maxHealth'] * 100
                     faction = self.faction_icon(planet['currentOwner'])
                     event_end_time = None
                     
@@ -249,9 +254,9 @@ def main():
     print(data.get_major_order())
     print(data.get_campaign())
     
-    print(data.get_news(1))
+    # print(data.get_news(1))
     
-    print(data.statistics())
+    # print(data.statistics())
 
 
 if __name__ == "__main__":
