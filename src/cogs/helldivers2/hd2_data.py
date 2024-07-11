@@ -1,5 +1,4 @@
 from cogs.helldivers2 import api
-import datetime
 from typing import Union, Dict, List, Tuple
 from cogs.helldivers2.hd2_tools import convert_to_datetime, get_recent_messages, \
     delta_to_now, formatted_delta
@@ -62,7 +61,7 @@ class HD2DataService():
     
     def get_faction_for_planet(self, planet_id:int) -> Tuple[int, str]:
         try:
-            owner_id:int = self.planet_index[planet_id]["currentOwner"]
+            owner_id:int = self.planets[planet_id]["currentOwner"]
             icon:str = self.faction_icon(owner_id)
             return owner_id, icon
         except KeyError:
@@ -82,8 +81,8 @@ class HD2DataService():
         return factions[faction_id]
     
     def mo_attack_planets(self, progress, task) -> str:
-        planet_name = self.planets[str(task['values'][2])]['name']
         planet_id = task['values'][2]
+        planet_name = self.planets[planet_id]['name']
         prog = progress
             
         planet = self.find_in_campaign_dict('planetIndex', planet_id)
@@ -115,7 +114,7 @@ class HD2DataService():
         try:
             progress = major_order['progress']
             tasks = major_order['tasks']
-            text = f"{major_order['setting']['taskDescription']}\n"
+            text = f"{major_order['description']}\n"
             
             for task, prog in zip(tasks, progress):
                 if task['type'] == 3:
@@ -148,7 +147,7 @@ class HD2DataService():
             mo = self.major_order[0]
             progress = self.mo_progress(mo)
             
-            title = f"{mo['title']}\n{mo['briefing']}\n{mo['description']}\n"
+            title = f"{mo['title']}\n{mo['briefing']}\n"
             text = f"{title}\n{progress}\n" 
             text += f"ends in {self.mo_time_remaining(mo)}"
             
