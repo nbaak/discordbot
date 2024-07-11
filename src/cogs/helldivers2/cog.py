@@ -6,7 +6,6 @@ from discord.ext import commands, tasks
 from discord.interactions import Interaction
 
 from lib.admin_tools import load, save, access_denied_message
-import cogs.helldivers2.api as api
 from cogs.helldivers2.tmt import TrainingManualTips
 from typing import Optional
 
@@ -117,6 +116,11 @@ class Helldivers2(commands.Cog):
     async def update_warstatus_now(self, interaction: discord.Interaction):
         await self.update_warsatus()
         await interaction.response.send_message('updating war status', ephemeral=True)
+        
+    @app_commands.command(name='hd2statistics')
+    async def hd2statistics(self, interaction:Interaction):
+        message = self.hd2dataservice.statistics()
+        await interaction.response.send_message(message, ephemeral=True)
     
     @app_commands.command(name='trainingmanualtips')
     async def trainingmanualtips(self, interaction:Interaction):
@@ -150,7 +154,7 @@ class Helldivers2(commands.Cog):
 
 
 def test():
-    print(api.get_news())
+    pass
 
 
 async def setup(bot):
