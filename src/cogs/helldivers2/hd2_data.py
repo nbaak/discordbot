@@ -219,7 +219,7 @@ class HD2DataService():
             missions_lost = statistics['missionsLost']
             win_loss_ratio = (1 - missions_lost / missions_won) * 100
             
-            text += f"Mission: Won: {missions_won:,} Lost: {missions_lost:,} Win Rate: {win_loss_ratio:.2f}%\n\n"
+            text += f"Mission Won:  {missions_won:,}\nMissions Lost: {missions_lost:,}\nWin Rate: {win_loss_ratio:.2f}%\n\n"
             
             # KD
             terminids_killed = statistics['terminidKills']
@@ -230,7 +230,7 @@ class HD2DataService():
             kill_death_ratio = (1 - helldiver_deaths / (terminids_killed + automatons_killed + illuminates_killed)) * 100
             
             text += f"Terminids Killed: {terminids_killed:,}\nAutomatons Killed: {automatons_killed:,}\nIlluminates killed: {illuminates_killed:,}\nHelldivers Killed: {helldiver_deaths:,}\n"
-            text += f"Kill Rate: {kill_death_ratio:.2f}\n\n"
+            text += f"Kill Rate: {kill_death_ratio:.2f}%\n\n"
             
             # friendly fire
             friendly = statistics['friendlies']
