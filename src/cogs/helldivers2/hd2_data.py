@@ -137,8 +137,8 @@ class HD2DataService():
             major_order = None
             
         if major_order: 
-            remaining = major_order['expiration']
-            delta = datetime.timedelta(seconds=remaining)
+            remaining = convert_to_datetime(major_order['expiration'])
+            delta = delta_to_now(remaining)
             return formatted_delta(delta)
         else:
             return '---'
