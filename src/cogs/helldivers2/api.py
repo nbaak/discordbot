@@ -8,7 +8,7 @@ class Endpoints:
     dispatch = 'https://api.helldivers2.dev/api/v1/dispatches'
     campaign = 'https://api.helldivers2.dev/api/v1/campaigns'
     planet_index = 'https://api.helldivers2.dev/api/v1/planets'  # https://api.helldivers2.dev/api/v1/planets
-    major_order = 'https://helldiverstrainingmanual.com/api/v1/war/major-orders'  # https://api.helldivers2.dev/api/v1/assignments
+    major_order = 'https://api.helldivers2.dev/api/v1/assignments'  # https://api.helldivers2.dev/api/v1/assignments
     planets = 'https://helldiverstrainingmanual.com/api/v1/planets'
 
 
