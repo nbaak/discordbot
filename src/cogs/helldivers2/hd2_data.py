@@ -95,7 +95,7 @@ class HD2DataService():
         else:
             # not part of campaign
             current_owner, holder_icon = self.get_faction_for_planet(planet_id)
-            progress = 100 if current_owner == 1 else prog * 100
+            progress = 100 if current_owner == "Humans" else prog * 100
             defense = ""            
         
         # print(planet_name, planet, prog)                
@@ -112,7 +112,7 @@ class HD2DataService():
     
     def mo_progress(self, major_order:dict) -> str:
         progress = major_order['progress']
-        tasks = major_order['setting']['tasks']
+        tasks = major_order['tasks']
         text = f"{major_order['setting']['taskDescription']}\n"
         
         for task, prog in zip(tasks, progress):
@@ -132,7 +132,7 @@ class HD2DataService():
             major_order = None
             
         if major_order: 
-            remaining = int(major_order['expiresIn'])
+            remaining = major_order['expiration']
             delta = datetime.timedelta(seconds=remaining)
             return formatted_delta(delta)
         else:
@@ -143,7 +143,7 @@ class HD2DataService():
             mo = self.major_order[0]
             progress = self.mo_progress(mo)
             
-            title = f"{self.major_order[0]['setting']['overrideTitle']}\n{self.major_order[0]['setting']['overrideBrief']}\n"
+            title = f"{mo['title']}\n{mo['briefing']}\n{mo['description']}\n"
             text = f"{title}\n{progress}\n" 
             text += f"ends in {self.mo_time_remaining(mo)}"
             
