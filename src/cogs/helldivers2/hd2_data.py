@@ -3,6 +3,7 @@ import datetime
 from typing import Union, Dict, List, Tuple
 from cogs.helldivers2.hd2_tools import convert_to_datetime, get_recent_messages, \
     delta_to_now, formatted_delta
+import statistics
 
 
 class HD2DataService():
@@ -206,6 +207,41 @@ class HD2DataService():
                 
         else:
             return "No News!"
+        
+    def statistics(self):
+        if self.war_statistics:
+            statistics = self.war_statistics['statistics']
+            
+            text = "*Helldivers 2 Statistics*\n\n"
+            
+            # Missions
+            missions_won = statistics['missionsWon']
+            missions_lost = statistics['missionsLost']
+            win_loss_ratio = (1 - missions_lost / missions_won) * 100
+            
+            text += f"Mission: Won: {missions_won:,} Lost: {missions_lost:,} Win Rate: {win_loss_ratio:.2f}%\n\n"
+            
+            # KD
+            terminids_killed = statistics['terminidKills']
+            automatons_killed = statistics['automatonKills']
+            illuminates_killed = statistics['illuminateKills']
+            helldiver_deaths = statistics['deaths']
+            
+            kill_death_ratio = (1 - helldiver_deaths / (terminids_killed + automatons_killed + illuminates_killed)) * 100
+            
+            text += f"Terminids Killed: {terminids_killed:,}\nAutomatons Killed: {automatons_killed:,}\nIlluminates killed: {illuminates_killed:,}\nHelldivers Killed: {helldiver_deaths:,}\n"
+            text += f"Kill Rate: {kill_death_ratio:.2f}\n\n"
+            
+            # friendly fire
+            friendly = statistics['friendlies']
+            friendly_to_total_deaths = (friendly / helldiver_deaths) * 100
+            
+            text += f"Friendly Fire kills: {friendly:,} Ratio: {friendly_to_total_deaths:.2f}%\n"
+            
+            return text
+        
+        else:
+            return "no data available!"
             
 
 def main():
@@ -215,6 +251,8 @@ def main():
     print(data.get_campaign())
     
     print(data.get_news(1))
+    
+    print(data.statistics())
 
 
 if __name__ == "__main__":
