@@ -4,12 +4,11 @@ import cogs.helldivers2.httpclient as httpclient
 class Endpoints:
     war = 'https://helldiverstrainingmanual.com/api/v1/war/status'
     war_statistics = 'https://api.helldivers2.dev/api/v1/war'
-    news = 'https://helldiverstrainingmanual.com/api/v1/war/news'
     dispatch = 'https://api.helldivers2.dev/api/v1/dispatches'
     campaign = 'https://api.helldivers2.dev/api/v1/campaigns'
-    planet_index = 'https://api.helldivers2.dev/api/v1/planets'  # https://api.helldivers2.dev/api/v1/planets
+    planets = 'https://api.helldivers2.dev/api/v1/planets'  # https://api.helldivers2.dev/api/v1/planets
     major_order = 'https://api.helldivers2.dev/api/v1/assignments'  # https://api.helldivers2.dev/api/v1/assignments
-    planets = 'https://helldiverstrainingmanual.com/api/v1/planets'
+    # planets = 'https://helldiverstrainingmanual.com/api/v1/planets'
 
 
 def get_major_order():
@@ -22,10 +21,6 @@ def get_war():
 
 def get_war_statistics():
     return httpclient.get(Endpoints.war_statistics)
-
-
-def get_news():
-    return httpclient.get(Endpoints.news)
 
 
 def get_campaign():
@@ -45,7 +40,6 @@ def dispatch():
 
 
 def test():
-    print(get_news()[0])
     print(get_major_order())
     print(planets()['126'])
     print(get_campaign())

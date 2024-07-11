@@ -111,17 +111,21 @@ class HD2DataService():
         return f"{faction} killed {progress:,}/{target:,} ({progress_percent:.2f}%)\n"
     
     def mo_progress(self, major_order:dict) -> str:
-        progress = major_order['progress']
-        tasks = major_order['tasks']
-        text = f"{major_order['setting']['taskDescription']}\n"
-        
-        for task, prog in zip(tasks, progress):
-            if task['type'] == 3:
-                text += self.mo_kill_enemies(prog, task)
-            elif task['type'] == 11: 
-                text += self.mo_attack_planets(prog, task)
-        
-        return text
+        try:
+            progress = major_order['progress']
+            tasks = major_order['tasks']
+            text = f"{major_order['setting']['taskDescription']}\n"
+            
+            for task, prog in zip(tasks, progress):
+                if task['type'] == 3:
+                    text += self.mo_kill_enemies(prog, task)
+                elif task['type'] == 11: 
+                    text += self.mo_attack_planets(prog, task)
+            
+            return text
+        except:
+            print(f"Unkown MO!")
+            print(major_order)
     
     def mo_time_remaining(self, major_order:dict=None) -> str:
         if major_order:
