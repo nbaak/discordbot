@@ -14,7 +14,7 @@ class HD2DataService():
         self.campaign: Union[List[Dict], None] = None
         self.planet_index: Union[Dict, None] = None
         self.major_order: Union[Dict, None] = None
-        self.planets: Dict = api.planets()
+        self.planets: Union[Dict, None] = None
         self.news: List = []
         
         self.update_all()
@@ -44,8 +44,14 @@ class HD2DataService():
         new_war_data = api.get_war_statistics()
         if new_war_data:
             self.war_statistics = new_war_data
+            
+    def update_planets(self):
+        new_planets = api.planets()
+        if new_planets:
+            self.planets = new_planets
         
     def update_all(self):
+        self.update_planets()
         self.update_campaign()
         self.update_major_order()
         self.update_war()
