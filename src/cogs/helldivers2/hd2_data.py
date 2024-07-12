@@ -90,7 +90,7 @@ class HD2DataService():
         planet = self.planets[planet_id]        
         defense = True if planet['event'] else False
         percentage = 0
-        remaining_time = None
+        remaining_time = ""
         
         if defense:
             hp = planet['event']['health']
@@ -194,7 +194,6 @@ class HD2DataService():
                 
                 holder_icon = self.faction_icon(faction)
                 player_count = planet['statistics']['playerCount']
-                remaining_time = remaining_time if remaining_time else ""
                     
                 text += f"{holder_icon}{defense_icon} {planet['name']}{remaining_time}: liberation: {percentage:3.2f}%, active Helldivers: {player_count}\n"
             
