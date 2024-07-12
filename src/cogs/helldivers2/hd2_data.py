@@ -8,7 +8,6 @@ import statistics
 class HD2DataService():
     
     def __init__(self):
-        self.war: Union[Dict, None] = None
         self.war_statistics: Union[Dict, None] = None
         self.news: Union[Dict, None] = None
         self.campaign: Union[List[Dict], None] = None
@@ -23,8 +22,8 @@ class HD2DataService():
         new_dispatch = api.dispatch()
         self.news = []
         for news in new_dispatch:
-            published_int = convert_to_datetime(news['published'])
-            news['published'] = published_int
+            published_int = convert_to_datetime(news["published"])
+            news["published"] = published_int
             self.news.append(news)  
         
     def update_major_order(self):
@@ -34,11 +33,6 @@ class HD2DataService():
         new_campaign = api.get_campaign()
         if new_campaign:
             self.campaign = new_campaign
-        
-    def update_war(self):
-        new_war_data = api.get_war()
-        if new_war_data:
-            self.war = new_war_data
     
     def update_war_statistics(self):
         new_war_data = api.get_war_statistics()
@@ -54,7 +48,6 @@ class HD2DataService():
         self.update_planets()
         self.update_campaign()
         self.update_major_order()
-        self.update_war()
         self.update_war_statistics()
         self.update_dispatch()
         
@@ -83,21 +76,21 @@ class HD2DataService():
     
     def faction_name(self, faction_id:int) -> str:
         # factions = {0: "Humans", 1: "Terminids", 2: "Automatons", 3: "Illuminates"}
-        factions = self.war_statistics['factions']
+        factions = self.war_statistics["factions"]
         return factions[faction_id]
     
     def planet_info(self, planet_id:int) -> tuple:
         planet = self.planets[planet_id]        
-        defense = True if planet['event'] else False
+        defense = True if planet["event"] else False
         percentage = 0
         remaining_time = ""
         
         if defense:
-            hp = planet['event']['health']
-            max_hp = planet['event']['maxHealth']
+            hp = planet["event"]["health"]
+            max_hp = planet["event"]["maxHealth"]
             percentage = (1 - hp / max_hp) * 100 if hp > 0 else 100 
-            faction = planet['event']['faction']
-            event_end_time = planet['event']['endTime']
+            faction = planet["event"]["faction"]
+            event_end_time = planet["event"]["endTime"]
             
             timestamp = convert_to_datetime(event_end_time)
             delta = delta_to_now(timestamp)
@@ -105,18 +98,18 @@ class HD2DataService():
             remaining_time = f" ({str(event_end_time)})"
             
         else:
-            hp = planet['health']
-            max_hp = planet['maxHealth']
+            hp = planet["health"]
+            max_hp = planet["maxHealth"]
             percentage = (1 - hp / max_hp) * 100 if hp > 0 else 100
-            # percentage = planet['health'] / planet['maxHealth'] * 100
-            faction = planet['currentOwner']
+            # percentage = planet["health"] / planet["maxHealth"] * 100
+            faction = planet["currentOwner"]
             event_end_time = None
         
         return defense, percentage, faction, remaining_time
     
     def mo_attack_planets(self, task) -> str:
-        planet_id = task['values'][2]
-        planet_name = self.planets[planet_id]['name']
+        planet_id = task["values"][2]
+        planet_name = self.planets[planet_id]["name"]
             
         defense, percentage, faction, remaining_time = self.planet_info(planet_id)
         defense_icon = "🛡️" if defense else "⚔️"
@@ -127,22 +120,22 @@ class HD2DataService():
         return text
     
     def mo_kill_enemies(self, progress:int, task:dict) -> str:
-        target = task['values'][2]
+        target = task["values"][2]
         progress_percent = progress / target * 100
-        faction = self.faction_name(task['values'][1])  # I hope that 1 is the targeted faction.. atm it works..
+        faction = self.faction_name(task["values"][1])  # I hope that 1 is the targeted faction.. atm it works..
         
         return f"{faction} killed {progress:,}/{target:,} ({progress_percent:.2f}%)\n"
     
     def mo_progress(self, major_order:dict) -> str:
         try:
-            progress = major_order['progress']
-            tasks = major_order['tasks']
+            progress = major_order["progress"]
+            tasks = major_order["tasks"]
             text = f"{major_order['description']}\n"
             
             for task, prog in zip(tasks, progress):
-                if task['type'] == 3:
+                if task["type"] == 3:
                     text += self.mo_kill_enemies(prog, task)
-                elif task['type'] == 11: 
+                elif task["type"] == 11: 
                     text += self.mo_attack_planets(task)
             
             return text
@@ -159,11 +152,11 @@ class HD2DataService():
             major_order = None
             
         if major_order: 
-            remaining = convert_to_datetime(major_order['expiration'])
+            remaining = convert_to_datetime(major_order["expiration"])
             delta = delta_to_now(remaining)
             return formatted_delta(delta)
         else:
-            return '---'
+            return "---"
         
     def get_major_order(self) -> str:
         if self.major_order:
@@ -180,20 +173,20 @@ class HD2DataService():
             return f"MAJOR ORDER\nNo Major Order active!"
     
     def get_current_onlie_players(self):
-        return self.war_statistics['statistics']['playerCount'] if self.war_statistics else 0
+        return self.war_statistics["statistics"]["playerCount"] if self.war_statistics else 0
         
     def get_campaign(self) -> str:
         if self.campaign:
             text = "War Campaign:\n"
             
-            for campaing_object in sorted(self.campaign, key=lambda c: c['planet']['statistics']['playerCount'], reverse=True):
-                planet = campaing_object['planet']
-                planet_id = planet['index']
+            for campaing_object in sorted(self.campaign, key=lambda c: c["planet"]["statistics"]["playerCount"], reverse=True):
+                planet = campaing_object["planet"]
+                planet_id = planet["index"]
                 defense, percentage, faction, remaining_time = self.planet_info(planet_id)
                 defense_icon = "🛡️" if defense else "⚔️"
                 
                 holder_icon = self.faction_icon(faction)
-                player_count = planet['statistics']['playerCount']
+                player_count = planet["statistics"]["playerCount"]
                     
                 text += f"{holder_icon}{defense_icon} {planet['name']}{remaining_time}: liberation: {percentage:3.2f}%, active Helldivers: {player_count}\n"
             
@@ -218,22 +211,22 @@ class HD2DataService():
         
     def statistics(self):
         if self.war_statistics:
-            statistics = self.war_statistics['statistics']
+            statistics = self.war_statistics["statistics"]
             
             text = "*Helldivers 2 Statistics*\n\n"
             
             # Missions
-            missions_won = statistics['missionsWon']
-            missions_lost = statistics['missionsLost']
+            missions_won = statistics["missionsWon"]
+            missions_lost = statistics["missionsLost"]
             win_loss_ratio = (1 - missions_lost / missions_won) * 100
             
             text += f"Mission Won:  {missions_won:,}\nMissions Lost: {missions_lost:,}\nWin Rate: {win_loss_ratio:.2f}%\n\n"
             
             # KD
-            terminids_killed = statistics['terminidKills']
-            automatons_killed = statistics['automatonKills']
-            illuminates_killed = statistics['illuminateKills']
-            helldiver_deaths = statistics['deaths']
+            terminids_killed = statistics["terminidKills"]
+            automatons_killed = statistics["automatonKills"]
+            illuminates_killed = statistics["illuminateKills"]
+            helldiver_deaths = statistics["deaths"]
             
             kill_death_ratio = (1 - helldiver_deaths / (terminids_killed + automatons_killed + illuminates_killed)) * 100
             
@@ -241,7 +234,7 @@ class HD2DataService():
             text += f"Kill Rate: {kill_death_ratio:.2f}%\n\n"
             
             # friendly fire
-            friendly = statistics['friendlies']
+            friendly = statistics["friendlies"]
             friendly_to_total_deaths = (friendly / helldiver_deaths) * 100
             
             text += f"Friendly Fire kills: {friendly:,} Ratio: {friendly_to_total_deaths:.2f}%\n"
