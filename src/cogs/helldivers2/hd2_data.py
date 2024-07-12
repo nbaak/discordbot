@@ -9,9 +9,7 @@ class HD2DataService():
     
     def __init__(self):
         self.war_statistics: Union[Dict, None] = None
-        self.news: Union[Dict, None] = None
         self.campaign: Union[List[Dict], None] = None
-        self.planet_index: Union[Dict, None] = None
         self.major_order: Union[Dict, None] = None
         self.planets: Union[Dict, None] = None
         self.news: List = []
