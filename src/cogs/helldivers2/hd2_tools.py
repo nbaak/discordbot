@@ -1,18 +1,23 @@
 import datetime
 from typing import Union
-from datetime import timedelta, timezone
+from datetime import timezone
 
 
 # Function to convert timestamp to datetime object
 def convert_to_datetime(timestamp:Union[str, int, float]):
-    if isinstance(timestamp, str):
-        # Truncate the microseconds to six digits
-        timestamp = timestamp[:26] + "Z"
-        # Convert the timestamp to a datetime object
-        return datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S.%fZ")
-    elif isinstance(timestamp, int) or isinstance(timestamp, float):
-        return datetime.datetime.fromtimestamp(timestamp)
-    else:
+    try:
+        if isinstance(timestamp, str):
+            # Truncate the microseconds to six digits
+            n_timestamp = timestamp[:19]
+            # Convert the timestamp to a datetime object
+            return datetime.datetime.strptime(n_timestamp, "%Y-%m-%dT%H:%M:%S")
+        elif isinstance(timestamp, int) or isinstance(timestamp, float):
+            return datetime.datetime.fromtimestamp(timestamp)
+        else:
+            return None
+    except Exception as e:
+        print(e)
+        print(timestamp)
         return None
         
 
@@ -87,7 +92,8 @@ def formatted_delta(dt:datetime.timedelta) -> str:
 
 
 def test():
-    pass
+    test_ts = "2024-07-06T12:18:26.27878Z"
+    print(test_ts[:19])
 
 
 if __name__ == "__main__":
