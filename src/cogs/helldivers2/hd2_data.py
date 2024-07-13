@@ -111,6 +111,11 @@ class HD2DataService():
             
         defense, percentage, faction, remaining_time = self.planet_info(planet_id)
         defense_icon = "🛡️" if defense else "⚔️"
+        
+        if faction == "Humans":
+            defense_icon = "  "
+            percentage = 100
+            
         holder_icon = self.faction_icon(faction)
             
         text = f"{holder_icon}{defense_icon} {planet_name}: {abs(percentage):3.2f}%\n"
