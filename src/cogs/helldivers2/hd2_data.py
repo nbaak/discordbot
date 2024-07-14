@@ -105,16 +105,18 @@ class HD2DataService():
         
         return defense, percentage, faction, remaining_time
     
-    def mo_attack_planets(self, task) -> str:
+    def mo_attack_planets(self, progress:int, task:dict) -> str:
         planet_id = task["values"][2]
         planet_name = self.planets[planet_id]["name"]
-            
-        defense, percentage, faction, remaining_time = self.planet_info(planet_id)
-        defense_icon = "🛡️" if defense else "⚔️"
         
-        if faction == "Humans":
+        defense, percentage, faction, _ = self.planet_info(planet_id)
+        
+        if progress:
             defense_icon = "  "
             percentage = 100
+            
+        else:
+            defense_icon = "🛡️" if defense else "⚔️"                
             
         holder_icon = self.faction_icon(faction)
             
@@ -139,7 +141,7 @@ class HD2DataService():
                 if task["type"] == 3:
                     text += self.mo_kill_enemies(prog, task)
                 elif task["type"] == 11: 
-                    text += self.mo_attack_planets(task)
+                    text += self.mo_attack_planets(prog, task)
             
             return text
         except:
