@@ -76,12 +76,15 @@ def delta_to_now(timestamp:datetime.datetime):
     return timestamp - now
 
 
-def days_hours_minutes(td):
-    return td.days, td.seconds // 3600, (td.seconds // 60) % 60
+def days_hours_minutes(td: Union[datetime.timedelta, int]):
+    if isinstance(td, datetime.timedelta):
+        return td.days, td.seconds // 3600, (td.seconds // 60) % 60
+    else:
+        return td // 86400, td // 3600, (td // 60) % 60 
    
         
-def formatted_delta(dt:datetime.timedelta) -> str:
-    days, hours, minutes = days_hours_minutes(dt)
+def formatted_delta(td: Union[datetime.timedelta, int]) -> str:
+    days, hours, minutes = map(int, days_hours_minutes(td))
     formatted_time = ""
     if days:
         formatted_time += f"{days}d "

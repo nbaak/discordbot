@@ -3,18 +3,22 @@ from typing import Union, Dict, List, Tuple
 from cogs.helldivers2.hd2_tools import convert_to_datetime, get_recent_messages, \
     delta_to_now, formatted_delta
 import statistics
+import time
 
 
 class HD2DataService():
     
-    def __init__(self):
+    def __init__(self, initial_update=True):
         self.war_statistics: Union[Dict, None] = None
         self.campaign: Union[List[Dict], None] = None
         self.major_order: Union[Dict, None] = None
         self.planets: Union[Dict, None] = None
         self.news: List = []
         
-        self.update_all()
+        self.planet_defense_progress: Dict = {}
+        
+        if initial_update:
+            self.update_all()
         
     def update_dispatch(self):
         new_dispatch = api.dispatch()
@@ -55,6 +59,13 @@ class HD2DataService():
                 if k == search_key and v == search_value:
                     return planet        
         return None
+    
+    def is_planet_in_campaign(self, planet_name):
+        for campaign_object in self.campaign:
+            if campaign_object['planet']['name'] == planet_name:
+                return True
+            
+        return False
     
     def get_faction_for_planet(self, planet_id:int) -> Tuple[int, str]:
         try:
@@ -101,15 +112,16 @@ class HD2DataService():
             percentage = (1 - hp / max_hp) * 100 if hp > 0 else 100
             # percentage = planet["health"] / planet["maxHealth"] * 100
             faction = planet["currentOwner"]
+            delta = None
             event_end_time = None
         
-        return defense, percentage, faction, remaining_time
+        return defense, percentage, faction, remaining_time, delta
     
     def mo_attack_planets(self, progress:int, task:dict) -> str:
         planet_id = task["values"][2]
         planet_name = self.planets[planet_id]["name"]
         
-        defense, percentage, faction, _ = self.planet_info(planet_id)
+        defense, percentage, faction, _, _ = self.planet_info(planet_id)
         
         if progress:
             defense_icon = "  "
@@ -179,6 +191,51 @@ class HD2DataService():
     
     def get_current_onlie_players(self):
         return self.war_statistics["statistics"]["playerCount"] if self.war_statistics else 0
+    
+    def campaign_succeesing(self, campaign_planet:dict, mission_ends_in):
+        planet_name = campaign_planet['name']
+        
+        current_health = campaign_planet['event']['health']
+        current_time = int(time.time())
+        
+        succeesing = None
+        
+        print(planet_name, end=" ")
+        
+        # if entry does not exist, create
+        if not planet_name in self.planet_defense_progress: 
+            self.planet_defense_progress[planet_name] = []
+            
+        else:
+            last_health, last_time = self.planet_defense_progress[planet_name][-1]
+            delta_health = last_health - current_health  # if delta_health > 0 we make progress else failing
+            delta_time = current_time - last_time
+            
+            # hp progress / sec
+            progress = delta_health / delta_time
+            p_time = current_health / progress
+            
+            print(formatted_delta(p_time), end="")
+            
+            if p_time < mission_ends_in.seconds:
+                succeesing = f", SUCCEEDING {formatted_delta(p_time)}"
+            else:
+                succeesing = f", FAILING {formatted_delta(p_time)}"
+            
+        self.planet_defense_progress[planet_name].append((current_health, current_time))
+        print()
+        
+        return succeesing
+    
+    def campaign_succeesing_cleanup(self):
+        for planet_name in self.planet_defense_progress:
+            if not self.is_planet_in_campaign(planet_name):
+                value = self.planet_defense_progress.pop(planet_name, None)
+                
+                if value:
+                    print(f"removed {planet_name} from defence dict")
+                else:
+                    print(f"error on dropping key {planet_name}")
         
     def get_campaign(self) -> str:
         if self.campaign:
@@ -187,13 +244,17 @@ class HD2DataService():
             for campaing_object in sorted(self.campaign, key=lambda c: c["planet"]["statistics"]["playerCount"], reverse=True):
                 planet = campaing_object["planet"]
                 planet_id = planet["index"]
-                defense, percentage, faction, remaining_time = self.planet_info(planet_id)
+                defense, percentage, faction, remaining_time, time_delta = self.planet_info(planet_id)
                 defense_icon = "🛡️" if defense else "⚔️"
                 
                 holder_icon = self.faction_icon(faction)
                 player_count = planet["statistics"]["playerCount"]
+                
+                succeeding = ""
+                if defense:
+                    succeeding = self.campaign_succeesing(planet, time_delta) or ""
                     
-                text += f"{holder_icon}{defense_icon} {planet['name']}{remaining_time}: liberation: {percentage:3.2f}%, active Helldivers: {player_count}\n"
+                text += f"{holder_icon}{defense_icon} {planet['name']}{remaining_time}: liberation: {percentage:3.2f}%, active Helldivers: {player_count}{succeeding} \n"
             
             helldivers_online_total = self.get_current_onlie_players()
             text += f"\nHelldivers active: {helldivers_online_total}"

@@ -22,19 +22,19 @@ class Helldivers2(commands.Cog):
         self.messages_file = 'hd2_message_ids.dat'
         self.messages = load(self.messages_file) or {}
         self.tmt = TrainingManualTips()
-        self.hd2dataservice = HD2DataService()
-        self.countdown.start()
+        self.hd2dataservice = HD2DataService(initial_update=False)
         self.walkingcounter = WalkingCounter(24)
-    
+        
     @commands.Cog.listener()
     async def on_ready(self):
         print(f'Extension {self.__class__.__name__} loaded')
+        self.countdown.start()
         
     async def update_warsatus(self):
         try:
             self.hd2dataservice.update_all()
             
-            message_mo = self.hd2dataservice.get_major_order()  
+            message_mo = self.hd2dataservice.get_major_order()
             await self.send_channel_message(message_mo, 'major_order')
             
             message_campaign = self.hd2dataservice.get_campaign()
@@ -45,8 +45,10 @@ class Helldivers2(commands.Cog):
             formatted_string = datetime.datetime.fromtimestamp(timestamp).strftime("%Y-%m-%d %H:%M:%S")
             print(f"time remaining: {self.hd2dataservice.mo_time_remaining()}, updated: {formatted_string}")
             
+            self.hd2dataservice.campaign_succeesing_cleanup()
+            
         except Exception as e:
-            print(e)
+            print("Exception:", e)
             
     def update_online_helldiver_statistics(self):
         self.walkingcounter.load()
@@ -113,7 +115,7 @@ class Helldivers2(commands.Cog):
     
     @app_commands.command(name="updatewarstatus")
     @app_commands.checks.has_permissions(administrator=True)
-    async def update_warstatus_now(self, interaction: discord.Interaction):
+    async def update_warstatus_now(self, interaction: discord.Interaction): 
         await self.update_warsatus()
         await interaction.response.send_message('updating war status', ephemeral=True)
         

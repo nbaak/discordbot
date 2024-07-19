@@ -12,4 +12,5 @@ The Bot will query every 5 min to the API and get the latest data.
 
 ## Sources
 - Training Manual Tips: https://helldivers.fandom.com/wiki/Training_Manual_Tips
-- Helldivers 2 Api: https://helldiverstrainingmanual.com/api
+- Helldivers 2 Api: https://api.helldivers2.dev/
+- Documentation: https://helldivers-2.github.io/api/docs/openapi/swagger-ui.html
