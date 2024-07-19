@@ -1,5 +1,6 @@
 .project
 .pydevproject
+.settings
 __pycache__
 *.dat
 *.bin

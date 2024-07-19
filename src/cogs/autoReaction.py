@@ -18,6 +18,10 @@ class AutoReaction(commands.Cog):
         self.channel_file = 'autolike.dat'
         self.enabled_servers = load(self.channel_file) or set()
         self.reaction_threshold = .05
+        
+    @commands.Cog.listener()
+    async def on_ready(self):
+        print(f'Extension {self.__class__.__name__} loaded')
 
     @commands.Cog.listener()
     async def on_message(self, message):
