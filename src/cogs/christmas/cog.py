@@ -6,8 +6,8 @@ from datetime import datetime, time
 import pytz
 from discord import app_commands
 
-from lib.progressbar import ProgressBar
-from lib.christmas_countdown import ChristmasCountdown
+from cogs.christmas.progressbar import ProgressBar
+from cogs.christmas.christmas_countdown import ChristmasCountdown
 from lib.calendar import Calendar
 from lib.admin_tools import load, save, access_denied_message
 from typing import Optional
