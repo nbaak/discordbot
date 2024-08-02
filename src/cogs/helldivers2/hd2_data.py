@@ -1,9 +1,10 @@
 from cogs.helldivers2 import api
 from typing import Union, Dict, List, Tuple
 from cogs.helldivers2.hd2_tools import convert_to_datetime, get_recent_messages, \
-    delta_to_now, formatted_delta
+    delta_to_now, formatted_delta, time_to_seconds
 import statistics
 import time
+from cogs.helldivers2.progress_prediction import ProgressPrediction
 
 
 class HD2DataService():
@@ -192,39 +193,41 @@ class HD2DataService():
     def get_current_onlie_players(self):
         return self.war_statistics["statistics"]["playerCount"] if self.war_statistics else 0
     
-    def campaign_succeesing(self, campaign_planet:dict, mission_ends_in):
+    def campaign_succeesing(self, defense:bool, campaign_planet:dict, mission_ends_in):
         planet_name = campaign_planet['name']
         
-        current_health = campaign_planet['event']['health']
+        if defense:
+            current_health = campaign_planet['event']['health']
+        else:
+            # offense
+            current_health = campaign_planet['health']
+            
         current_time = int(time.time())
         
         succeesing = None
         
-        print(planet_name, end=" ")
-        
         # if entry does not exist, create
         if not planet_name in self.planet_defense_progress: 
-            self.planet_defense_progress[planet_name] = []
+            self.planet_defense_progress[planet_name] = ProgressPrediction(current_health, current_time)
             
         else:
-            last_health, last_time = self.planet_defense_progress[planet_name][-1]
-            delta_health = last_health - current_health  # if delta_health > 0 we make progress else failing
-            delta_time = current_time - last_time
+            pp = self.planet_defense_progress[planet_name]
+            p_time = pp.calculate_progress(current_health, current_time)
             
-            # hp progress / sec
-            progress = delta_health / delta_time
-            p_time = current_health / progress
-            
-            print(formatted_delta(p_time), end="")
-            
-            if p_time < mission_ends_in.seconds:
+            if defense and p_time is not None:
+                print(planet_name, formatted_delta(p_time), "defense")
+                if p_time < mission_ends_in.seconds:
+                    succeesing = f", SUCCEEDING {formatted_delta(p_time)}"
+                else:
+                    succeesing = f", FAILING {formatted_delta(p_time)}"
+                    
+            # offense    
+            elif not defense and p_time is not None and p_time >= 0 and p_time < time_to_seconds(days=1):
+                print(planet_name, formatted_delta(p_time), "offense")
                 succeesing = f", SUCCEEDING {formatted_delta(p_time)}"
             else:
-                succeesing = f", FAILING {formatted_delta(p_time)}"
-            
-        self.planet_defense_progress[planet_name].append((current_health, current_time))
-        print()
-        
+                succeesing = None
+    
         return succeesing
     
     def campaign_succeesing_cleanup(self):
@@ -250,9 +253,7 @@ class HD2DataService():
                 holder_icon = self.faction_icon(faction)
                 player_count = planet["statistics"]["playerCount"]
                 
-                succeeding = ""
-                if defense:
-                    succeeding = self.campaign_succeesing(planet, time_delta) or ""
+                succeeding = self.campaign_succeesing(defense, planet, time_delta) or ""
                     
                 text += f"{holder_icon}{defense_icon} {planet['name']}{remaining_time}: liberation: {percentage:3.2f}%, active Helldivers: {player_count}{succeeding} \n"
             

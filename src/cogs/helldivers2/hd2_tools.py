@@ -19,6 +19,22 @@ def convert_to_datetime(timestamp:Union[str, int, float]):
         print(e)
         print(timestamp)
         return None
+
+    
+def time_to_seconds(*, days=0, hours=0, minutes=0, seconds=0) -> int:
+    """
+    Converteth the temporal spans of days, hours, minutes, and seconds into the grand total of seconds.
+    
+    Parameters:
+    days (int): The count of days, by default set to nought.
+    hours (int): The count of hours, by default set to nought.
+    minutes (int): The count of minutes, by default set to nought.
+    seconds (int): The count of seconds, by default set to nought.
+    
+    Returneth:
+    int: The amassed total of seconds, encompassing all provided spans.
+    """
+    return days * 86400 + hours * 3600 + minutes * 60 + seconds
         
 
 def formatted_time(timestamp:datetime, format="%Y-%m-%d %H:%M:%S") -> str:
