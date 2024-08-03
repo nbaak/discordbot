@@ -85,8 +85,8 @@ class HD2DataService():
         return factions[faction] if faction in factions else "?"
     
     def faction_name(self, faction_id:int) -> str:
-        # factions = {0: "Humans", 1: "Terminids", 2: "Automatons", 3: "Illuminates"}
-        factions = self.war_statistics["factions"]
+        factions = {0: "Any Enemies", 1: "Terminids", 2: "Automatons", 3: "Illuminates"}
+        # factions = self.war_statistics["factions"]
         return factions[faction_id]
     
     def planet_info(self, planet_id:int) -> tuple:
@@ -148,7 +148,7 @@ class HD2DataService():
         try:
             progress = major_order["progress"]
             tasks = major_order["tasks"]
-            text = f"{major_order['description']}\n"
+            text = f""
             
             for task, prog in zip(tasks, progress):
                 if task["type"] == 3:
@@ -181,7 +181,12 @@ class HD2DataService():
             mo = self.major_order[0]
             progress = self.mo_progress(mo)
             
-            title = f"{mo['title']}\n{mo['briefing']}\n"
+            title = f"{mo['title']}"
+            if mo['briefing']:
+                title += f"\n{mo['briefing']}\n"
+            if mo['description']:
+                title += f"{mo['description']}\n"
+                
             text = f"{title}\n{progress}\n" 
             text += f"ends in {self.mo_time_remaining(mo)}"
             
