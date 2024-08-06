@@ -158,6 +158,7 @@ class Helldivers2(commands.Cog):
     @app_commands.command(name="hd2plot")
     async def publish_player_chart(self, interaction: discord.Interaction):
         if os.path.isfile('hd2_player_charts.jpg'):
+            await interaction.response.send_message('plotting...', ephemeral=True)
             await interaction.channel.send(content="Helldivers Players", file=discord.File('hd2_player_charts.jpg'))
         
         else:
