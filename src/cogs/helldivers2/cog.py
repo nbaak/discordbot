@@ -11,6 +11,7 @@ from typing import Optional
 
 from cogs.helldivers2.hd2_data import HD2DataService
 from cogs.helldivers2.WalkingCoutner import WalkingCounter
+import os
 
 
 class Helldivers2(commands.Cog):
@@ -58,7 +59,7 @@ class Helldivers2(commands.Cog):
         stamp = f"{day:02}-{hour:02}"
         # print("plotting", stamp)
         self.walkingcounter.append(stamp, online_divers)
-        self.walkingcounter.plot()
+        self.walkingcounter.plot(filename="hd2_player_charts.jpg")
         self.walkingcounter.save()
         
     @tasks.loop(minutes=5.0)
@@ -153,6 +154,14 @@ class Helldivers2(commands.Cog):
             
         news = self.hd2dataservice.get_news(nr_samples)
         await interaction.response.send_message(news, ephemeral=True)
+    
+    @app_commands.command(name="hd2plot")
+    async def publish_player_chart(self, interaction: discord.Interaction):
+        if os.path.isfile('hd2_player_charts.jpg'):
+            await interaction.channel.send(content="Helldivers Players", file=discord.File('hd2_player_charts.jpg'))
+        
+        else:
+            await interaction.response.send_message('no existing plotfile found', ephemeral=True)
 
 
 def test():
