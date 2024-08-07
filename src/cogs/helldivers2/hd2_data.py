@@ -221,7 +221,8 @@ class HD2DataService():
             
             if defense and p_time is not None:
                 print(planet_name, formatted_delta(p_time), "defense")
-                if p_time < mission_ends_in.seconds:
+                
+                if p_time < mission_ends_in.total_seconds():
                     succeesing = f", SUCCEEDING {formatted_delta(p_time)}"
                 else:
                     succeesing = f", FAILING {formatted_delta(p_time)}"
