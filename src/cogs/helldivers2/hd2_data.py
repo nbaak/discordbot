@@ -184,7 +184,7 @@ class HD2DataService():
             title = f"{mo['title']}"
             if mo['briefing']:
                 title += f"\n{mo['briefing']}\n"
-            if mo['description']:
+            if mo['description'] and mo['description'] != mo['briefing']:
                 title += f"{mo['description']}\n"
                 
             text = f"{title}\n{progress}\n" 
