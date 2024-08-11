@@ -1,7 +1,6 @@
 from datetime import datetime
 from typing import Optional
 
-import discord
 from discord import app_commands
 from discord import Embed, Member
 from discord.ext import commands
@@ -68,7 +67,7 @@ class Admin(commands.Cog):
     async def s_purge_messges(self, interaction:Interaction, count:Optional[int]):
         await interaction.response.defer()
         if count:
-            deleted = await interaction.channel.purge(limit=count+1)
+            deleted = await interaction.channel.purge(limit=count + 1)
         else:
             deleted = await interaction.channel.purge(limit=count)
             
