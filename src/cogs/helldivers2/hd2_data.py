@@ -203,9 +203,9 @@ class HD2DataService():
             if mo['description'] and mo['description'] != mo['briefing']:
                 title += f"{mo['description']}\n"
                 
-            text = f"{title}\n{progress}\n" 
-            text += f"ends in {self.mo_time_remaining(mo)}"
-            
+            text = f"{title}\n{progress}" 
+            text += f"Reward: {mo['reward']['amount']} 🏅\n"
+            text += f"ends in {self.mo_time_remaining(mo)}\n"
             return text
         
         else:
