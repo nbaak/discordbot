@@ -5,6 +5,7 @@ from cogs.helldivers2.hd2_tools import convert_to_datetime, get_recent_messages,
 import statistics
 import time
 from cogs.helldivers2.progress_prediction import ProgressPrediction
+from pickle import NONE
 
 
 class HD2DataService():
@@ -89,6 +90,10 @@ class HD2DataService():
         # factions = self.war_statistics["factions"]
         return factions[faction_id]
     
+    def target_faction(self, faction_id:int) -> str:
+        factions = {0: "Any Enemies", 1: "Humans", 2: "Terminids", 3: "Automatons", 4: "Illuminates"}
+        return factions[faction_id] if faction_id in factions else "UNKOWN"
+    
     def planet_info(self, planet_id:int) -> tuple:
         planet = self.planets[planet_id]        
         defense = True if planet["event"] else False
@@ -138,16 +143,27 @@ class HD2DataService():
         return text
     
     def mo_defend_planet(self, progress:int, task:dict) -> str:
-        planet_to_defend = task["values"][0]
+        faction_id = None
+        target = None 
         
-        # Factions in the defense MO are somehow different... who knows why D:
-        # factions = {0: "Any Enemies", 1: "Terminids", 2: "Automatons", 3: "Illuminates"}
-        factions = {2: "Terminids"}
+        for value, value_type in zip(task['values'], task['valueTypes']):
+            if value_type == 1:
+                faction_id = value
+                continue
+            elif value_type == 3:
+                target = value
+                continue
+            elif value_type == 11:
+                liberation_needed = value
+                continue
+            elif value_type == 12:
+                planet_id = value
+                continue
+            else:
+                continue
         
-        faction_id = task["values"][1]
-        faction = factions[faction_id] if faction_id in factions else "UNKNOWN"
-        
-        text = f"Defend Planets against {faction}: {progress}/{planet_to_defend}\n"
+        faction = self.target_faction(faction_id)
+        text = f"Defend Planets against {faction}: {progress}/{target}\n"
         
         return text
     
