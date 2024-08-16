@@ -174,6 +174,27 @@ class HD2DataService():
         
         return f"{faction} killed {progress:,}/{target:,} ({progress_percent:.2f}%)\n"
     
+    def extract_samples(self, progress:int, task:dict) -> str:
+        for value, value_type in zip(task['values'], task['valueTypes']):
+            if value_type == 1:
+                faction_id = value
+                continue
+            elif value_type == 3:
+                target = value
+                continue
+            elif value_type == 11:
+                liberation_needed = value
+                continue
+            elif value_type == 12:
+                planet_id = value
+                continue
+            else:
+                continue
+            
+        progress_percent = progress / target * 100
+        
+        return f"{self.planets[planet_id]['name']}: {progress:,}/{target:,} ({progress_percent:.2f}%)\n"
+    
     def mo_progress(self, major_order:dict) -> str:
         try:
             progress = major_order["progress"]
@@ -181,7 +202,9 @@ class HD2DataService():
             text = f""
             
             for task, prog in zip(tasks, progress):
-                if task["type"] == 3:
+                if task["type"] == 2:
+                    text += self.extract_samples(prog, task)
+                elif task["type"] == 3:
                     text += self.mo_kill_enemies(prog, task)
                 elif task["type"] == 11: 
                     text += self.mo_attack_planet(prog, task)

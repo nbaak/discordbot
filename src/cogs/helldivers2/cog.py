@@ -14,7 +14,7 @@ from cogs.helldivers2.WalkingCoutner import WalkingCounter
 import os
 
 
-class Helldivers2(commands.Cog):
+class Helldivers2(commands.Cog)
 
     def __init__(self, bot):
         self.bot = bot
