@@ -6,6 +6,7 @@ import statistics
 import time
 from cogs.helldivers2.progress_prediction import ProgressPrediction
 from pickle import NONE
+from cogs.helldivers2.hd2_units import enemy_units, get_enemy
 
 
 class HD2DataService():
@@ -94,6 +95,9 @@ class HD2DataService():
         factions = {0: "Any Enemies", 1: "Humans", 2: "Terminids", 3: "Automatons", 4: "Illuminates"}
         return factions[faction_id] if faction_id in factions else "UNKOWN"
     
+    def units(self, id:int) -> str:
+        return get_enemy(id)
+    
     def planet_info(self, planet_id:int) -> tuple:
         planet = self.planets[planet_id]        
         defense = True if planet["event"] else False
@@ -122,6 +126,34 @@ class HD2DataService():
             event_end_time = None
         
         return defense, percentage, faction, remaining_time, delta
+    
+    def mo_task_paramerts(self, task) -> tuple:
+        """
+        @retur faction_id, target_id, libertation_needed, planet_id
+        """
+        faction_id = target = liberation_needed = planet_id = None
+        for value, value_type in zip(task['values'], task['valueTypes']):
+            if value_type == 0:
+                continue            
+            elif value_type == 1:
+                faction_id = value
+                continue
+            elif value_type == 3:
+                target = value
+                continue
+            elif value_type == 4:
+                unit_type = value
+                continue
+            elif value_type == 11:
+                liberation_needed = value
+                continue
+            elif value_type == 12:
+                planet_id = value
+                continue
+            else:
+                continue
+            
+        return faction_id, target, liberation_needed, planet_id, unit_type
     
     def mo_attack_planet(self, progress:int, task:dict) -> str:
         planet_id = task["values"][2]
@@ -168,11 +200,12 @@ class HD2DataService():
         return text
     
     def mo_kill_enemies(self, progress:int, task:dict) -> str:
-        target = task["values"][2]
+        faction_id, target, liberation_needed, planet_id, unit_type_id = self.mo_task_paramerts(task)
         progress_percent = progress / target * 100
-        faction = self.faction_name(task["values"][1])  # I hope that 1 is the targeted faction.. atm it works..
+        faction = self.target_faction(faction_id)        
+        unit = f" ({self.units(unit_type_id)}s)" if unit_type_id else ""
         
-        return f"{faction} killed {progress:,}/{target:,} ({progress_percent:.2f}%)\n"
+        return f"{faction}{unit} killed {progress:,}/{target:,} ({progress_percent:.2f}%)\n"
     
     def extract_samples(self, progress:int, task:dict) -> str:
         for value, value_type in zip(task['values'], task['valueTypes']):
