@@ -5,8 +5,9 @@ from cogs.helldivers2.hd2_tools import convert_to_datetime, get_recent_messages,
 import statistics
 import time
 from cogs.helldivers2.progress_prediction import ProgressPrediction
-from pickle import NONE
-from cogs.helldivers2.hd2_units import enemy_units, get_enemy
+from cogs.helldivers2.hd2_units import get_enemy
+from cogs.helldivers2.hd2_major_order import mo_task_paramerts, MOTaskTypes,\
+    MOMissionTypes
 
 
 class HD2DataService():
@@ -127,34 +128,6 @@ class HD2DataService():
         
         return defense, percentage, faction, remaining_time, delta
     
-    def mo_task_paramerts(self, task) -> tuple:
-        """
-        @retur faction_id, target_id, libertation_needed, planet_id
-        """
-        faction_id = target = liberation_needed = planet_id = None
-        for value, value_type in zip(task['values'], task['valueTypes']):
-            if value_type == 0:
-                continue            
-            elif value_type == 1:
-                faction_id = value
-                continue
-            elif value_type == 3:
-                target = value
-                continue
-            elif value_type == 4:
-                unit_type = value
-                continue
-            elif value_type == 11:
-                liberation_needed = value
-                continue
-            elif value_type == 12:
-                planet_id = value
-                continue
-            else:
-                continue
-            
-        return faction_id, target, liberation_needed, planet_id, unit_type
-    
     def mo_attack_planet(self, progress:int, task:dict) -> str:
         planet_id = task["values"][2]
         planet_name = self.planets[planet_id]["name"]
@@ -175,24 +148,7 @@ class HD2DataService():
         return text
     
     def mo_defend_planet(self, progress:int, task:dict) -> str:
-        faction_id = None
-        target = None 
-        
-        for value, value_type in zip(task['values'], task['valueTypes']):
-            if value_type == 1:
-                faction_id = value
-                continue
-            elif value_type == 3:
-                target = value
-                continue
-            elif value_type == 11:
-                liberation_needed = value
-                continue
-            elif value_type == 12:
-                planet_id = value
-                continue
-            else:
-                continue
+        faction_id, target, liberation_needed, planet_id, unit_type_id = mo_task_paramerts(task)
         
         faction = self.target_faction(faction_id)
         text = f"Defend Planets against {faction}: {progress}/{target}\n"
@@ -200,33 +156,37 @@ class HD2DataService():
         return text
     
     def mo_kill_enemies(self, progress:int, task:dict) -> str:
-        faction_id, target, liberation_needed, planet_id, unit_type_id = self.mo_task_paramerts(task)
+        faction_id, target, liberation_needed, planet_id, unit_type_id = mo_task_paramerts(task)
         progress_percent = progress / target * 100
         faction = self.target_faction(faction_id)        
         unit = f" ({self.units(unit_type_id)}s)" if unit_type_id else ""
         
         return f"{faction}{unit} killed {progress:,}/{target:,} ({progress_percent:.2f}%)\n"
     
-    def extract_samples(self, progress:int, task:dict) -> str:
-        for value, value_type in zip(task['values'], task['valueTypes']):
-            if value_type == 1:
-                faction_id = value
-                continue
-            elif value_type == 3:
-                target = value
-                continue
-            elif value_type == 11:
-                liberation_needed = value
-                continue
-            elif value_type == 12:
-                planet_id = value
-                continue
-            else:
-                continue
-            
+    def mo_extract_samples(self, progress:int, task:dict) -> str:
+        # faction_id, target, liberation_needed, planet_id, unit_type_id
+        faction_id, target, liberation_needed, planet_id, unit_type_id = mo_task_paramerts(task)            
         progress_percent = progress / target * 100
         
         return f"{self.planets[planet_id]['name']}: {progress:,}/{target:,} ({progress_percent:.2f}%)\n"
+    
+    def mo_hold_planet(self, progress:int, task:dict) -> str:
+        _, _, _, planet_id, _ = mo_task_paramerts(task)
+        planet_name = self.planets[planet_id]["name"]
+        
+        defense, percentage, faction, _, _ = self.planet_info(planet_id)
+            
+        if progress:
+            defense_icon = "  "
+            percentage = 100
+            faction = 0
+            
+        else:
+            defense_icon = "🛡️" if defense else "⚔️" 
+        
+        holder_icon = self.faction_icon(faction)
+        
+        return f"{holder_icon}{defense_icon} {planet_name}: {abs(percentage):3.2f}%\n"
     
     def mo_progress(self, major_order:dict) -> str:
         try:
@@ -235,14 +195,16 @@ class HD2DataService():
             text = f""
             
             for task, prog in zip(tasks, progress):
-                if task["type"] == 2:
-                    text += self.extract_samples(prog, task)
-                elif task["type"] == 3:
+                if task["type"] == MOMissionTypes.EXTRACT_SAMPLES:
+                    text += self.mo_extract_samples(prog, task)
+                elif task["type"] == MOMissionTypes.KILL_ENEMIES:
                     text += self.mo_kill_enemies(prog, task)
-                elif task["type"] == 11: 
+                elif task["type"] == MOMissionTypes.ATTACK_PLANET: 
                     text += self.mo_attack_planet(prog, task)
-                elif task["type"] == 12:
+                elif task["type"] == MOMissionTypes.DEFENT_PLANET:
                     text += self.mo_defend_planet(prog, task)
+                elif task["type"] == MOMissionTypes.HOLD_PLANET:
+                    text += self.mo_hold_planet(prog, task)
             
             return text
         except:
