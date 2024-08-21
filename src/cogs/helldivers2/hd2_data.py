@@ -160,8 +160,9 @@ class HD2DataService():
         progress_percent = progress / target * 100
         faction = self.target_faction(faction_id)        
         unit = f" ({self.units(unit_type_id)}s)" if unit_type_id else ""
+        icon = self.faction_icon(faction)
         
-        return f"{faction}{unit} killed {progress:,}/{target:,} ({progress_percent:.2f}%)\n"
+        return f"{icon}   {faction}{unit} killed {progress:,}/{target:,} ({progress_percent:.2f}%)\n"
     
     def mo_extract_samples(self, progress:int, task:dict) -> str:
         # faction_id, target, liberation_needed, planet_id, unit_type_id
@@ -260,6 +261,7 @@ class HD2DataService():
         current_time = int(time.time())
         
         succeesing = None
+        trend = None
         
         # if entry does not exist, create
         if not planet_name in self.planet_defense_progress: 
@@ -268,7 +270,8 @@ class HD2DataService():
         else:
             pp = self.planet_defense_progress[planet_name]
             p_time = pp.calculate_progress(current_health, current_time)
-            
+            trend = pp.mean()
+            # print("trend", planet_name, trend)
             if defense and p_time is not None:
                 print(planet_name, formatted_delta(p_time), "defense")
                 
@@ -310,7 +313,7 @@ class HD2DataService():
                 player_count = planet["statistics"]["playerCount"]
                 
                 succeeding = self.campaign_succeesing(defense, planet, time_delta) or ""
-                    
+                
                 text += f"{holder_icon}{defense_icon} {planet['name']}{remaining_time}: liberation: {percentage:3.2f}%, active Helldivers: {player_count}{succeeding} \n"
             
             helldivers_online_total = self.get_current_onlie_players()

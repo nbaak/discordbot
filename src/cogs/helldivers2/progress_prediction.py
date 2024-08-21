@@ -26,6 +26,9 @@ class ProgressPrediction:
         
         else:
             return None
+        
+    def mean(self):
+        return sum(self.deltas) / len(self.deltas)
     
     def calculate_progress(self, sample:int, ts:int) -> Union[float, None]:
         """
@@ -35,7 +38,7 @@ class ProgressPrediction:
         p_time = None
         
         if any(self.deltas):
-            mean_delta = sum(self.deltas) / len(self.deltas)
+            mean_delta = self.mean() # trend
             p_time = sample / mean_delta if mean_delta != 0 else None
         
         self.last_value = sample
