@@ -148,7 +148,11 @@ class HD2DataService():
         return text
     
     def mo_defend_planet(self, progress:int, task:dict) -> str:
-        faction_id, target, liberation_needed, planet_id, unit_type_id = mo_task_paramerts(task)
+        task_d = mo_task_paramerts(task)
+        # planet_id = task_d[MOTaskTypes.PLANET]
+        target = task_d[MOTaskTypes.TARGET_COUNT]
+        faction_id = task_d[MOTaskTypes.FACTION]
+        # unit_type_id = task_d[MOTaskTypes.UNIT_TYPE]
         
         faction = self.target_faction(faction_id)
         text = f"Defend Planets against {faction}: {progress}/{target}\n"
@@ -156,7 +160,11 @@ class HD2DataService():
         return text
     
     def mo_kill_enemies(self, progress:int, task:dict) -> str:
-        faction_id, target, liberation_needed, planet_id, unit_type_id = mo_task_paramerts(task)
+        task_d = mo_task_paramerts(task)
+        # planet_id = task_d[MOTaskTypes.PLANET]
+        target = task_d[MOTaskTypes.TARGET_COUNT]
+        faction_id = task_d[MOTaskTypes.FACTION]
+        unit_type_id = task_d[MOTaskTypes.UNIT_TYPE]
         progress_percent = progress / target * 100
         faction = self.target_faction(faction_id)        
         unit = f" ({self.units(unit_type_id)}s)" if unit_type_id else ""
@@ -165,14 +173,17 @@ class HD2DataService():
         return f"{icon}   {faction}{unit} killed {progress:,}/{target:,} ({progress_percent:.2f}%)\n"
     
     def mo_extract_samples(self, progress:int, task:dict) -> str:
-        # faction_id, target, liberation_needed, planet_id, unit_type_id
-        faction_id, target, liberation_needed, planet_id, unit_type_id = mo_task_paramerts(task)            
+        task_d = mo_task_paramerts(task)
+        planet_id = task_d[MOTaskTypes.PLANET]
+        target = task_d[MOTaskTypes.TARGET_COUNT]
+                
         progress_percent = progress / target * 100
         
         return f"{self.planets[planet_id]['name']}: {progress:,}/{target:,} ({progress_percent:.2f}%)\n"
     
     def mo_hold_planet(self, progress:int, task:dict) -> str:
-        _, _, _, planet_id, _ = mo_task_paramerts(task)
+        task_d = mo_task_paramerts(task)
+        planet_id = task_d[MOTaskTypes.PLANET]
         planet_name = self.planets[planet_id]["name"]
         
         defense, percentage, faction, _, _ = self.planet_info(planet_id)

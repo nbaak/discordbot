@@ -16,35 +16,33 @@ class MOMissionTypes():
     HOLD_PLANET = 13
 
 
-def mo_task_paramerts(task_in) -> tuple:
+def mo_task_paramerts(task) -> dict:
     """
     @return faction_id, target_id, libertation_needed, planet_id, unit_type_id
-    """        
-    task = task_in.copy()
-    faction_id = target = liberation_needed = planet_id = unit_type = None
-
+    """
+    task_out = {}
     for value, value_type in zip(task['values'], task['valueTypes']):
         if value_type == MOTaskTypes.NONE:
             continue            
         elif value_type == MOTaskTypes.FACTION:
-            faction_id = value
+            task_out[MOTaskTypes.FACTION] = value
             continue
         elif value_type == MOTaskTypes.TARGET_COUNT:
-            target = value
+            task_out[MOTaskTypes.TARGET_COUNT] = value
             continue
         elif value_type == MOTaskTypes.UNIT_TYPE:
-            unit_type = value
+            task_out[MOTaskTypes.UNIT_TYPE] = value
             continue
         elif value_type == MOTaskTypes.LIBERATION_NEEDED:
-            liberation_needed = value
+            task_out[MOTaskTypes.LIBERATION_NEEDED] = value
             continue
         elif value_type == MOTaskTypes.PLANET:
-            planet_id = value
+            task_out[MOTaskTypes.PLANET] = value
             continue
         else:
             continue
         
-    return faction_id, target, liberation_needed, planet_id, unit_type
+    return task_out
 
 
 def test():
