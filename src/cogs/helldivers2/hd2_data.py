@@ -83,7 +83,7 @@ class HD2DataService():
         if isinstance(faction, int):
             factions = {0: "🌎", 1: "🪲", 2: "🤖", 3: "🦑"}
         else:
-            factions = {"Humans": "🌎", "Terminids": "🪲", "Automaton": "🤖", "Illuminate": "🦑"}
+            factions = {"Humans": "🌎", "Terminids": "🪲", "Automatons": "🤖", "Illuminates": "🦑"}
         
         return factions[faction] if faction in factions else "?"
     
@@ -93,6 +93,10 @@ class HD2DataService():
         return factions[faction_id]
     
     def target_faction(self, faction_id:int) -> str:
+        factions = {0: "Any Enemies", 1: "Humans", 2: "Terminids", 3: "Automatons", 4: "Illuminates"}
+        return factions[faction_id] if faction_id in factions else "UNKOWN"
+    
+    def target_faction_icon(self, faction_id:int) -> str:
         factions = {0: "Any Enemies", 1: "Humans", 2: "Terminids", 3: "Automatons", 4: "Illuminates"}
         return factions[faction_id] if faction_id in factions else "UNKOWN"
     
