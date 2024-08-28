@@ -83,7 +83,7 @@ class HD2DataService():
         if isinstance(faction, int):
             factions = {0: "🌎", 1: "🪲", 2: "🤖", 3: "🦑"}
         else:
-            factions = {"Humans": "🌎", "Terminids": "🪲", "Automatons": "🤖", "Illuminates": "🦑"}
+            factions = {"Humans": "🌎", "Terminids": "🪲", "Automatons": "🤖","Automaton": "🤖", "Illuminates": "🦑","Illuminate": "🦑"}
         
         return factions[faction] if faction in factions else "?"
     
