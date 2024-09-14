@@ -6,8 +6,7 @@ import statistics
 import time
 from cogs.helldivers2.progress_prediction import ProgressPrediction
 from cogs.helldivers2.hd2_units import get_enemy
-from cogs.helldivers2.hd2_major_order import mo_task_paramerts, MOTaskTypes,\
-    MOMissionTypes
+from cogs.helldivers2.hd2_major_order import mo_task_paramerts, MOTaskTypes, MOMissionTypes
 
 
 class HD2DataService():
@@ -83,7 +82,7 @@ class HD2DataService():
         if isinstance(faction, int):
             factions = {0: "🌎", 1: "🪲", 2: "🤖", 3: "🦑"}
         else:
-            factions = {"Humans": "🌎", "Terminids": "🪲", "Automatons": "🤖","Automaton": "🤖", "Illuminates": "🦑","Illuminate": "🦑"}
+            factions = {"Humans": "🌎", "Terminids": "🪲", "Automaton": "🤖", "Illuminate": "🦑", "Automatons": "🤖", "Illuminates": "🦑"}
         
         return factions[faction] if faction in factions else "?"
     
@@ -96,12 +95,8 @@ class HD2DataService():
         factions = {0: "Any Enemies", 1: "Humans", 2: "Terminids", 3: "Automatons", 4: "Illuminates"}
         return factions[faction_id] if faction_id in factions else "UNKOWN"
     
-    def target_faction_icon(self, faction_id:int) -> str:
-        factions = {0: "Any Enemies", 1: "Humans", 2: "Terminids", 3: "Automatons", 4: "Illuminates"}
-        return factions[faction_id] if faction_id in factions else "UNKOWN"
-    
-    def units(self, id:int) -> str:
-        return get_enemy(id)
+    def units(self, unit_id:int) -> str:
+        return get_enemy(unit_id)
     
     def planet_info(self, planet_id:int) -> tuple:
         planet = self.planets[planet_id]        
