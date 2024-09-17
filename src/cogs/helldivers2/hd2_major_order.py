@@ -14,6 +14,7 @@ class MOMissionTypes():
     ATTACK_PLANET = 11
     DEFENT_PLANET = 12
     HOLD_PLANET = 13
+    LIBERTAE_MORE_PLANETS_THAN_LOST = 15
 
 
 def mo_task_paramerts(task) -> dict:

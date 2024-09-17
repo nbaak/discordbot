@@ -199,6 +199,10 @@ class HD2DataService():
         
         return f"{holder_icon}{defense_icon} {planet_name}: {abs(percentage):3.2f}%\n"
     
+    def mo_liberate_more_planets_than_lost(self, progress:int, task:dict) -> str:
+        task_d = mo_task_paramerts(task)        
+        return f"Liberate mor Planets than Lost: {progress}\n"
+    
     def mo_progress(self, major_order:dict) -> str:
         try:
             progress = major_order["progress"]
@@ -216,6 +220,8 @@ class HD2DataService():
                     text += self.mo_defend_planet(prog, task)
                 elif task["type"] == MOMissionTypes.HOLD_PLANET:
                     text += self.mo_hold_planet(prog, task)
+                elif task["type"] == MOMissionTypes.LIBERTAE_MORE_PLANETS_THAN_LOST:
+                    text += self.mo_liberate_more_planets_than_lost(prog, task)
             
             return text
         except:
