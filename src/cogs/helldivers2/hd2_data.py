@@ -201,7 +201,7 @@ class HD2DataService():
     
     def mo_liberate_more_planets_than_lost(self, progress:int, task:dict) -> str:
         task_d = mo_task_paramerts(task)        
-        return f"Liberate mor Planets than Lost: {progress}\n"
+        return f"Liberate more Planets than Lost: {progress}\n"
     
     def mo_progress(self, major_order:dict) -> str:
         try:
