@@ -51,9 +51,13 @@ class HD2DataService():
         
     def update_all(self):
         self.update_planets()
+        time.sleep(.5)
         self.update_campaign()
+        time.sleep(.5)
         self.update_major_order()
+        time.sleep(.5)
         self.update_war_statistics()
+        time.sleep(.5)
         self.update_dispatch()
         
     def find_in_campaign_dict(self, search_key, search_value:str) -> Union[Dict, None]: 
