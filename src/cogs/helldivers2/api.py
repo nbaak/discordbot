@@ -31,8 +31,7 @@ def get_campaign():
 
 
 def get_planet(index:int):
-    headers = {"X-Super-Client": "Discord-Bot",
-               "X-Super-Contaxt": "dev@nctrl.de"}
+    headers = {"X-Super-Client": "Discord-Bot"}
     return httpclient.get(f"{Endpoints.planet_index}/{index}", headers)
 
 
