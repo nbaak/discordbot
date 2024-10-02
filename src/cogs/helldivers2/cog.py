@@ -117,8 +117,8 @@ class Helldivers2(commands.Cog):
     @app_commands.command(name="updatewarstatus")
     @app_commands.checks.has_permissions(administrator=True)
     async def update_warstatus_now(self, interaction: discord.Interaction): 
-        await self.update_warsatus()
         await interaction.response.send_message('updating war status', ephemeral=True)
+        await self.update_warsatus()
         
     @app_commands.command(name='hd2statistics')
     async def hd2statistics(self, interaction:Interaction):
