@@ -32,24 +32,25 @@ class Helldivers2(commands.Cog):
         self.countdown.start()
         
     async def update_warsatus(self):
-        try:
-            self.hd2dataservice.update_all()
-            
-            message_mo = self.hd2dataservice.get_major_order()
-            await self.send_channel_message(message_mo, 'major_order')
-            
-            message_campaign = self.hd2dataservice.get_campaign()
-            await self.send_channel_message(message_campaign, 'campaign')
-            
-            current_datetime = datetime.datetime.now()
-            timestamp = current_datetime.timestamp()
-            formatted_string = datetime.datetime.fromtimestamp(timestamp).strftime("%Y-%m-%d %H:%M:%S")
-            print(f"time remaining: {self.hd2dataservice.mo_time_remaining()}, updated: {formatted_string}")
-            
-            self.hd2dataservice.campaign_succeesing_cleanup()
-            
-        except Exception as e:
-            print("Exception:", e)
+        if self.channels:
+            try:
+                self.hd2dataservice.update_all()
+                
+                message_mo = self.hd2dataservice.get_major_order()
+                await self.send_channel_message(message_mo, 'major_order')
+                
+                message_campaign = self.hd2dataservice.get_campaign()
+                await self.send_channel_message(message_campaign, 'campaign')
+                
+                current_datetime = datetime.datetime.now()
+                timestamp = current_datetime.timestamp()
+                formatted_string = datetime.datetime.fromtimestamp(timestamp).strftime("%Y-%m-%d %H:%M:%S")
+                print(f"time remaining: {self.hd2dataservice.mo_time_remaining()}, updated: {formatted_string}")
+                
+                self.hd2dataservice.campaign_succeesing_cleanup()
+                
+            except Exception as e:
+                print("Exception:", e)
             
     def update_online_helldiver_statistics(self):
         self.walkingcounter.load()
