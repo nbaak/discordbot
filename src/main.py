@@ -12,7 +12,7 @@ intents.message_content = True
 
 client = commands.Bot(
     command_prefix=CONFIG.PREFIX,
-    intents=intents
+    intents=intents,
 )
 
 

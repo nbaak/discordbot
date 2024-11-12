@@ -8,10 +8,13 @@ from cogs.helldivers2.progress_prediction import ProgressPrediction
 from cogs.helldivers2.hd2_units import get_enemy
 from cogs.helldivers2.hd2_major_order import mo_task_paramerts, MOTaskTypes, MOMissionTypes
 
-
 class HD2DataService():
     
-    def __init__(self, initial_update=True):
+    def __init__(self, initial_update:bool=True, contact:str=None):
+        # api endpoint params
+        api.X_SUPER_CLIENT = "Discord-Bot"
+        api.X_SUPER_CONTACT = contact
+        
         self.war_statistics: Union[Dict, None] = None
         self.campaign: Union[List[Dict], None] = None
         self.major_order: Union[Dict, None] = None

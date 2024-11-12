@@ -11,6 +11,8 @@ from typing import Optional
 
 from cogs.helldivers2.hd2_data import HD2DataService
 from cogs.helldivers2.WalkingCoutner import WalkingCounter
+
+import CONFIG
 import os
 
 
@@ -23,7 +25,12 @@ class Helldivers2(commands.Cog):
         self.messages_file = 'hd2_message_ids.dat'
         self.messages = load(self.messages_file) or {}
         self.tmt = TrainingManualTips()
-        self.hd2dataservice = HD2DataService(initial_update=False)
+        
+        if not hasattr(CONFIG, "X_SUPER_CONTACT"):
+            print("YOU NEED TO ADD X_SUPER_CONTACT to your config!")
+            exit()
+            
+        self.hd2dataservice = HD2DataService(initial_update=False, contact=CONFIG.X_SUPER_CONTACT)
         self.walkingcounter = WalkingCounter(24)
         
     @commands.Cog.listener()
