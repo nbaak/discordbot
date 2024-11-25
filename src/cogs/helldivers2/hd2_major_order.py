@@ -1,9 +1,10 @@
 
-class MOTaskTypes():
+class MOTaskValueTypes():
     NONE = 0
     FACTION = 1
     TARGET_COUNT = 3
     UNIT_TYPE = 4
+    WEAPON_KILLS = 5
     LIBERATION_NEEDED = 11
     PLANET = 12
 
@@ -23,22 +24,25 @@ def mo_task_paramerts(task) -> dict:
     """
     task_out = {}
     for value, value_type in zip(task['values'], task['valueTypes']):
-        if value_type == MOTaskTypes.NONE:
+        if value_type == MOTaskValueTypes.NONE:
             continue            
-        elif value_type == MOTaskTypes.FACTION:
-            task_out[MOTaskTypes.FACTION] = value
+        elif value_type == MOTaskValueTypes.FACTION:
+            task_out[MOTaskValueTypes.FACTION] = value
             continue
-        elif value_type == MOTaskTypes.TARGET_COUNT:
-            task_out[MOTaskTypes.TARGET_COUNT] = value
+        elif value_type == MOTaskValueTypes.TARGET_COUNT:
+            task_out[MOTaskValueTypes.TARGET_COUNT] = value
             continue
-        elif value_type == MOTaskTypes.UNIT_TYPE:
-            task_out[MOTaskTypes.UNIT_TYPE] = value
+        elif value_type == MOTaskValueTypes.UNIT_TYPE:
+            task_out[MOTaskValueTypes.UNIT_TYPE] = value
             continue
-        elif value_type == MOTaskTypes.LIBERATION_NEEDED:
-            task_out[MOTaskTypes.LIBERATION_NEEDED] = value
+        elif value_type == MOTaskValueTypes.WEAPON_KILLS:
+            task_out[MOTaskValueTypes.WEAPON_KILLS] = value
             continue
-        elif value_type == MOTaskTypes.PLANET:
-            task_out[MOTaskTypes.PLANET] = value
+        elif value_type == MOTaskValueTypes.LIBERATION_NEEDED:
+            task_out[MOTaskValueTypes.LIBERATION_NEEDED] = value
+            continue
+        elif value_type == MOTaskValueTypes.PLANET:
+            task_out[MOTaskValueTypes.PLANET] = value
             continue
         else:
             continue
