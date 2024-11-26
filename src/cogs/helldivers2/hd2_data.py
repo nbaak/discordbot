@@ -5,16 +5,17 @@ from cogs.helldivers2.hd2_tools import convert_to_datetime, get_recent_messages,
 import statistics
 import time
 from cogs.helldivers2.progress_prediction import ProgressPrediction
-from cogs.helldivers2.hd2_units import get_enemy
-from cogs.helldivers2.hd2_weapons import get_weapon
-from cogs.helldivers2.hd2_major_order import mo_task_paramerts, MOTaskValueTypes, MOMissionTypes
+import cogs.helldivers2.hd2_major_order as hd2_major_order
+
 
 class HD2DataService():
     
     def __init__(self, initial_update:bool=True, contact:str=None):
         # api endpoint params
         api.X_SUPER_CLIENT = "Discord-Bot"
-        api.X_SUPER_CONTACT = contact
+        api.X_SUPER_CONTACT = contact or "Test21"
+        
+        hd2_major_order.hd2_data = self
         
         self.war_statistics: Union[Dict, None] = None
         self.campaign: Union[List[Dict], None] = None
@@ -103,9 +104,6 @@ class HD2DataService():
         factions = {0: "Any Enemies", 1: "Humans", 2: "Terminids", 3: "Automatons", 4: "Illuminates"}
         return factions[faction_id] if faction_id in factions else "UNKOWN"
     
-    def units(self, unit_id:int) -> str:
-        return get_enemy(unit_id)
-    
     def planet_info(self, planet_id:int) -> tuple:
         planet = self.planets[planet_id]        
         defense = True if planet["event"] else False
@@ -135,109 +133,20 @@ class HD2DataService():
         
         return defense, percentage, faction, remaining_time, delta
     
-    def mo_attack_planet(self, progress:int, task:dict) -> str:
-        planet_id = task["values"][2]
-        planet_name = self.planets[planet_id]["name"]
-        
-        defense, percentage, faction, _, _ = self.planet_info(planet_id)
-        
-        if progress:
-            defense_icon = "  "
-            percentage = 100
-            
-        else:
-            defense_icon = "🛡️" if defense else "⚔️"                
-            
-        holder_icon = self.faction_icon(faction)
-            
-        text = f"{holder_icon}{defense_icon} {planet_name}: {abs(percentage):3.2f}%\n"
-        
-        return text
-    
-    def mo_defend_planet(self, progress:int, task:dict) -> str:
-        task_d = mo_task_paramerts(task)
-        # planet_id = task_d[MOTaskValueTypes.PLANET]
-        target = task_d[MOTaskValueTypes.TARGET_COUNT]
-        faction_id = task_d[MOTaskValueTypes.FACTION]
-        # unit_type_id = task_d[MOTaskValueTypes.UNIT_TYPE]
-        
-        faction = self.target_faction(faction_id)
-        text = f"Defend Planets against {faction}: {progress}/{target}\n"
-        
-        return text
-    
-    def mo_kill_enemies(self, progress:int, task:dict) -> str:
-        task_d = mo_task_paramerts(task)
-        # planet_id = task_d[MOTaskValueTypes.PLANET]
-        target = task_d[MOTaskValueTypes.TARGET_COUNT]
-        faction_id = task_d[MOTaskValueTypes.FACTION]
-        unit_type_id = task_d[MOTaskValueTypes.UNIT_TYPE]
-        weapon_type_id = task_d[MOTaskValueTypes.WEAPON_KILLS]
-        
-        progress_percent = progress / target * 100
-        
-        faction = self.target_faction(faction_id)        
-        unit = f" ({self.units(unit_type_id)}s)" if unit_type_id else ""
-        weapon = f" with {get_weapon(weapon_type_id)}" if weapon_type_id else ""
-        icon = self.faction_icon(faction)
-        
-        return f"{icon}   {faction}{unit} killed {progress:,}/{target:,}{weapon} ({progress_percent:.2f}%)\n"
-    
-    def mo_extract_samples(self, progress:int, task:dict) -> str:
-        task_d = mo_task_paramerts(task)
-        planet_id = task_d[MOTaskValueTypes.PLANET]
-        target = task_d[MOTaskValueTypes.TARGET_COUNT]
-                
-        progress_percent = progress / target * 100
-        
-        return f"{self.planets[planet_id]['name']}: {progress:,}/{target:,} ({progress_percent:.2f}%)\n"
-    
-    def mo_hold_planet(self, progress:int, task:dict) -> str:
-        task_d = mo_task_paramerts(task)
-        planet_id = task_d[MOTaskValueTypes.PLANET]
-        planet_name = self.planets[planet_id]["name"]
-        
-        defense, percentage, faction, _, _ = self.planet_info(planet_id)
-            
-        if progress:
-            defense_icon = "  "
-            percentage = 100
-            faction = 0
-            
-        else:
-            defense_icon = "🛡️" if defense else "⚔️" 
-        
-        holder_icon = self.faction_icon(faction)
-        
-        return f"{holder_icon}{defense_icon} {planet_name}: {abs(percentage):3.2f}%\n"
-    
-    def mo_liberate_more_planets_than_lost(self, progress:int, task:dict) -> str:
-        task_d = mo_task_paramerts(task)        
-        return f"Liberate more Planets than Lost: {progress}\n"
-    
     def mo_progress(self, major_order:dict) -> str:
         try:
             progress = major_order["progress"]
             tasks = major_order["tasks"]
-            text = f""
+            text = ""
             
             for task, prog in zip(tasks, progress):
-                if task["type"] == MOMissionTypes.EXTRACT_SAMPLES:
-                    text += self.mo_extract_samples(prog, task)
-                elif task["type"] == MOMissionTypes.KILL_ENEMIES:
-                    text += self.mo_kill_enemies(prog, task)
-                elif task["type"] == MOMissionTypes.ATTACK_PLANET: 
-                    text += self.mo_attack_planet(prog, task)
-                elif task["type"] == MOMissionTypes.DEFENT_PLANET:
-                    text += self.mo_defend_planet(prog, task)
-                elif task["type"] == MOMissionTypes.HOLD_PLANET:
-                    text += self.mo_hold_planet(prog, task)
-                elif task["type"] == MOMissionTypes.LIBERTAE_MORE_PLANETS_THAN_LOST:
-                    text += self.mo_liberate_more_planets_than_lost(prog, task)
+                text += hd2_major_order.mission(task["type"], prog, task)
             
             return text
-        except:
+        
+        except Exception as e:
             print(f"Unkown MO!")
+            print(e)
             print(major_order)
     
     def mo_time_remaining(self, major_order:dict=None) -> str:
