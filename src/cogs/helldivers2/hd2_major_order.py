@@ -26,15 +26,14 @@ class MOMissionTypes():
 hd2_data:HD2DataService = None
 
 # mo valuze types as compact dict based on MOTaskValueTypes
-mo_task_value_types = {v: k for k, v in vars(MOTaskValueTypes).items() if not k.startswith("__")}
+mo_task_value_types:dict = {v: k for k, v in vars(MOTaskValueTypes).items() if not k.startswith("__")}
 
 
-def mo_task_paramerts(task) -> dict:
+def mo_task_paramerts(task:dict) -> dict:
     """
     @return faction_id, target_id, libertation_needed, planet_id, unit_type_id
     """
     task_out = {}
-    mo_task_value_types = {v: k for k, v in vars(MOTaskValueTypes).items() if not k.startswith("__")}
     for value, value_type in zip(task['values'], task['valueTypes']):
         if value_type in mo_task_value_types:
             task_out[value_type] = value
