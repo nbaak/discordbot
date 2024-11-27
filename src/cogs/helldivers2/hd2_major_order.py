@@ -1,5 +1,6 @@
 from cogs.helldivers2.hd2_units import get_enemy
 from cogs.helldivers2.hd2_weapons import get_weapon
+from cogs.helldivers2.hd2_data import HD2DataService
 
 
 class MOTaskValueTypes(object):
@@ -22,7 +23,7 @@ class MOMissionTypes():
 
     
 # register point fopr hd2 data service
-hd2_data = None
+hd2_data:HD2DataService = None
 
 # mo valuze types as compact dict based on MOTaskValueTypes
 mo_task_value_types = {v: k for k, v in vars(MOTaskValueTypes).items() if not k.startswith("__")}

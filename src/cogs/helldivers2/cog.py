@@ -10,7 +10,7 @@ from cogs.helldivers2.tmt import TrainingManualTips
 from typing import Optional
 
 from cogs.helldivers2.hd2_data import HD2DataService
-from cogs.helldivers2.WalkingCoutner import WalkingCounter
+from cogs.helldivers2.walking_coutner import WalkingCounter
 
 import CONFIG
 import os

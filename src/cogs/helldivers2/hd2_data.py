@@ -13,7 +13,7 @@ class HD2DataService():
     def __init__(self, initial_update:bool=True, contact:str=None):
         # api endpoint params
         api.X_SUPER_CLIENT = "Discord-Bot"
-        api.X_SUPER_CONTACT = contact or "Test21"
+        api.X_SUPER_CONTACT = contact or ""
         
         hd2_major_order.hd2_data = self
         
