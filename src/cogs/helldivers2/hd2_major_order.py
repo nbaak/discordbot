@@ -1,9 +1,14 @@
 from cogs.helldivers2.hd2_units import get_enemy
 from cogs.helldivers2.hd2_weapons import get_weapon
-from cogs.helldivers2.hd2_data import HD2DataService
+try:
+    from cogs.helldivers2.hd2_data import HD2DataService
+except:
+    import importlib
+    HD2DataService = importlib.import_module("cogs.helldivers2.hd2_data")
 
 
-class MOTaskValueTypes(object):
+# python 3.12 IntEnum
+class MOTaskValueTypes():
     NONE = 0
     FACTION = 1
     TARGET_COUNT = 3
@@ -73,7 +78,7 @@ def mo_defend_planet(progress:int, task:dict) -> str:
     return text
 
 
-def mo_kill_enemies(progress:int, task:dict) -> str:    
+def mo_kill_enemies(progress:int, task:dict) -> str: 
     # planet_id = task[MOTaskValueTypes.PLANET]
     target = task[MOTaskValueTypes.TARGET_COUNT]
     faction_id = task[MOTaskValueTypes.FACTION]
