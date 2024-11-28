@@ -3,10 +3,8 @@ attrs
 beautifulsoup4
 discord.py
 pytz
-duden
 matplotlib
 numpy
 pillow
-pronouncing
 requests
 wikipedia
