@@ -7,8 +7,8 @@ from discord.ext import commands
 import CONFIG
 
 intents = discord.Intents.default()
-intents = discord.Intents(messages=True, guilds=True)
-intents.message_content = True
+intents = discord.Intents(messages=True, guilds=True, message_content=True)
+# intents.message_content = True
 
 client = commands.Bot(
     command_prefix=CONFIG.PREFIX,
@@ -62,7 +62,7 @@ async def main():
             await client.load_extension(f'cogs.{path_object}.cog')
         
         # load cog from file
-        if path_object.endswith('.py'):
+        if path_object.endswith('.py') and not path_object.startswith("_"):
             await client.load_extension(f'cogs.{path_object[:-3]}')
 
     async with client:

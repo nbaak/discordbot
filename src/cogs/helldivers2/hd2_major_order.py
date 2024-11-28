@@ -6,9 +6,10 @@ except:
     import importlib
     HD2DataService = importlib.import_module("cogs.helldivers2.hd2_data")
 
+from enum import IntEnum
 
-# python 3.12 IntEnum
-class MOTaskValueTypes():
+
+class MOTaskValueTypes(IntEnum):
     NONE = 0
     FACTION = 1
     TARGET_COUNT = 3
@@ -31,7 +32,7 @@ class MOMissionTypes():
 hd2_data:HD2DataService = None
 
 # mo valuze types as compact dict based on MOTaskValueTypes
-mo_task_value_types:dict = {v: k for k, v in vars(MOTaskValueTypes).items() if not k.startswith("__")}
+# mo_task_value_types:dict = {v: k for k, v in vars(MOTaskValueTypes).items() if not k.startswith("__")}
 
 
 def mo_task_paramerts(task:dict) -> dict:
@@ -40,7 +41,7 @@ def mo_task_paramerts(task:dict) -> dict:
     """
     task_out = {}
     for value, value_type in zip(task['values'], task['valueTypes']):
-        if value_type in mo_task_value_types:
+        if value_type in MOTaskValueTypes:
             task_out[value_type] = value
         
     return task_out
@@ -147,6 +148,7 @@ def mission(mission_type:MOMissionTypes, progress:int, task:dict) -> str:
 
 def test():
     print(13 == MOMissionTypes.HOLD_PLANET)
+    print(3 in MOTaskValueTypes)
     
     
 if __name__ == "__main__":
