@@ -1,5 +1,5 @@
 from cogs.helldivers2.hd2_units import get_enemy
-from cogs.helldivers2.hd2_weapons import get_weapon
+from cogs.helldivers2.hd2_items import get_item
 try:
     from cogs.helldivers2.hd2_data import HD2DataService
 except:
@@ -14,7 +14,7 @@ class MOTaskValueTypes(IntEnum):
     FACTION = 1
     TARGET_COUNT = 3
     UNIT_TYPE = 4
-    WEAPON_KILLS = 5
+    ITEM = 5
     LIBERATION_NEEDED = 11
     PLANET = 12
 
@@ -48,23 +48,23 @@ def mo_task_paramerts(task:dict) -> dict:
 
 
 def mo_attack_planet(progress:int, task:dict) -> str:
-        planet_id = task[MOTaskValueTypes.PLANET]
-        planet_name = hd2_data.planets[planet_id]["name"]
+    planet_id = task[MOTaskValueTypes.PLANET]
+    planet_name = hd2_data.planets[planet_id]["name"]
+    
+    defense, percentage, faction, _, _ = hd2_data.planet_info(planet_id)
+    
+    if progress:
+        defense_icon = "  "
+        percentage = 100
         
-        defense, percentage, faction, _, _ = hd2_data.planet_info(planet_id)
+    else:
+        defense_icon = "🛡️" if defense else "⚔️"                
         
-        if progress:
-            defense_icon = "  "
-            percentage = 100
-            
-        else:
-            defense_icon = "🛡️" if defense else "⚔️"                
-            
-        holder_icon = hd2_data.faction_icon(faction)
-            
-        text = f"{holder_icon}{defense_icon} {planet_name}: {abs(percentage):3.2f}%\n"
+    holder_icon = hd2_data.faction_icon(faction)
         
-        return text
+    text = f"{holder_icon}{defense_icon} {planet_name}: {abs(percentage):3.2f}%\n"
+    
+    return text
 
     
 def mo_defend_planet(progress:int, task:dict) -> str:
@@ -84,13 +84,13 @@ def mo_kill_enemies(progress:int, task:dict) -> str:
     target = task[MOTaskValueTypes.TARGET_COUNT]
     faction_id = task[MOTaskValueTypes.FACTION]
     unit_type_id = task[MOTaskValueTypes.UNIT_TYPE]
-    weapon_type_id = task[MOTaskValueTypes.WEAPON_KILLS]
+    weapon_type_id = task[MOTaskValueTypes.ITEM]
     
     progress_percent = progress / target * 100
     
     faction = hd2_data.target_faction(faction_id)        
     unit = f" ({get_enemy(unit_type_id)}s)" if unit_type_id else ""
-    weapon = f" with {get_weapon(weapon_type_id)}" if weapon_type_id else ""
+    weapon = f" with {get_item(weapon_type_id)}" if weapon_type_id else ""
     icon = hd2_data.faction_icon(faction)
     
     return f"{icon}   {faction}{unit} killed{weapon} {progress:,}/{target:,} ({progress_percent:.2f}%)\n"
@@ -99,10 +99,13 @@ def mo_kill_enemies(progress:int, task:dict) -> str:
 def mo_extract_samples(progress:int, task:dict) -> str:
     planet_id = task[MOTaskValueTypes.PLANET]
     target = task[MOTaskValueTypes.TARGET_COUNT]
+    
+    sample_type_id = task[MOTaskValueTypes.ITEM]
+    sample_type = f"{get_item(sample_type_id)}" if sample_type_id else ""
             
     progress_percent = progress / target * 100
     
-    return f"{hd2_data.planets[planet_id]['name']}: {progress:,}/{target:,} ({progress_percent:.2f}%)\n"
+    return f"Extract {sample_type} Samples on {hd2_data.planets[planet_id]['name']}: {progress:,}/{target:,} ({progress_percent:.2f}%)\n"
 
 
 def mo_hold_planet(progress:int, task:dict) -> str:

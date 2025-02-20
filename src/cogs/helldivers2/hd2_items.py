@@ -1,16 +1,17 @@
 """
-known weapons in game by id
+known items in game by id
 """
 
-weapons = {
+items = {
     0: 'any',
     1978117092: "Stalwart",
     934703916: "Machine Gun",
     4038802832: "Heavy Machine Gun",
+    3992382197: "Common",
 }
 
-def get_weapon(id:int) -> str:
-    if id in weapons:
-        return weapons[id]
+def get_item(id:int) -> str:
+    if id in items:
+        return items[id]
     else:
         return None
