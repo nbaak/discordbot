@@ -183,7 +183,7 @@ class HD2DataService():
         else:
             return f"MAJOR ORDER\nNo Major Order active!"
     
-    def get_current_onlie_players(self):
+    def get_current_online_players(self):
         return self.war_statistics["statistics"]["playerCount"] if self.war_statistics else 0
     
     def campaign_succeesing(self, defense:bool, campaign_planet:dict, mission_ends_in):
@@ -253,7 +253,7 @@ class HD2DataService():
                 
                 text += f"{holder_icon}{defense_icon} {planet['name']}{remaining_time}: liberation: {percentage:3.2f}%, active Helldivers: {player_count}{succeeding} \n"
             
-            helldivers_online_total = self.get_current_onlie_players()
+            helldivers_online_total = self.get_current_online_players()
             text += f"\nHelldivers active: {helldivers_online_total}"
                 
             return text

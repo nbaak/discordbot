@@ -7,14 +7,15 @@ import time
 
 class ProgressPrediction:
     
-    def __init__(self, hp_value:Union[int, None]=None, time_value:Union[int, None]=None):
-        self.last_value = hp_value        
+    def __init__(self, hp_value:Union[int, None]=None, time_value:Union[int, None]=None, target_value: int=0):
+        self.last_value = hp_value     
+        self.target = target_value   
         self.last_time = time_value or int(time.time())
         self.deltas = deque(maxlen=5)
         
     def add_sample(self, sample:int, ts:int) -> Union[int, None]:
         if self.last_value is not None:
-            delta = self.last_value - sample
+            delta = abs(sample - self.last_value)
             delta_time = ts - self.last_time
             
             if delta_time == 0: return None
@@ -30,7 +31,7 @@ class ProgressPrediction:
     def mean(self):
         return sum(self.deltas) / len(self.deltas)
     
-    def calculate_progress(self, sample:int, ts:int) -> Union[float, None]:
+    def calculate_progress(self, sample: int, ts: int) -> Union[float, None]:
         """
         Calculate the progress given a new sample and timestamp.
         """
@@ -38,8 +39,9 @@ class ProgressPrediction:
         p_time = None
         
         if any(self.deltas):
-            mean_delta = self.mean() # trend
-            p_time = sample / mean_delta if mean_delta != 0 else None
+            mean_delta = self.mean()  # trend
+            # p_time = sample / mean_delta if mean_delta != 0 else None
+            p_time = abs(self.target - sample) / mean_delta
         
         self.last_value = sample
         self.last_time = ts
@@ -54,7 +56,7 @@ class ProgressPrediction:
         return self.calculate_progress(sample, ts)
         
     
-def test():
+def test_down():
     pp = ProgressPrediction(100)
     
     time.sleep(1)
@@ -75,7 +77,32 @@ def test():
     time.sleep(1)
     print(pp.calculate_progress_t(93))
     print(pp.calculate_progress_t(93))
+    
+    
+def test_up():
+    pp = ProgressPrediction(0, target_value=10)
+
+    time.sleep(1)
+    print(pp.calculate_progress_t(1))
+    
+    time.sleep(1)
+    print(pp.calculate_progress_t(2))
+    
+    time.sleep(1)
+    print(pp.calculate_progress_t(3))
+    
+    time.sleep(1)
+    print(pp.calculate_progress_t(4))
+    
+    time.sleep(2)
+    print(pp.calculate_progress_t(8))
+    
+    time.sleep(1)
+    print(pp.calculate_progress_t(10))
+    
+    print("done")
 
     
 if __name__ == "__main__":
-    test()
+    test_down()
+    test_up()

@@ -61,7 +61,7 @@ class Helldivers2(commands.Cog):
             
     def update_online_helldiver_statistics(self):
         self.walkingcounter.load()
-        online_divers = self.hd2dataservice.get_current_onlie_players()
+        online_divers = self.hd2dataservice.get_current_online_players()
         day = datetime.datetime.now().day
         hour = datetime.datetime.now().hour
         stamp = f"{day:02}-{hour:02}"
