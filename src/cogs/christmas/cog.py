@@ -44,15 +44,14 @@ class ChristmasModule(commands.Cog):
         current_year = datetime.now().year
         current_month = datetime.now().month
         current_day = datetime.now().day
-
-        print(f"it's christmas in: {days_remaining} days")
+        
         messages = []
         if days_remaining == 0:
-            message = "Merry Christmas! 🎄🎅🎁"
+            message = "Merry Christmas Eve! 🎄🎅🎁"
         elif days_remaining == 1:
-            message = "Only 1 day left until Christmas! 🎄🎅🎁"
+            message = "Only 1 day left until Christmas Eve! 🎄🎅🎁"
         else:
-            message = f"{days_remaining} days left until Christmas! 🎄🎅🎁"
+            message = f"{days_remaining} days left until Christmas Eve! 🎄🎅🎁"
 
         messages.append(message)
 
@@ -78,7 +77,7 @@ class ChristmasModule(commands.Cog):
         # Send the countdown message to all known Christmas channels
         for cid in channels:
             channel = discord.utils.get(self.bot.get_all_channels(), id=cid)
-            if os.path.isfile('progress.png'):            
+            if os.path.isfile('progress.png'): 
                 await channel.send(content='\n'.join(messages), file=discord.File('progress.png'))
             else:
                 await channel.send(content='\n'.join(messages))
