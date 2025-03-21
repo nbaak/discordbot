@@ -7,15 +7,20 @@ import time
 
 class ProgressPrediction:
     
-    def __init__(self, hp_value:Union[int, None]=None, time_value:Union[int, None]=None, target_value: int=0):
-        self.last_value = hp_value     
+    def __init__(self, sample: Union[int, None]=None, time_value: Union[int, None]=None, target_value: int=0, count_up: bool=False, queue_len: int=5):
+        self.last_value = sample     
         self.target = target_value   
         self.last_time = time_value or int(time.time())
-        self.deltas = deque(maxlen=5)
+        self.deltas = deque(maxlen=queue_len)
+        self.count_up = count_up
         
-    def add_sample(self, sample:int, ts:int) -> Union[int, None]:
+    def add_sample(self, sample: int, ts:int) -> Union[int, None]:
         if self.last_value is not None:
-            delta = abs(sample - self.last_value)
+            if self.count_up:
+                delta = sample - self.last_value
+            else:
+                delta = self.last_value - sample
+            
             delta_time = ts - self.last_time
             
             if delta_time == 0: return None
@@ -48,7 +53,7 @@ class ProgressPrediction:
         
         return p_time
     
-    def calculate_progress_t(self, sample:int) -> Union[float, None]:
+    def calculate_progress_t(self, sample: int) -> Union[float, None]:
         """
         Calculate progress using the current timestamp.
         """
@@ -69,18 +74,23 @@ def test_down():
     print(pp.calculate_progress_t(97))
     
     time.sleep(1)
-    print('X', pp.calculate_progress_t(94))
+    print("jump", pp.calculate_progress_t(94))
     
     time.sleep(1)
     print(pp.calculate_progress_t(93))
     
     time.sleep(1)
+    print("back", pp.calculate_progress_t(95))
+    
+    time.sleep(1)
     print(pp.calculate_progress_t(93))
     print(pp.calculate_progress_t(93))
+    
+    print("down - done\n")
     
     
 def test_up():
-    pp = ProgressPrediction(0, target_value=10)
+    pp = ProgressPrediction(0, target_value=10, count_up=True)
 
     time.sleep(1)
     print(pp.calculate_progress_t(1))
@@ -95,12 +105,18 @@ def test_up():
     print(pp.calculate_progress_t(4))
     
     time.sleep(2)
-    print(pp.calculate_progress_t(8))
+    print("back", pp.calculate_progress_t(8))
+    
+    time.sleep(1)
+    print(pp.calculate_progress_t(6))
+    
+    time.sleep(1)
+    print(pp.calculate_progress_t(7))
     
     time.sleep(1)
     print(pp.calculate_progress_t(10))
     
-    print("done")
+    print("up - done")
 
     
 if __name__ == "__main__":
