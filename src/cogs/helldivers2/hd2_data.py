@@ -264,8 +264,7 @@ class HD2DataService():
         if self.news:
             entries = get_recent_messages(self.news, days) 
             message = "NEWS:\n"
-            for e_msg in entries:
-                message += e_msg + "\n"
+            message += "\n\n".join(entries)
                 
             return message
                 
@@ -314,7 +313,7 @@ def main():
     print(data.get_major_order())
     print(data.get_campaign())
     
-    # print(data.get_news(1))
+    print(data.get_news(2))
     
     # print(data.statistics())
 
