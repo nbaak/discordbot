@@ -22,6 +22,7 @@ class MOTaskValueTypes(IntEnum):
 class MOMissionTypes():
     EXTRACT_SAMPLES = 2
     KILL_ENEMIES = 3
+    COMPLETE_OPERATIONS = 9
     ATTACK_PLANET = 11
     DEFENT_PLANET = 12
     HOLD_PLANET = 13
@@ -132,9 +133,17 @@ def mo_liberate_more_planets_than_lost(progress:int, task:dict) -> str:
     return f"Liberate more Planets than Lost: {progress}\n"
 
 
+def mo_complete_operations(c_progress:int, task:dict) -> str:
+    target_count = task[MOTaskValueTypes.TARGET_COUNT]
+    p_progress = c_progress / target_count  # percent
+        
+    return f"Win Operations: {c_progress}/{target_count} ({p_progress:.2}%)\n"
+
+
 __mo_missions = {
     MOMissionTypes.EXTRACT_SAMPLES: mo_extract_samples,
     MOMissionTypes.KILL_ENEMIES: mo_kill_enemies,
+    MOMissionTypes.COMPLETE_OPERATIONS: mo_complete_operations,
     MOMissionTypes.ATTACK_PLANET: mo_attack_planet,
     MOMissionTypes.DEFENT_PLANET: mo_defend_planet,
     MOMissionTypes.HOLD_PLANET: mo_hold_planet,
@@ -146,7 +155,7 @@ def mission(mission_type:MOMissionTypes, progress:int, task:dict) -> str:
     if mission_type in __mo_missions:
         return __mo_missions[mission_type](progress, mo_task_paramerts(task))
     else:
-        return f"unkown major order {mission_type}"
+        return f"unkown major order {mission_type}\n"
 
 
 def test():
