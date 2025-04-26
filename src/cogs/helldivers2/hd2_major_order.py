@@ -136,8 +136,14 @@ def mo_liberate_more_planets_than_lost(progress:int, task:dict) -> str:
 def mo_complete_operations(c_progress:int, task:dict) -> str:
     target_count = task[MOTaskValueTypes.TARGET_COUNT]
     p_progress = c_progress / target_count * 100 # percent
+    
+    faction_id = task[MOTaskValueTypes.FACTION]
+    faction = hd2_data.target_faction(faction_id)
+    
+    against = f"against {faction}"
+    
         
-    return f"Win Operations: {c_progress}/{target_count} ({p_progress:.2f}%)\n"
+    return f"Win Operations {against}: {c_progress}/{target_count} ({p_progress:.2f}%)\n"
 
 
 __mo_missions = {
