@@ -129,7 +129,6 @@ def mo_hold_planet(progress:int, task:dict) -> str:
 
 
 def mo_liberate_more_planets_than_lost(progress:int, task:dict) -> str:
-    task_d = mo_task_paramerts(task)        
     return f"Liberate more Planets than Lost: {progress}\n"
 
 
