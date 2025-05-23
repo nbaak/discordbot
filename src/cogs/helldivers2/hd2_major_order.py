@@ -22,6 +22,7 @@ class MOTaskValueTypes(IntEnum):
 class MOMissionTypes():
     EXTRACT_SAMPLES = 2
     KILL_ENEMIES = 3
+    EXTRACT_SUCCESSFUL_MISSION = 7
     COMPLETE_OPERATIONS = 9
     ATTACK_PLANET = 11
     DEFENT_PLANET = 12
@@ -97,6 +98,19 @@ def mo_kill_enemies(progress:int, task:dict) -> str:
     return f"{icon}   {faction}{unit} killed{weapon} {progress:,}/{target:,} ({progress_percent:.2f}%)\n"
 
 
+def mo_extract_successful_mission(progress:int, task:dict) -> str:
+    target = task[MOTaskValueTypes.TARGET_COUNT]
+    progress_percent = progress / target * 100
+    
+    faction_id = task[MOTaskValueTypes.FACTION]
+    against = ""
+    if faction_id != 0:
+        faction = hd2_data.target_faction(faction_id)
+        against = f" against {faction}"
+    
+    return f"Extract from a successful mission{against} {progress}/{target} ({progress_percent:.2f}%)\n"
+
+
 def mo_extract_samples(progress:int, task:dict) -> str:
     planet_id = task[MOTaskValueTypes.PLANET]
     target = task[MOTaskValueTypes.TARGET_COUNT]
@@ -148,6 +162,7 @@ def mo_complete_operations(c_progress:int, task:dict) -> str:
 __mo_missions = {
     MOMissionTypes.EXTRACT_SAMPLES: mo_extract_samples,
     MOMissionTypes.KILL_ENEMIES: mo_kill_enemies,
+    MOMissionTypes.EXTRACT_SUCCESSFUL_MISSION: mo_extract_successful_mission,
     MOMissionTypes.COMPLETE_OPERATIONS: mo_complete_operations,
     MOMissionTypes.ATTACK_PLANET: mo_attack_planet,
     MOMissionTypes.DEFENT_PLANET: mo_defend_planet,
