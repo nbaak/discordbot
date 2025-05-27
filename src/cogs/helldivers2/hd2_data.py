@@ -166,18 +166,29 @@ class HD2DataService():
         
     def get_major_order(self) -> str:
         if self.major_order:
-            mo = self.major_order[0]
-            progress = self.mo_progress(mo)
-            
-            title = f"{mo['title']}"
-            if mo['briefing']:
-                title += f"\n{mo['briefing']}\n"
-            if mo['description'] and mo['description'] != mo['briefing']:
-                title += f"{mo['description']}\n"
+            text = ""
+            last = len(self.major_order)
+            for i, mo in enumerate(self.major_order):
+                progress = self.mo_progress(mo)                
                 
-            text = f"{title}\n{progress}" 
-            text += f"Reward: {mo['reward']['amount']} 🏅\n"
-            text += f"ends in {self.mo_time_remaining(mo)}\n"
+                title = mo.get("title")
+                briefing = mo.get("briefing", "")
+                description = mo.get("description", "")
+                if not description:
+                    description = ""
+                
+                if briefing == description:
+                    head = f"{title}\n{briefing}"
+                else:
+                    head = f"{title}\n{briefing}\n{description}"
+                
+                text += f"{head}\n{progress}"
+                if mo['reward']:
+                    text += f"Reward: {mo['reward']['amount']} 🏅\n"
+                text += f"ends in {self.mo_time_remaining(mo)}\n"
+                if i != last:
+                    text += "\n"
+                
             return text
         
         else:
