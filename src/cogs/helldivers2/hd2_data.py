@@ -178,14 +178,14 @@ class HD2DataService():
                     description = ""
                 
                 if briefing == description:
-                    head = f"{title}\n{briefing}"
+                    head = f"# {title}\n{briefing}"
                 else:
-                    head = f"{title}\n{briefing}\n{description}"
+                    head = f"# {title}\n{briefing}\n{description}"
                 
                 text += f"{head}\n{progress}"
                 if mo['reward']:
                     text += f"Reward: {mo['reward']['amount']} 🏅\n"
-                text += f"ends in {self.mo_time_remaining(mo)}\n"
+                text += f"ends in {self.mo_time_remaining(mo)}"
                 if i != last:
                     text += "\n"
                 
@@ -249,7 +249,7 @@ class HD2DataService():
         
     def get_campaign(self) -> str:
         if self.campaign:
-            text = "War Campaign:\n"
+            text = "# War Campaign\n"
             
             for campaing_object in sorted(self.campaign, key=lambda c: c["planet"]["statistics"]["playerCount"], reverse=True):
                 planet = campaing_object["planet"]
