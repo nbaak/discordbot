@@ -172,6 +172,9 @@ class HD2DataService():
                 progress = self.mo_progress(mo)                
                 
                 title = mo.get("title")
+                if title == None:
+                    continue
+                
                 briefing = mo.get("briefing", "")
                 description = mo.get("description", "")
                 if not description:
