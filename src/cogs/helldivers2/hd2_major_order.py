@@ -112,6 +112,7 @@ def mo_extract_successful_mission(progress:int, task:dict) -> str:
 
 
 def mo_extract_samples(progress:int, task:dict) -> str:
+    enemy_faction_id = task[MOTaskValueTypes.FACTION]
     planet_id = task[MOTaskValueTypes.PLANET]
     target = task[MOTaskValueTypes.TARGET_COUNT]
     
@@ -120,7 +121,12 @@ def mo_extract_samples(progress:int, task:dict) -> str:
             
     progress_percent = progress / target * 100
     
-    return f"Extract {sample_type} Samples on {hd2_data.planets[planet_id]['name']}: {progress:,}/{target:,} ({progress_percent:.2f}%)\n"
+    if enemy_faction_id:
+        faction = hd2_data.target_faction(enemy_faction_id)
+        return f"Extract {sample_type} Samples on any {faction} controlled planet: {progress:,}/{target:,} ({progress_percent:.2f}%)\n"
+    
+    planet = hd2_data.planets[planet_id]['name']
+    return f"Extract {sample_type} Samples on {planet}: {progress:,}/{target:,} ({progress_percent:.2f}%)\n"
 
 
 def mo_hold_planet(progress:int, task:dict) -> str:
