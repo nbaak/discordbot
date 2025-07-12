@@ -59,6 +59,9 @@ class ProgressPrediction:
         """
         ts = int(time.time())
         return self.calculate_progress(sample, ts)
+    
+    def __repr__(self):
+        return f"{self.last_time} {self.last_value}"
         
     
 def test_down():
