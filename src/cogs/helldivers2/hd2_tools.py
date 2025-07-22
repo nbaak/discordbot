@@ -13,8 +13,11 @@ def convert_to_datetime(timestamp:Union[str, int, float]):
             return datetime.datetime.strptime(n_timestamp, "%Y-%m-%dT%H:%M:%S")
 
         elif isinstance(timestamp, int) or isinstance(timestamp, float):
-            offset: int = 1706396400 # hd2 launch time
-            return datetime.datetime.fromtimestamp(timestamp + offset)
+            offset: int = 1707955200
+            # HD2 launch time which was 2024-02-08 
+            # BUT the TS is from the 2024-02-15
+            # NOBODY KNOWS!
+            return datetime.datetime.fromtimestamp(timestamp + offset, tz=timezone.utc)
 
         else:
             return None
