@@ -87,22 +87,22 @@ class HD2DataService():
         except KeyError:
             return 0, "?"
     
-    def faction_icon(self, faction:Union[int, str]) -> str:
-        if isinstance(faction, int):
+    def faction_icon(self, faction_id:Union[int, str]) -> str:
+        if isinstance(faction_id, int):
             factions = {0: "🌎", 1: "🪲", 2: "🤖", 3: "🦑"}
         else:
             factions = {"Humans": "🌎", "Terminids": "🪲", "Automaton": "🤖", "Illuminate": "🦑", "Automatons": "🤖", "Illuminates": "🦑"}
         
-        return factions[faction] if faction in factions else "?"
+        return factions.get(faction_id, "?")
     
     def faction_name(self, faction_id:int) -> str:
-        factions = {0: "Any Enemies", 1: "Terminids", 2: "Automatons", 3: "Illuminates"}
+        factions = {0: "Any Enemies", 1: "Terminids", 2: "Automaton", 3: "Illuminate"}
         # factions = self.war_statistics["factions"]
-        return factions[faction_id]
+        return factions.get(faction_id, "Unknown_Faction")
     
     def target_faction(self, faction_id:int) -> str:
-        factions = {0: "Any Enemies", 1: "Humans", 2: "Terminids", 3: "Automatons", 4: "Illuminates"}
-        return factions[faction_id] if faction_id in factions else "UNKOWN"
+        factions = {0: "Any Enemies", 1: "Humans", 2: "Terminids", 3: "Automaton", 4: "Illuminate"}
+        return factions.get(faction_id, "Unknown_Faction")
     
     def planet_info(self, planet_id:int) -> tuple:
         planet = self.planets[planet_id]        

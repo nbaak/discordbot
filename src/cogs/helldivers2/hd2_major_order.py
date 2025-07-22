@@ -90,12 +90,12 @@ def mo_kill_enemies(progress:int, task:dict) -> str:
     
     progress_percent = progress / target * 100
     
-    faction = hd2_data.target_faction(faction_id)        
+    faction = hd2_data.target_faction(faction_id)
     unit = f" ({get_enemy(unit_type_id)})" if unit_type_id else ""
     weapon = f" with {get_item(weapon_type_id)}" if weapon_type_id else ""
     icon = hd2_data.faction_icon(faction)
     
-    return f"{icon}   {faction}{unit} killed{weapon} {progress:,}/{target:,} ({progress_percent:.2f}%)\n"
+    return f"{icon} {faction}{unit} killed{weapon} {progress:,}/{target:,} ({progress_percent:.2f}%)\n"
 
 
 def mo_extract_successful_mission(progress:int, task:dict) -> str:
