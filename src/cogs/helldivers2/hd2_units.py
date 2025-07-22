@@ -3,18 +3,31 @@ a list of known enemies by id
 """
 
 enemy_units = {
-    0: 'any', 
+    0: 'any',
+    
+    # Bugs
+    793026793: 'Shriekers',
+    1046000873: 'Impalers',
     1379865898: 'Bile Spewer',
     1405979473: 'Harvester',
     2058088313: 'Warrior',
     2514244534: 'Bile Titan',
+    
+    # Automaton
+    # 523260929: '?', # was in first at 2025-07-22
+    1153658728: 'Factory Strider',
     2664856027: 'Shredder Tank',
+    3097344451: 'Leviathans',
+    
+    # Illuminate
+    2880434041: 'Fleshmobs',
     4211847317: 'Voteles',
 }
 
-def get_enemy(id:int) -> str:
-    if id in enemy_units:
-        return enemy_units[id]
+
+def get_enemy(_id: int) -> str:
+    if _id in enemy_units:
+        return enemy_units[_id]
     else:
-        print(f"unknown unit id: {id}")
+        print(f"unknown unit _id: {_id}")
         return None
