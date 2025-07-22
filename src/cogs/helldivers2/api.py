@@ -7,7 +7,8 @@ X_SUPER_CONTACT = ""
 class Endpoints:
     all = "https://api.diveharder.com/v1/all"
     war_statistics = "https://api.helldivers2.dev/api/v1/war"
-    dispatch = "https://api.helldivers2.dev/api/v1/dispatches"
+    # dispatch = "https://api.helldivers2.dev/a/pi/v1/dispatches?maxEntries=1024"
+    dispatch = "https://api.live.prod.thehelldiversgame.com/api/NewsFeed/801?maxEntries=1024"
     campaign = "https://api.helldivers2.dev/api/v1/campaigns"
     planets = "https://api.helldivers2.dev/api/v1/planets"
     major_order = "https://api.helldivers2.dev/api/v1/assignments"
@@ -44,7 +45,7 @@ def planets():
 
 
 def dispatch():
-    headers = {"X-Super-Client": X_SUPER_CLIENT, "X-Super-Contact": X_SUPER_CONTACT}
+    headers = {"X-Super-Client": X_SUPER_CLIENT, "X-Super-Contact": X_SUPER_CONTACT, "Accept-Language": "de,en-US;q=0.7,en;q=0.3",}
     return httpclient.get(Endpoints.dispatch, headers)
 
 

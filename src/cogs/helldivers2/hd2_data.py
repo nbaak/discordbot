@@ -34,7 +34,10 @@ class HD2DataService():
         for news in new_dispatch:
             published_int = convert_to_datetime(news["published"])
             news["published"] = published_int
-            self.news.append(news)  
+            self.news.append(news)
+        
+        self.news.sort(key=lambda item: item["id"], reverse=True)
+        # self.news.reverse()
         
     def update_major_order(self):
         self.major_order = api.get_major_order()
@@ -327,7 +330,7 @@ def main():
     print(data.get_major_order())
     print(data.get_campaign())
     
-    # print(data.get_news(2))
+    print(data.get_news(2))
     
     # print(data.statistics())
 
