@@ -11,6 +11,7 @@ enemy_units = {
     1379865898: 'Bile Spewer',
     1405979473: 'Harvester',
     2058088313: 'Warrior',
+    2115960485: 'Spore Burst Warriors',
     2514244534: 'Bile Titan',
     
     # Automaton
