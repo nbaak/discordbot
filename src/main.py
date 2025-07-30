@@ -2,6 +2,7 @@
 import asyncio
 import discord
 import os
+from pathlib import Path
 from discord.ext import commands
 
 import CONFIG
@@ -56,6 +57,10 @@ async def sync(ctx):
 
 
 async def main():
+    current_dir: Path = Path(__file__).resolve().parent
+    print(f"Current dir path: {current_dir}")
+    os.chdir(current_dir)
+
     for path_object in os.listdir('./cogs'):
         # load cog from folder
         if os.path.isdir(f'./cogs/{path_object}') and os.path.exists(f'./cogs/{path_object}/cog.py'):
