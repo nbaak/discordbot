@@ -223,8 +223,8 @@ class HD2DataService():
         else:
             pp = self.planet_defense_progress[planet_name]
             p_time = pp.calculate_progress(current_health, current_time)
-            trend = pp.mean()
-            # print("trend", planet_name, trend)
+            # trend = pp.mean()
+            # print("trend", planet_name, trend, current_health)
             if defense and p_time is not None:
                 print(planet_name, formatted_delta(p_time), "defense")
 
@@ -239,7 +239,7 @@ class HD2DataService():
                 succeesing = f", SUCCEEDING {formatted_delta(p_time)}"
             else:
                 succeesing = None
-
+                
         return succeesing
 
     def campaign_succeesing_cleanup(self):

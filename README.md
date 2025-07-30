@@ -1,7 +1,7 @@
 # Just another Discord Bot
 
 ## Requirements
-* Python 3.10
+* Python 3.10+
   * discord.py
   * requests
   * wikipedia

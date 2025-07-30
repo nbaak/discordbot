@@ -1,6 +1,5 @@
 from cogs.helldivers2.hd2_units import get_enemy
 from cogs.helldivers2.hd2_items import get_item
-from cogs.helldivers2 import hd2_items
 try:
     from cogs.helldivers2.hd2_data import HD2DataService
 except:
@@ -16,7 +15,7 @@ class MOTaskValueTypes(IntEnum):
     TARGET_COUNT = 3
     UNIT_TYPE = 4
     ITEM = 5
-    LIBERATION_NEEDED = 11
+    LIBERATION_NEEDED = 11 # it seems that I understood this flag wrong, maybe mission scope? 1:planet, 2:sector...
     PLANET = 12
 
 
@@ -83,7 +82,7 @@ def mo_defend_planet(progress:int, task:dict) -> str:
 
 
 def mo_kill_enemies(progress:int, task:dict) -> str:
-    planet_id = task[MOTaskValueTypes.PLANET]
+    # planet_id = task[MOTaskValueTypes.PLANET]
     # dunno if liberatrion is the flag that determens the mission is planet bound..
     # need more research in this 
 
@@ -152,7 +151,7 @@ def mo_hold_planet(progress:int, task:dict) -> str:
     return f"{holder_icon}{defense_icon} {planet_name}: {abs(percentage):3.2f}%\n"
 
 
-def mo_liberate_more_planets_than_lost(progress:int, task:dict) -> str:
+def mo_liberate_more_planets_than_lost(progress:int, _) -> str:
     return f"Liberate more Planets than Lost: {progress}\n"
 
 
