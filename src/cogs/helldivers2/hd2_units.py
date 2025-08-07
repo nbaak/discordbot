@@ -18,6 +18,7 @@ enemy_units = {
     # 523260929: '?', # was in first at 2025-07-22
     1153658728: 'Factory Strider',
     2664856027: 'Shredder Tank',
+    4039692928: 'Trooper',
     
     # Illuminate
     2880434041: 'Fleshmobs',
