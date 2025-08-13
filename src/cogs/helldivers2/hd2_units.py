@@ -8,6 +8,7 @@ enemy_units = {
     # Bugs
     793026793: 'Shriekers',
     1046000873: 'Impalers',
+    1299714559: 'Chargers',
     1379865898: 'Bile Spewer',
     1405979473: 'Harvester',
     2058088313: 'Warrior',
@@ -32,4 +33,4 @@ def get_enemy(_id: int) -> str:
         return enemy_units[_id]
     else:
         print(f"unknown unit _id: {_id}")
-        return None
+        return _id
