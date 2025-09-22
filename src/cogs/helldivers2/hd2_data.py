@@ -252,11 +252,12 @@ class HD2DataService():
                 else:
                     print(f"error on dropping key {planet_name}")
 
-    def get_campaign(self) -> str:
+    def get_campaign(self, top_n:int=10) -> str:
         if self.campaign:
             text = "# War Campaign\n"
+            text += f"first {top_n} planets\n"
 
-            for campaing_object in sorted(self.campaign, key=lambda c: c["planet"]["statistics"]["playerCount"], reverse=True):
+            for campaing_object in sorted(self.campaign[:top_n], key=lambda c: c["planet"]["statistics"]["playerCount"], reverse=True):
                 planet = campaing_object["planet"]
                 planet_id = planet["index"]
                 defense, percentage, faction, remaining_time, time_delta = self.planet_info(planet_id)
@@ -325,9 +326,15 @@ class HD2DataService():
 
 def main():
     data = HD2DataService()
-
-    print(data.get_major_order())
-    print(data.get_campaign())
+    mo_body = data.get_major_order()
+    campaign_body = data.get_campaign()
+    
+    print(mo_body)
+    print(len(mo_body))
+    print()
+    print(campaign_body)
+    print(len(campaign_body))
+    print()
 
     print(data.get_news(2))
 
