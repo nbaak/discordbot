@@ -255,9 +255,11 @@ class HD2DataService():
     def get_campaign(self, top_n:int=10) -> str:
         if self.campaign:
             text = "# War Campaign\n"
-            text += f"first {top_n} planets\n"
+            
+            total_war_planets = len(self.campaign)
+            text += f"first {top_n} planets of total {total_war_planets}\n"
 
-            for campaing_object in sorted(self.campaign[:top_n], key=lambda c: c["planet"]["statistics"]["playerCount"], reverse=True):
+            for campaing_object in sorted(self.campaign, key=lambda c: c["planet"]["statistics"]["playerCount"], reverse=True)[:top_n]:
                 planet = campaing_object["planet"]
                 planet_id = planet["index"]
                 defense, percentage, faction, remaining_time, time_delta = self.planet_info(planet_id)
