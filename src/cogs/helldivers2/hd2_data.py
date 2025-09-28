@@ -214,7 +214,7 @@ class HD2DataService():
         current_time = int(time.time())
 
         succeesing = None
-        trend = None
+        # trend = None
 
         # if entry does not exist, create
         if not planet_name in self.planet_defense_progress:
@@ -226,7 +226,7 @@ class HD2DataService():
             # trend = pp.mean()
             # print("trend", planet_name, trend, current_health)
             if defense and p_time is not None:
-                print(planet_name, formatted_delta(p_time), "defense")
+                # print(planet_name, formatted_delta(p_time), "defense")
 
                 if p_time < mission_ends_in.total_seconds():
                     succeesing = f", SUCCEEDING {formatted_delta(p_time)}"
@@ -235,7 +235,7 @@ class HD2DataService():
 
             # offense
             elif not defense and p_time is not None and p_time >= 0 and p_time < time_to_seconds(days=1):
-                print(planet_name, formatted_delta(p_time), "offense")
+                # print(planet_name, formatted_delta(p_time), "offense")
                 succeesing = f", SUCCEEDING {formatted_delta(p_time)}"
             else:
                 succeesing = None
