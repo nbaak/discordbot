@@ -271,7 +271,10 @@ class HD2DataService():
                 succeeding = self.campaign_succeesing(defense, planet, time_delta) or ""
 
                 text += f"{holder_icon}{defense_icon} {planet['name']}{remaining_time}: liberation: {percentage:3.2f}%, active Helldivers: {player_count}{succeeding} \n"
-
+            
+            remaining_war_planets = total_war_planets - top_n
+            text += f"{remaining_war_planets} more planets in war..\n"
+            
             helldivers_online_total = self.get_current_online_players()
             text += f"\nHelldivers active: {helldivers_online_total}"
 
@@ -332,10 +335,10 @@ def main():
     campaign_body = data.get_campaign()
     
     print(mo_body)
-    print(len(mo_body))
+    print(f"Body MO Length: {len(mo_body)}")
     print()
     print(campaign_body)
-    print(len(campaign_body))
+    print(f"Body Campaign Length: {len(campaign_body)}")
     print()
 
     print(data.get_news(2))
