@@ -147,8 +147,15 @@ def mo_hold_planet(progress:int, task:dict) -> str:
         defense_icon = "🛡️" if defense else "⚔️"
 
     holder_icon = hd2_data.faction_icon(faction)
+    
+    hold_or_conquer = ""
+    if percentage == 100:
+        hold_or_conquer = f"- Hold until Major order complete!"
+    else:
+        hold_or_conquer = f"- Conquer until Major order complete!"
+    
 
-    return f"{holder_icon}{defense_icon} {planet_name}: {abs(percentage):3.2f}%\n"
+    return f"{holder_icon}{defense_icon} {planet_name}: {abs(percentage):3.2f}% {hold_or_conquer}\n"
 
 
 def mo_liberate_more_planets_than_lost(progress:int, _) -> str:
