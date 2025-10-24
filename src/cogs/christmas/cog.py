@@ -57,7 +57,8 @@ class ChristmasModule(commands.Cog):
 
         # AoC Reminder
         if current_month == 12:
-            if current_day in range(1, 26):
+            if current_day in range(1, 13):
+                # in 2025 the AoC will only go to day 12, we will see how it works in the future
                 aoc_url = f"https://adventofcode.com/{current_year}/day/{current_day}"
                 aoc_message = f"Visit the [Advent of Code - {current_year} - Day {current_day}]({aoc_url}) "
                 messages.append(aoc_message)
