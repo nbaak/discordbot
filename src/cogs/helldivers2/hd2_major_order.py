@@ -85,7 +85,6 @@ def mo_kill_enemies(progress:int, task:dict) -> str:
     # planet_id = task[MOTaskValueTypes.PLANET]
     # dunno if liberatrion is the flag that determens the mission is planet bound..
     # need more research in this 
-
     target = task[MOTaskValueTypes.TARGET_COUNT]
     faction_id = task[MOTaskValueTypes.FACTION]
     unit_type_id = task[MOTaskValueTypes.UNIT_TYPE]
@@ -96,8 +95,8 @@ def mo_kill_enemies(progress:int, task:dict) -> str:
     faction = hd2_data.target_faction(faction_id)
     unit = f" ({get_enemy(unit_type_id)})" if unit_type_id else ""
     weapon = f" with {get_item(weapon_type_id)}" if weapon_type_id else ""
-    icon = hd2_data.faction_icon(faction)
-
+    icon = hd2_data.faction_icon(faction_id)
+    
     return f"{icon} {faction}{unit} killed{weapon} {progress:,}/{target:,} ({progress_percent:.2f}%)\n"
 
 

@@ -13,6 +13,7 @@ items = {
     3992382197: "Common",
     
     4038802832: "Heavy Machine Gun",
+    4161086429: "Constitution",
 }
 
 def get_item(id:int) -> str:
