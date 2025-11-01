@@ -14,6 +14,7 @@ enemy_units = {
     2058088313: 'Warrior',
     2115960485: 'Spore Burst Warriors',
     2514244534: 'Bile Titan',
+    3929716830: 'Hive Lord',
     
     # Automaton
     # 523260929: '?', # was in first at 2025-07-22

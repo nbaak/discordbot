@@ -94,8 +94,9 @@ class HD2DataService():
             factions = {0: "🌎", 1: "🪲", 2: "🤖", 3: "🦑"}
         else:
             factions = {"Humans": "🌎", "Terminids": "🪲", "Automaton": "🤖", "Illuminate": "🦑", "Automatons": "🤖", "Illuminates": "🦑"}
-
-        return factions.get(faction_id, "?")
+            
+        # return blank if unkown
+        return factions.get(faction_id, " ")
 
     def faction_name(self, faction_id:int) -> str:
         factions = {0: "Any Enemies", 1: "Terminids", 2: "Automaton", 3: "Illuminate"}
@@ -254,12 +255,10 @@ class HD2DataService():
 
     def get_campaign(self, top_n:int=10) -> str:
         if self.campaign:
-            text = "# War Campaign\n"
-            
             total_war_planets = len(self.campaign)
-            text += f"first {top_n} planets of total {total_war_planets}\n"
-
-            for campaing_object in sorted(self.campaign, key=lambda c: c["planet"]["statistics"]["playerCount"], reverse=True)[:top_n]:
+            printable_campaign_objects:List[str] = []
+            
+            for idx, campaing_object in enumerate(sorted(self.campaign, key=lambda c: c["planet"]["statistics"]["playerCount"], reverse=True)):
                 planet = campaing_object["planet"]
                 planet_id = planet["index"]
                 defense, percentage, faction, remaining_time, time_delta = self.planet_info(planet_id)
@@ -269,10 +268,18 @@ class HD2DataService():
                 player_count = planet["statistics"]["playerCount"]
 
                 succeeding = self.campaign_succeesing(defense, planet, time_delta) or ""
-
-                text += f"{holder_icon}{defense_icon} {planet['name']}{remaining_time}: liberation: {percentage:3.2f}%, active Helldivers: {player_count}{succeeding} \n"
+                if succeeding or idx < top_n:
+                    text = f"{holder_icon}{defense_icon} {planet['name']}{remaining_time}: liberation: {percentage:3.2f}%, active Helldivers: {player_count}{succeeding}"
+                    printable_campaign_objects.append(text)
             
-            remaining_war_planets = total_war_planets - top_n
+            visible_war_planets = len(printable_campaign_objects)
+                    
+            text = ("# War Campaign\n"        
+                    f"first {visible_war_planets} planets of total {total_war_planets}\n"
+                    )
+            text += "\n".join(printable_campaign_objects) + "\n"
+                    
+            remaining_war_planets = total_war_planets - visible_war_planets
             text += f"{remaining_war_planets} more planets in war..\n"
             
             helldivers_online_total = self.get_current_online_players()
