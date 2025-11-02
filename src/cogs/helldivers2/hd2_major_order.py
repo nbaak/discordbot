@@ -27,7 +27,7 @@ class MOMissionTypes():
     ATTACK_PLANET = 11
     DEFENT_PLANET = 12
     HOLD_PLANET = 13
-    LIBERTAE_MORE_PLANETS_THAN_LOST = 15
+    EXPAND = 15
 
 
 # register point fopr hd2 data service
@@ -157,7 +157,7 @@ def mo_hold_planet(progress:int, task:dict) -> str:
     return f"{holder_icon}{defense_icon} {planet_name}: {abs(percentage):3.2f}% {hold_or_conquer}\n"
 
 
-def mo_liberate_more_planets_than_lost(progress:int, _) -> str:
+def mo_expand(progress:int, _) -> str:
     return f"Liberate more Planets than Lost: {progress}\n"
 
 
@@ -181,7 +181,7 @@ __mo_missions = {
     MOMissionTypes.ATTACK_PLANET: mo_attack_planet,
     MOMissionTypes.DEFENT_PLANET: mo_defend_planet,
     MOMissionTypes.HOLD_PLANET: mo_hold_planet,
-    MOMissionTypes.LIBERTAE_MORE_PLANETS_THAN_LOST: mo_liberate_more_planets_than_lost,
+    MOMissionTypes.EXPAND: mo_expand,
     }
 
 

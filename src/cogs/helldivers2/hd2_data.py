@@ -336,7 +336,7 @@ class HD2DataService():
             return "no data available!"
 
 
-def main():
+def test():
     data = HD2DataService()
     mo_body = data.get_major_order()
     campaign_body = data.get_campaign()
@@ -354,4 +354,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    test()
