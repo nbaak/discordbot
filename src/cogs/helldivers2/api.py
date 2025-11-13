@@ -36,7 +36,7 @@ def get_campaign():
 
 def get_planet(index:int):
     headers = {"X-Super-Client": X_SUPER_CLIENT, "X-Super-Contact": X_SUPER_CONTACT}
-    return httpclient.get(f"{Endpoints.planet_index}/{index}", headers)
+    return httpclient.get(f"{Endpoints.planet_index}/{index}", headers, timeout=30.0)
 
 
 def planets():
