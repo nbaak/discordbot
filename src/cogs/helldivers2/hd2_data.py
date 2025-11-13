@@ -14,6 +14,7 @@ class HD2DataService():
         # api endpoint params
         api.X_SUPER_CLIENT = "Discord-Bot"
         api.X_SUPER_CONTACT = contact or ""
+        self.courtesy_wait = 0.7
 
         hd2_major_order.hd2_data = self
 
@@ -58,13 +59,13 @@ class HD2DataService():
 
     def update_all(self):
         self.update_planets()
-        time.sleep(.7)
+        time.sleep(self.courtesy_wait)
         self.update_campaign()
-        time.sleep(.7)
+        time.sleep(self.courtesy_wait)
         self.update_major_order()
-        time.sleep(.7)
+        time.sleep(self.courtesy_wait)
         self.update_war_statistics()
-        time.sleep(.7)
+        time.sleep(self.courtesy_wait)
         self.update_dispatch()
 
     def find_in_campaign_dict(self, search_key, search_value:str) -> Union[Dict, None]:
@@ -336,10 +337,11 @@ class HD2DataService():
             return "no data available!"
 
 
-def test():
-    data = HD2DataService()
-    mo_body = data.get_major_order()
-    campaign_body = data.get_campaign()
+def test(courtesy_wait:float=0.7):
+    hd2_data_service = HD2DataService()
+    hd2_data_service.courtesy_wait = courtesy_wait
+    mo_body = hd2_data_service.get_major_order()
+    campaign_body = hd2_data_service.get_campaign()
     
     print(mo_body)
     print(f"Body MO Length: {len(mo_body)}")
@@ -348,9 +350,9 @@ def test():
     print(f"Body Campaign Length: {len(campaign_body)}")
     print()
 
-    print(data.get_news(2))
+    print(hd2_data_service.get_news(2))
 
-    # print(data.statistics())
+    # print(hd2_data_service.statistics())
 
 
 if __name__ == "__main__":
