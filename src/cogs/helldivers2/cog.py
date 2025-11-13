@@ -80,25 +80,31 @@ class Helldivers2(commands.Cog):
             channel = discord.utils.get(self.bot.get_all_channels(), id=cid)
             recycled_message = False
             
-            if channel:
-                channel_to_message_identifier = (channel.guild.id, channel.id, identifier)
-                if channel_to_message_identifier in self.messages:
-                    try:
-                        msg = await channel.fetch_message(self.messages[channel_to_message_identifier])
-                        recycled_message = True
-                    except Exception as e:
-                        msg = await channel.send(content=message)
-                        self.messages[channel_to_message_identifier] = msg.id
-                        save(self.messages_file, self.messages)
-                        recycled_message = False
+            if not channel:
+                # TODO: check if this ever triggers
+                print(f"channel id {cid} not found")
+                continue
+            
+            channel_to_message_identifier = (channel.guild.id, channel.id, identifier)
+            if channel_to_message_identifier in self.messages:
+                try:
+                    msg = await channel.fetch_message(self.messages[channel_to_message_identifier])
+                    recycled_message = True
                     
-                    if recycled_message:
-                        await msg.edit(content=f'{message}')                        
-                    
-                else:
+                except Exception as e:
+                    print(f"Exception {e}") # message or content not found?
                     msg = await channel.send(content=message)
                     self.messages[channel_to_message_identifier] = msg.id
                     save(self.messages_file, self.messages)
+                    recycled_message = False
+                
+                if recycled_message:
+                    await msg.edit(content=f'{message}')                        
+                
+            else:
+                msg = await channel.send(content=message)
+                self.messages[channel_to_message_identifier] = msg.id
+                save(self.messages_file, self.messages)
                            
     @app_commands.command(name="sethelldiverschannel")
     @app_commands.describe(channel='Set Helldivers 2 Channel')
