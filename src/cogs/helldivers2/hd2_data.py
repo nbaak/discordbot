@@ -43,19 +43,13 @@ class HD2DataService():
         self.major_order = api.get_major_order()
 
     def update_campaign(self):
-        new_campaign = api.get_campaign()
-        if new_campaign:
-            self.campaign = new_campaign
+        self.campaign = api.get_campaign() or self.campaign
 
     def update_war_statistics(self):
-        new_war_data = api.get_war_statistics()
-        if new_war_data:
-            self.war_statistics = new_war_data
+        self.war_statistics = api.get_war_statistics() or self.war_statistics
 
     def update_planets(self):
-        new_planets = api.planets()
-        if new_planets:
-            self.planets = new_planets
+        self.planets = api.planets() or self.planets
 
     def update_all(self):
         self.update_planets()

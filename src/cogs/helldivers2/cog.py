@@ -70,7 +70,7 @@ class Helldivers2(commands.Cog):
         self.walkingcounter.plot(filename="hd2_player_charts.jpg")
         self.walkingcounter.save()
         
-    @tasks.loop(minutes=5.0)
+    @tasks.loop(minutes=10.0)
     async def countdown(self):
         await self.update_warsatus()
         self.update_online_helldiver_statistics()

@@ -10,7 +10,7 @@ def get(endpoint:str, headers:Union[dict, None]=None, params:Union[dict, None]=N
         return response.json()
     
     except Exception as e:
+        print(f"error on endpoint: {endpoint}")
         print(e)
-        print(f"error on endpoin: {endpoint}")
         
         return None
