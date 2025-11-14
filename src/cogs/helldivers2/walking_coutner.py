@@ -43,7 +43,7 @@ class WalkingCounter:
         if len(self._queue) > self.max_len: 
             xitem = self._queue.pop(0)
             
-        print(f"label: {label} {len(q_item.items)} {q_item.items}")
+        # print(f"label: {label} {len(q_item.items)} {q_item.items}")
     
     def show(self):
         for qi in self._queue:
