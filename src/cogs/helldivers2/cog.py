@@ -81,29 +81,31 @@ class Helldivers2(commands.Cog):
             recycled_message = False
             
             if not channel:
-                # TODO: check if this ever triggers
                 print(f"channel id {cid} not found")
                 continue
             
-            channel_to_message_identifier = (channel.guild.id, channel.id, identifier)
-            if channel_to_message_identifier in self.messages:
+            # c2m_id: channel to message identifier
+            c2m_id = (channel.guild.id, channel.id, identifier)
+            if c2m_id in self.messages:
                 try:
-                    msg = await channel.fetch_message(self.messages[channel_to_message_identifier])
+                    msg = await channel.fetch_message(self.messages[c2m_id])
                     recycled_message = True
                     
                 except Exception as e:
                     print(f"Exception {e}") # message or content not found?
+                    print(f"Error in message for {c2m_id}")
                     msg = await channel.send(content=message)
-                    self.messages[channel_to_message_identifier] = msg.id
+                    self.messages[c2m_id] = msg.id
                     save(self.messages_file, self.messages)
                     recycled_message = False
                 
                 if recycled_message:
                     await msg.edit(content=f'{message}')                        
                 
-            else:
+            if not recycled_message:
+                print(f"New Message posted: {c2m_id}")
                 msg = await channel.send(content=message)
-                self.messages[channel_to_message_identifier] = msg.id
+                self.messages[c2m_id] = msg.id
                 save(self.messages_file, self.messages)
                            
     @app_commands.command(name="sethelldiverschannel")

@@ -85,6 +85,7 @@ class WalkingCounter:
         plt.xticks(bar_positions, labels, rotation=90)
         # plt.show()
         plt.savefig(filename)
+        plt.close()
             
     def save(self, filename="counter.bin"):
         with open(filename, 'wb') as f:

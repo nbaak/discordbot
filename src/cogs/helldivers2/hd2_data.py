@@ -14,7 +14,7 @@ class HD2DataService():
         # api endpoint params
         api.X_SUPER_CLIENT = "Discord-Bot"
         api.X_SUPER_CONTACT = contact or ""
-        self.courtesy_wait = 0.7
+        self.courtesy_wait = 1
 
         hd2_major_order.hd2_data = self
 
@@ -32,12 +32,15 @@ class HD2DataService():
     def update_dispatch(self):
         new_dispatch = api.dispatch()
         self.news = []
-        for news in new_dispatch:
-            published_int = convert_to_datetime(news["published"])
-            news["published"] = published_int
-            self.news.append(news)
+        if new_dispatch:
+            for news in new_dispatch:
+                published_int = convert_to_datetime(news["published"])
+                news["published"] = published_int
+                self.news.append(news)
 
-        self.news.sort(key=lambda item: item["id"], reverse=True)
+                self.news.sort(key=lambda item: item["id"], reverse=True)
+        else:
+            print("could not get new dispatch")
 
     def update_major_order(self):
         self.major_order = api.get_major_order()
