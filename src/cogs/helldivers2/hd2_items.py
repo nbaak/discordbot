@@ -7,6 +7,7 @@ items = {
     934703916: "Machine Gun",
     1978117092: "Stalwart",
     
+    1520012896: "Orbital Laser",
     2197477188: "Orbital Railcannon Strike",
     
     2985106497: "Rare",
