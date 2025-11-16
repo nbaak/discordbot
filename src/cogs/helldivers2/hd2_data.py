@@ -30,9 +30,9 @@ class HD2DataService():
             self.update_all()
 
     def update_dispatch(self):
-        new_dispatch = api.dispatch()
+        new_dispatch, check = api.dispatch()
         self.news = []
-        if new_dispatch:
+        if check:
             for news in new_dispatch:
                 published_int = convert_to_datetime(news["published"])
                 news["published"] = published_int
@@ -43,16 +43,20 @@ class HD2DataService():
             print("could not get new dispatch")
 
     def update_major_order(self):
-        self.major_order = api.get_major_order()
+        new_mo, check = api.get_major_order()
+        if check: self.major_order = new_mo
 
     def update_campaign(self):
-        self.campaign = api.get_campaign() or self.campaign
+        campaign, check = api.get_campaign()
+        if check: self.campaign = campaign
 
     def update_war_statistics(self):
-        self.war_statistics = api.get_war_statistics() or self.war_statistics
+        war_statistics, check = api.get_war_statistics()
+        if check: self.war_statistics = war_statistics
 
     def update_planets(self):
-        self.planets = api.planets() or self.planets
+        planets, check = api.planets()
+        if check: self.planets = planets
 
     def update_all(self):
         self.update_planets()
