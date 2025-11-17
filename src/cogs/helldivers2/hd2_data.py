@@ -167,7 +167,7 @@ class HD2DataService():
             delta = delta_to_now(remaining)
             return formatted_delta(delta)
         else:
-            return "---"
+            return " " * 11
 
     def get_major_order(self) -> str:
         if self.major_order:
