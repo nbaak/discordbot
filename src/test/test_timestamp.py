@@ -1,3 +1,9 @@
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+
+# Testcode below
 import datetime
 from cogs.helldivers2.hd2_tools import formatted_time, convert_to_datetime
 

@@ -57,7 +57,7 @@ class Helldivers2(commands.Cog):
                 self.hd2dataservice.campaign_succeesing_cleanup()
                 
             except Exception as e:
-                print("Exception:", e)
+                print("Update Warstatus Exception:", e)
             
     def update_online_helldiver_statistics(self):
         self.walkingcounter.load()
@@ -70,7 +70,7 @@ class Helldivers2(commands.Cog):
         self.walkingcounter.plot(filename="hd2_player_charts.jpg")
         self.walkingcounter.save()
         
-    @tasks.loop(minutes=10.0)
+    @tasks.loop(minutes=5.0)
     async def countdown(self):
         await self.update_warsatus()
         self.update_online_helldiver_statistics()

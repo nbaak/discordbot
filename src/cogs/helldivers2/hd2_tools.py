@@ -110,9 +110,9 @@ def formatted_delta(td: Union[datetime.timedelta, int]) -> str:
     days, hours, minutes = map(int, days_hours_minutes(td))
     formatted_time = ""
     if days:
-        formatted_time += f"{days}d "
+        formatted_time += f"{days:2}d "
 
-    formatted_time += f"{hours}h {minutes}m"
+    formatted_time += f"{hours:2}h {minutes:2}m"
 
     return formatted_time
 
