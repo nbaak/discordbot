@@ -1,5 +1,5 @@
 
-from lib.Wikipedia import WikipediaWrapper
+from cogs.wikipedia.wikiwrapper import WikipediaWrapper
 
 from discord.ext import commands
 from discord import app_commands

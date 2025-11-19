@@ -1,7 +1,7 @@
 
 import wikipedia
 
-from lib.Wikipedia import WikipediaWrapper
+from cogs.wikipedia.wikiwrapper import WikipediaWrapper
 import random
 
 
