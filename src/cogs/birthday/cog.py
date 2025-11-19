@@ -8,7 +8,7 @@ from typing import Optional
 from lib.admin_tools import is_owner, load, save
 from enum import Enum
 from lib.calendar import Calendar
-from lib.birthdayreminder import BirthdayReminder
+from cogs.birthday.birthdayreminder import BirthdayReminder
 
 cet = pytz.timezone('CET')
 trigger_time = time(hour=6, minute=10, tzinfo=cet)

@@ -247,23 +247,21 @@ class HD2DataService():
 
     def campaign_succeesing_cleanup(self):
         values_to_pop = []
+    
         for planet_name in self.planet_defense_progress:
             if not self.is_planet_in_campaign(planet_name):
                 values_to_pop.append(planet_name)
-        
-        if any(values_to_pop):
-            for value in values_to_pop:
-                try:
-                    value = self.planet_defense_progress.pop(planet_name, None)
-                    
-                    if value:
-                        print(f"removed {planet_name} from defence dict")
-                    else:
-                        print(f"error on dropping key {planet_name}")
-                        
-                except Exception as e:
-                    print(f"Error on poppint planet {value}")
-                    print(e)
+    
+        for value in values_to_pop:
+            try:
+                if value in self.planet_defense_progress:
+                    dropped = self.planet_defense_progress.pop(value, None)
+                    print(f"removed {dropped} from defence dict")
+                else:
+                    print(f"error on dropping key {value}")
+            except Exception as e:
+                print(f"Error on popping planet {value}")
+                print(e)
 
     def get_campaign(self, top_n:int=10) -> str:
         if self.campaign:
