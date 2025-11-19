@@ -1,8 +1,9 @@
 
-import wikipedia
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 from cogs.wikipedia.wikiwrapper import WikipediaWrapper
-import random
 
 
 topics = ["Obama", "Linux", "Discord", "Star Citizen"]

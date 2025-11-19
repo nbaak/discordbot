@@ -1,7 +1,7 @@
 import sys
 from pathlib import Path
-import time
 sys.path.append(str(Path(__file__).resolve().parent.parent))
+import time
 
 # Test Code below
 from cogs.helldivers2.hd2_data import test as hd2_data_test
