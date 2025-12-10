@@ -56,7 +56,9 @@ class HD2DataService():
 
     def update_planets(self):
         planets, check = api.planets()
-        if check: self.planets = planets
+        if check: 
+            _dict = {planet["index"]: planet for planet in planets}
+            self.planets = _dict
 
     def update_all(self):
         self.update_planets()
@@ -110,7 +112,9 @@ class HD2DataService():
         return factions.get(faction_id, "Unknown_Faction")
 
     def planet_info(self, planet_id:int) -> tuple:
+        
         planet = self.planets[planet_id]
+        
         defense = True if planet["event"] else False
         percentage = 0
         remaining_time = ""
@@ -349,6 +353,10 @@ class HD2DataService():
 def test(courtesy_wait:float=0.7):
     hd2_data_service = HD2DataService()
     hd2_data_service.courtesy_wait = courtesy_wait
+    
+    # hd2_data_service.update_planets()
+    # print(hd2_data_service.planets)
+
     mo_body = hd2_data_service.get_major_order()
     campaign_body = hd2_data_service.get_campaign()
     
@@ -359,7 +367,7 @@ def test(courtesy_wait:float=0.7):
     print(f"Body Campaign Length: {len(campaign_body)}")
     print()
 
-    print(hd2_data_service.get_news(2))
+    # print(hd2_data_service.get_news(2))
 
     # print(hd2_data_service.statistics())
 

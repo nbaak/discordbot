@@ -15,7 +15,7 @@ class MOTaskValueTypes(IntEnum):
     TARGET_COUNT = 3
     UNIT_TYPE = 4
     ITEM = 5
-    LIBERATION_NEEDED = 11 # it seems that I understood this flag wrong, maybe mission scope? 1:planet, 2:sector...
+    # LIBERATION_NEEDED = 11 # it seems that I understood this flag wrong, maybe mission scope? 1:planet, 2:sector...
     PLANET = 12
 
 
@@ -171,6 +171,11 @@ def mo_complete_operations(c_progress:int, task:dict) -> str:
     against = f"against {faction}"
 
     return f"Win Operations {against}: {c_progress}/{target_count} ({p_progress:.2f}%)\n"
+
+
+def mo_liberate_designated_planets(progress:int, task:dict) -> str:
+    print(progress)
+    print(task)
 
 
 __mo_missions = {
