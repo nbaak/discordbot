@@ -89,6 +89,11 @@ def mo_kill_enemies(progress:int, task:dict) -> str:
     faction_id = task[MOTaskValueTypes.FACTION]
     unit_type_id = task[MOTaskValueTypes.UNIT_TYPE]
     weapon_type_id = task[MOTaskValueTypes.ITEM]
+    planet_id = task.get(MOTaskValueTypes.PLANET, -1)
+    if planet_id > 0:
+        planet_name = hd2_data.planets[planet_id]["name"]
+    else:
+        planet_name = ""
 
     progress_percent = progress / target * 100
 
@@ -96,8 +101,9 @@ def mo_kill_enemies(progress:int, task:dict) -> str:
     unit = f" ({get_enemy(unit_type_id)})" if unit_type_id else ""
     weapon = f" with {get_item(weapon_type_id)}" if weapon_type_id else ""
     icon = hd2_data.faction_icon(faction)
+    planet = f" on {planet_name}" if planet_name else ""
     
-    return f"{icon} {faction}{unit} killed{weapon} {progress:,}/{target:,} ({progress_percent:.2f}%)\n"
+    return f"{icon} {faction}{unit}{planet} killed{weapon} {progress:,}/{target:,} ({progress_percent:.2f}%)\n"
 
 
 def mo_extract_successful_mission(progress:int, task:dict) -> str:
