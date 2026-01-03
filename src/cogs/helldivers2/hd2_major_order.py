@@ -115,8 +115,14 @@ def mo_extract_successful_mission(progress:int, task:dict) -> str:
     if faction_id != 0:
         faction = hd2_data.target_faction(faction_id)
         against = f" against {faction}"
+        
+    planet_id = task.get(MOTaskValueTypes.PLANET, -1)
+    if planet_id > 0:
+        planet_name = f" on {hd2_data.planets[planet_id]['name']}"
+    else:
+        planet_name = ""
 
-    return f"Extract from a successful mission{against} {progress}/{target} ({progress_percent:.2f}%)\n"
+    return f"Extract from a successful mission{against}{planet_name} {progress}/{target} ({progress_percent:.2f}%)\n"
 
 
 def mo_extract_samples(progress:int, task:dict) -> str:
