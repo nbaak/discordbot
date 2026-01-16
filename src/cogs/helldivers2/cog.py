@@ -100,11 +100,13 @@ class Helldivers2(commands.Cog):
                     self.messages[c2m_id] = msg.id
                     save(self.messages_file, self.messages)
                     recycled_message = False
+                    print(f"created new msg: {self.messages[c2m_id]} = {msg.id}")
                 
-                if recycled_message:
-                    await msg.edit(content=f'{message}')                        
+            if recycled_message:
+                await msg.edit(content=f'{message}')
+                print(f"reused msg: {self.messages[c2m_id]}")                        
                 
-            if not recycled_message:
+            else:
                 print(f"New Message posted: {c2m_id}")
                 msg = await channel.send(content=message)
                 self.messages[c2m_id] = msg.id
