@@ -94,6 +94,8 @@ class Helldivers2(commands.Cog):
                 except Exception as e:
                     print(f"Exception {e}") # message or content not found?
                     print(f"Error in message for {c2m_id}")
+                    print(self.messages[c2m_id])
+                    print()
                     msg = await channel.send(content=message)
                     self.messages[c2m_id] = msg.id
                     save(self.messages_file, self.messages)
