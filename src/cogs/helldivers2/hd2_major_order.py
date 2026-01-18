@@ -148,12 +148,15 @@ def mo_hold_planet(progress:int, task:dict) -> str:
     planet_name = hd2_data.planets[planet_id]["name"]
 
     defense, percentage, faction, _, _ = hd2_data.planet_info(planet_id)
-
+    
+    if faction == "Humans":
+        progress = 1
+    
     if progress:
         defense_icon = "  "
         percentage = 100
         faction = 0
-
+    
     else:
         defense_icon = "🛡️" if defense else "⚔️"
 
@@ -166,7 +169,7 @@ def mo_hold_planet(progress:int, task:dict) -> str:
         hold_or_conquer = f"- Conquer until Major order complete!"
     
 
-    return f"{holder_icon}{defense_icon} {planet_name}: {abs(percentage):3.2f}% {hold_or_conquer}\n"
+    return f"{holder_icon}{defense_icon} {planet_name} {abs(percentage):3.2f}% {hold_or_conquer}\n"
 
 
 def mo_expand(progress:int, _) -> str:
