@@ -99,12 +99,10 @@ class HD2DataService():
         else:
             factions = {"Humans": "🌎", "Terminids": "🪲", "Automaton": "🤖", "Illuminate": "🦑", "Automatons": "🤖", "Illuminates": "🦑"}
             
-        # return blank if unkown
         return factions.get(faction_id, " ")
 
     def faction_name(self, faction_id:int) -> str:
         factions = {0: "Any Enemies", 1: "Terminids", 2: "Automaton", 3: "Illuminate"}
-        # factions = self.war_statistics["factions"]
         return factions.get(faction_id, "Unknown_Faction")
 
     def target_faction(self, faction_id:int) -> str:

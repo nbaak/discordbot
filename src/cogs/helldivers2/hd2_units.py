@@ -4,6 +4,7 @@ a list of known enemies by id
 
 enemy_units = {
     0: 'any',
+    1764323819: 'One True Flag',
     
     # Bugs
     793026793: 'Shriekers',
