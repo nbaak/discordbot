@@ -26,15 +26,35 @@ class MOMissionTypes():
     COMPLETE_OPERATIONS = 9
     ATTACK_PLANET = 11
     DEFENT_PLANET = 12
-    HOLD_PLANET = 13
+    CONQUER_HOLD_PLANET = 13
     EXPAND = 15
 
 
-# register point fopr hd2 data service
+# register point for hd2 data service
 hd2_data:HD2DataService = None
 
-# mo valuze types as compact dict based on MOTaskValueTypes
-# mo_task_value_types:dict = {v: k for k, v in vars(MOTaskValueTypes).items() if not k.startswith("__")}
+
+class MOTask():
+    
+    def __init__(self, task:dict) -> None:
+        self.target = task.get(MOTaskValueTypes.TARGET_COUNT)
+        
+        self.faction_id = task.get(MOTaskValueTypes.FACTION)
+        self.faction = hd2_data.target_faction(self.faction_id) if self.faction_id else None
+        
+        self.unit_type_id = task.get(MOTaskValueTypes.UNIT_TYPE)
+        self.unit = f" ({get_enemy(self.unit_type_id)})" if self.unit_type_id else ""
+        
+        self.item_id = task.get(MOTaskValueTypes.ITEM)
+        self.item = get_item(self.item_id) if self.item_id else ""
+        
+        self.planet_id = task.get(MOTaskValueTypes.PLANET, -1)
+        if self.planet_id:
+            self.planet = hd2_data.planets[self.planet_id]
+            self.planet_name = self.planet["name"]
+        else:
+            self.planet = None
+            self.planet_name = None
 
 
 def mo_task_paramerts(task:dict) -> dict:
@@ -49,9 +69,9 @@ def mo_task_paramerts(task:dict) -> dict:
     return task_out
 
 
-def mo_attack_planet(progress:int, task:dict) -> str:
-    planet_id = task[MOTaskValueTypes.PLANET]
-    planet_name = hd2_data.planets[planet_id]["name"]
+def mo_attack_planet(progress:int, task:MOTask) -> str:
+    planet_id = task.planet_id
+    planet_name = task.planet_name
 
     defense, percentage, faction, _, _ = hd2_data.planet_info(planet_id)
 
@@ -69,27 +89,34 @@ def mo_attack_planet(progress:int, task:dict) -> str:
     return text
 
 
-def mo_defend_planet(progress:int, task:dict) -> str:
+def mo_defend_planet(progress:int, task:MOTask) -> str:
     # planet_id = task[MOTaskValueTypes.PLANET]
-    target = task[MOTaskValueTypes.TARGET_COUNT]
-    faction_id = task[MOTaskValueTypes.FACTION]
+    target = task.target
+    faction = task.faction
     # unit_type_id = task[MOTaskValueTypes.UNIT_TYPE]
 
-    faction = hd2_data.target_faction(faction_id)
+    # faction = hd2_data.target_faction(faction_id)
     text = f"Defend Planets against {faction}: {progress}/{target}\n"
 
     return text
 
 
-def mo_kill_enemies(progress:int, task:dict) -> str:
+def mo_kill_enemies(progress:int, task:MOTask) -> str:
     # planet_id = task[MOTaskValueTypes.PLANET]
-    # dunno if liberatrion is the flag that determens the mission is planet bound..
+    # dunno if liberatrion is the flag that determens the mission is on_planet bound..
     # need more research in this 
-    target = task[MOTaskValueTypes.TARGET_COUNT]
-    faction_id = task[MOTaskValueTypes.FACTION]
-    unit_type_id = task[MOTaskValueTypes.UNIT_TYPE]
-    weapon_type_id = task[MOTaskValueTypes.ITEM]
-    planet_id = task.get(MOTaskValueTypes.PLANET, -1)
+    # target = task[MOTaskValueTypes.TARGET_COUNT]
+    # faction_id = task[MOTaskValueTypes.FACTION]
+    # unit_type_id = task[MOTaskValueTypes.UNIT_TYPE]
+    # weapon_type_id = task[MOTaskValueTypes.ITEM]
+    # planet_id = task.get(MOTaskValueTypes.PLANET, -1)
+    
+    target = task.target
+    faction_id = task.faction_id
+    unit_type_id = task.unit_type_id
+    weapon_type_id = task.item_id
+    planet_id = task.planet_id
+    
     if planet_id > 0:
         planet_name = hd2_data.planets[planet_id]["name"]
     else:
@@ -99,18 +126,18 @@ def mo_kill_enemies(progress:int, task:dict) -> str:
 
     faction = hd2_data.target_faction(faction_id)
     unit = f" ({get_enemy(unit_type_id)})" if unit_type_id else ""
-    weapon = f" with {get_item(weapon_type_id)}" if weapon_type_id else ""
+    with_weapon = f" with {get_item(weapon_type_id)}" if weapon_type_id else ""
     icon = hd2_data.faction_icon(faction)
-    planet = f" on {planet_name}" if planet_name else ""
+    on_planet = f" on {planet_name}" if planet_name else ""
     
-    return f"{icon} {faction}{unit}{planet} killed{weapon} {progress:,}/{target:,} ({progress_percent:.2f}%)\n"
+    return f"{icon} {faction}{unit}{on_planet} killed{with_weapon} {progress:,}/{target:,} ({progress_percent:.2f}%)\n"
 
 
-def mo_extract_successful_mission(progress:int, task:dict) -> str:
-    target = task[MOTaskValueTypes.TARGET_COUNT]
+def mo_extract_successful_mission(progress:int, task:MOTask) -> str:
+    target = task.target
     progress_percent = progress / target * 100
 
-    faction_id = task[MOTaskValueTypes.FACTION]
+    faction_id = task.faction_id
     against = ""
     if faction_id != 0:
         faction = hd2_data.target_faction(faction_id)
@@ -125,12 +152,12 @@ def mo_extract_successful_mission(progress:int, task:dict) -> str:
     return f"Extract from a successful mission{against}{planet_name} {progress}/{target} ({progress_percent:.2f}%)\n"
 
 
-def mo_extract_samples(progress:int, task:dict) -> str:
-    faction_id = task[MOTaskValueTypes.FACTION]
-    planet_id = task[MOTaskValueTypes.PLANET]
-    target = task[MOTaskValueTypes.TARGET_COUNT]
+def mo_extract_samples(progress:int, task:MOTask) -> str:
+    faction_id = task.faction_id
+    planet_id = task.planet_id
+    target = task.target
 
-    sample_type_id = task[MOTaskValueTypes.ITEM]
+    sample_type_id = task.item_idm
     sample_type = f"{get_item(sample_type_id)}" if sample_type_id else ""
 
     progress_percent = progress / target * 100
@@ -143,9 +170,9 @@ def mo_extract_samples(progress:int, task:dict) -> str:
     return f"Extract {sample_type} Samples on {planet}: {progress:,}/{target:,} ({progress_percent:.2f}%)\n"
 
 
-def mo_hold_planet(progress:int, task:dict) -> str:
-    planet_id = task[MOTaskValueTypes.PLANET]
-    planet_name = hd2_data.planets[planet_id]["name"]
+def mo_conquer_and_hold_planet(progress:int, task:MOTask) -> str:
+    planet_id = task.planet_id
+    planet_name = task.planet_name
 
     defense, percentage, faction, _, _ = hd2_data.planet_info(planet_id)
     
@@ -167,7 +194,6 @@ def mo_hold_planet(progress:int, task:dict) -> str:
         hold_or_conquer = f"- Hold until Major order complete!"
     else:
         hold_or_conquer = f"- Conquer until Major order complete!"
-    
 
     return f"{holder_icon}{defense_icon} {planet_name} {abs(percentage):3.2f}% {hold_or_conquer}\n"
 
@@ -176,19 +202,19 @@ def mo_expand(progress:int, _) -> str:
     return f"Liberate more Planets than Lost: {progress}\n"
 
 
-def mo_complete_operations(c_progress:int, task:dict) -> str:
-    target_count = task[MOTaskValueTypes.TARGET_COUNT]
+def mo_complete_operations(c_progress:int, task:MOTask) -> str:
+    target_count = task.target
     p_progress = c_progress / target_count * 100  # percent
 
-    faction_id = task[MOTaskValueTypes.FACTION]
-    faction = hd2_data.target_faction(faction_id)
+    faction = task.faction
+    # faction = hd2_data.target_faction(faction_id)
 
     against = f"against {faction}"
 
     return f"Win Operations {against}: {c_progress}/{target_count} ({p_progress:.2f}%)\n"
 
 
-def mo_liberate_designated_planets(progress:int, task:dict) -> str:
+def mo_liberate_designated_planets(progress:int, task:MOTask) -> str:
     print(progress)
     print(task)
 
@@ -200,21 +226,23 @@ __mo_missions = {
     MOMissionTypes.COMPLETE_OPERATIONS: mo_complete_operations,
     MOMissionTypes.ATTACK_PLANET: mo_attack_planet,
     MOMissionTypes.DEFENT_PLANET: mo_defend_planet,
-    MOMissionTypes.HOLD_PLANET: mo_hold_planet,
+    MOMissionTypes.CONQUER_HOLD_PLANET: mo_conquer_and_hold_planet,
     MOMissionTypes.EXPAND: mo_expand,
     }
 
 
 def mission(mission_type:MOMissionTypes, progress:int, task:dict) -> str:
     if mission_type in __mo_missions:
-        return __mo_missions[mission_type](progress, mo_task_paramerts(task))
+        return __mo_missions[mission_type](progress, MOTask(mo_task_paramerts(task)))
     else:
         return f"unkown major order {mission_type}\n"
 
 
 def test():
-    print(13 == MOMissionTypes.HOLD_PLANET)
-    print(3 in MOTaskValueTypes)
+    hd2_data = HD2DataService()
+    mo_body = hd2_data.get_major_order()
+    
+    print(mo_body)
 
 
 if __name__ == "__main__":
