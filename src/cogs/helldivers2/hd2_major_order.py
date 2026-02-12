@@ -143,7 +143,7 @@ def mo_extract_successful_mission(progress:int, task:MOTask) -> str:
         faction = hd2_data.target_faction(faction_id)
         against = f" against {faction}"
         
-    planet_id = task.get(MOTaskValueTypes.PLANET, -1)
+    planet_id = task.planet_id
     if planet_id > 0:
         planet_name = f" on {hd2_data.planets[planet_id]['name']}"
     else:
