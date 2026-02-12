@@ -84,33 +84,17 @@ def mo_attack_planet(progress:int, task:MOTask) -> str:
 
     holder_icon = hd2_data.faction_icon(faction)
 
-    text = f"{holder_icon}{defense_icon} {planet_name}: {abs(percentage):3.2f}%\n"
-
-    return text
+    return f"{holder_icon}{defense_icon} {planet_name}: {abs(percentage):3.2f}%\n"
 
 
 def mo_defend_planet(progress:int, task:MOTask) -> str:
-    # planet_id = task[MOTaskValueTypes.PLANET]
     target = task.target
     faction = task.faction
-    # unit_type_id = task[MOTaskValueTypes.UNIT_TYPE]
 
-    # faction = hd2_data.target_faction(faction_id)
-    text = f"Defend Planets against {faction}: {progress}/{target}\n"
-
-    return text
+    return f"Defend Planets against {faction}: {progress}/{target}\n"
 
 
 def mo_kill_enemies(progress:int, task:MOTask) -> str:
-    # planet_id = task[MOTaskValueTypes.PLANET]
-    # dunno if liberatrion is the flag that determens the mission is on_planet bound..
-    # need more research in this 
-    # target = task[MOTaskValueTypes.TARGET_COUNT]
-    # faction_id = task[MOTaskValueTypes.FACTION]
-    # unit_type_id = task[MOTaskValueTypes.UNIT_TYPE]
-    # weapon_type_id = task[MOTaskValueTypes.ITEM]
-    # planet_id = task.get(MOTaskValueTypes.PLANET, -1)
-    
     target = task.target
     faction_id = task.faction_id
     unit_type_id = task.unit_type_id
@@ -207,8 +191,6 @@ def mo_complete_operations(c_progress:int, task:MOTask) -> str:
     p_progress = c_progress / target_count * 100  # percent
 
     faction = task.faction
-    # faction = hd2_data.target_faction(faction_id)
-
     against = f"against {faction}"
 
     return f"Win Operations {against}: {c_progress}/{target_count} ({p_progress:.2f}%)\n"
