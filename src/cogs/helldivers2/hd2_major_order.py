@@ -1,5 +1,6 @@
 from cogs.helldivers2.hd2_units import get_enemy
 from cogs.helldivers2.hd2_items import get_item
+from pip._vendor.pygments.unistring import No
 try:
     from cogs.helldivers2.hd2_data import HD2DataService
 except:
@@ -37,18 +38,18 @@ hd2_data:HD2DataService = None
 class MOTask():
     
     def __init__(self, task:dict) -> None:
-        self.target = task.get(MOTaskValueTypes.TARGET_COUNT)
+        self.target = task.get(MOTaskValueTypes.TARGET_COUNT, None)
         
-        self.faction_id = task.get(MOTaskValueTypes.FACTION)
+        self.faction_id = task.get(MOTaskValueTypes.FACTION, None)
         self.faction = hd2_data.target_faction(self.faction_id) if self.faction_id else None
         
-        self.unit_type_id = task.get(MOTaskValueTypes.UNIT_TYPE)
+        self.unit_type_id = task.get(MOTaskValueTypes.UNIT_TYPE, None)
         self.unit = f" ({get_enemy(self.unit_type_id)})" if self.unit_type_id else ""
         
-        self.item_id = task.get(MOTaskValueTypes.ITEM)
+        self.item_id = task.get(MOTaskValueTypes.ITEM, None)
         self.item = get_item(self.item_id) if self.item_id else ""
         
-        self.planet_id = task.get(MOTaskValueTypes.PLANET, -1)
+        self.planet_id = task.get(MOTaskValueTypes.PLANET, None)
         if self.planet_id:
             self.planet = hd2_data.planets[self.planet_id]
             self.planet_name = self.planet["name"]
@@ -182,7 +183,7 @@ def mo_conquer_and_hold_planet(progress:int, task:MOTask) -> str:
     return f"{holder_icon}{defense_icon} {planet_name} {abs(percentage):3.2f}% {hold_or_conquer}\n"
 
 
-def mo_expand(progress:int, _) -> str:
+def mo_expand(promo_expandgress:int, _) -> str:
     return f"Liberate more Planets than Lost: {progress}\n"
 
 
@@ -215,7 +216,10 @@ __mo_missions = {
 
 def mission(mission_type:MOMissionTypes, progress:int, task:dict) -> str:
     if mission_type in __mo_missions:
-        return __mo_missions[mission_type](progress, MOTask(mo_task_paramerts(task)))
+        # print(mission_type, progress)
+        task = MOTask(mo_task_paramerts(task))
+        
+        return __mo_missions[mission_type](progress, task)
     else:
         return f"unkown major order {mission_type}\n"
 
