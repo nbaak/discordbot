@@ -183,7 +183,7 @@ def mo_conquer_and_hold_planet(progress:int, task:MOTask) -> str:
     return f"{holder_icon}{defense_icon} {planet_name} {abs(percentage):3.2f}% {hold_or_conquer}\n"
 
 
-def mo_expand(promo_expandgress:int, _) -> str:
+def mo_expand(progress:int, _) -> str:
     return f"Liberate more Planets than Lost: {progress}\n"
 
 
