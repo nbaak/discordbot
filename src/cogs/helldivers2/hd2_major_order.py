@@ -12,11 +12,20 @@ from enum import IntEnum
 
 class MOTaskValueTypes(IntEnum):
     NONE = 0
+    
     FACTION = 1
+    UNKOWN_2 = 2
     TARGET_COUNT = 3
+    
     UNIT_TYPE = 4
     ITEM = 5
-    # LIBERATION_NEEDED = 11 # it seems that I understood this flag wrong, maybe mission scope? 1:planet, 2:sector...
+    
+    BIOME_FILTER = 7
+    DIFFICULTY_FILTER = 8
+    MISSION_TYPE_FILTER = 9
+    OPERATION_FILTER = 10
+    
+    PLANET_COUNT = 11
     PLANET = 12
 
 
