@@ -151,12 +151,12 @@ def mo_extract_samples(progress:int, task:MOTask) -> str:
     planet_id = task.planet_id
     target = task.target
 
-    sample_type_id = task.item_idm
+    sample_type_id = task.item_id
     sample_type = f"{get_item(sample_type_id)}" if sample_type_id else ""
-
+        
     progress_percent = progress / target * 100
 
-    if faction_id:
+    if faction_id and planet_id <= 0:
         faction = hd2_data.target_faction(faction_id)
         return f"Extract {sample_type} Samples from any {faction} controlled planet: {progress:,}/{target:,} ({progress_percent:.2f}%)\n"
 
