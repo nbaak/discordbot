@@ -1,4 +1,5 @@
 import datetime
+import re
 from typing import Union
 from datetime import timezone
 
@@ -53,7 +54,19 @@ def formatted_time(timestamp:datetime, format="%Y-%m-%d %H:%M:%S") -> str:
 
 
 def convert_to_discord_italic(text):
-    return text.replace("<i=1>", "*").replace("<i=2>", "*").replace("<i=3>", "*").replace("</i>", "*")
+    
+    pattern = r"((<i=([0-9])>)(\w+(?:\s+\w+)*)(</i>))"
+    m = re.search(pattern, text)
+
+    if m: 
+        while m := re.search(pattern, text):
+            to_replace = m.group(0)
+            stars = "*" * int(m.group(3))
+            replace_with = f"{stars}{m.group(4)}{stars}"
+            
+            text = text.replace(to_replace, replace_with)
+    
+    return text
 
 
 def add_timestamp(message:str, ts:datetime) -> str:

@@ -1,7 +1,7 @@
 from cogs.helldivers2 import api
 from typing import Union, Dict, List, Tuple
 from cogs.helldivers2.hd2_tools import convert_to_datetime, get_recent_messages, \
-    delta_to_now, formatted_delta, time_to_seconds
+    delta_to_now, formatted_delta, time_to_seconds, convert_to_discord_italic
 import statistics
 import time
 from cogs.helldivers2.progress_prediction import ProgressPrediction
@@ -188,9 +188,9 @@ class HD2DataService():
                     description = ""
 
                 if briefing == description:
-                    head = f"# {title}\n{briefing}"
+                    head = f"# {title}\n{convert_to_discord_italic(briefing)}"
                 else:
-                    head = f"# {title}\n{briefing}\n{description}"
+                    head = f"# {title}\n{convert_to_discord_italic(briefing)}\n{convert_to_discord_italic(description)}"
 
                 text += f"{head}\n{progress}"
                 if mo['reward']:
