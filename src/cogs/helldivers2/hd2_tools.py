@@ -53,8 +53,7 @@ def formatted_time(timestamp:datetime, format="%Y-%m-%d %H:%M:%S") -> str:
     return formatted_timestamp
 
 
-def convert_to_discord_italic(text):
-    
+def convert_to_discord_italic(text:str) -> str:    
     pattern = r"((<i=([0-9])>)(\w+(?:\s+\w+)*)(</i>))"
     
     while m := re.search(pattern, text):
