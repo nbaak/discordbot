@@ -29,7 +29,7 @@ def convert_to_datetime(timestamp:Union[str, int, float]):
         return None
 
 
-def time_to_seconds(*, days=0, hours=0, minutes=0, seconds=0) -> int:
+def time_to_seconds(*, days:int=0, hours:int=0, minutes:int=0, seconds:int=0) -> int:
     """
     Converteth the temporal spans of days, hours, minutes, and seconds into the grand total of seconds.
     
@@ -45,7 +45,7 @@ def time_to_seconds(*, days=0, hours=0, minutes=0, seconds=0) -> int:
     return days * 86400 + hours * 3600 + minutes * 60 + seconds
 
 
-def formatted_time(timestamp:datetime, format="%Y-%m-%d %H:%M:%S") -> str:
+def formatted_time(timestamp:datetime, format:str="%Y-%m-%d %H:%M:%S") -> str:
     # Format the datetime object to the desired string format
     formatted_timestamp = timestamp.strftime(format)
 

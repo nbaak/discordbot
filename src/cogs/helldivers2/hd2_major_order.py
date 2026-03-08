@@ -1,6 +1,6 @@
 from cogs.helldivers2.hd2_units import get_enemy
 from cogs.helldivers2.hd2_items import get_item
-from pip._vendor.pygments.unistring import No
+
 try:
     from cogs.helldivers2.hd2_data import HD2DataService
 except:
