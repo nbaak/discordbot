@@ -14,7 +14,7 @@ class HD2DataService():
         # api endpoint params
         api.X_SUPER_CLIENT = "Discord-Bot"
         api.X_SUPER_CONTACT = contact or ""
-        self.courtesy_wait = 1
+        self.courtesy_wait = 1.7
 
         hd2_major_order.hd2_data = self
 
