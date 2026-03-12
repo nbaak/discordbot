@@ -7,7 +7,7 @@ enemy_units = {
     1764323819: 'One True Flag',
     
     # Bugs
-    793026793: 'Shriekers',
+    793026793:  'Shriekers',
     1046000873: 'Impalers',
     1299714559: 'Chargers',
     1379865898: 'Bile Spewer',
@@ -20,11 +20,11 @@ enemy_units = {
     
     # Automaton
     # 523260929: '?', # was in first at 2025-07-22
+    23741406:   'Radicals',
     1153658728: 'Factory Striders',
+    1371180916: 'Agitators',
     2664856027: 'Shredder Tanks',
     4039692928: 'Troopers',
-    1371180916: 'Agitators',
-    23741406:   'Radicals',
     
     # Illuminate
     2880434041: 'Fleshmobs',
