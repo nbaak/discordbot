@@ -20,9 +20,11 @@ enemy_units = {
     
     # Automaton
     # 523260929: '?', # was in first at 2025-07-22
-    1153658728: 'Factory Strider',
-    2664856027: 'Shredder Tank',
-    4039692928: 'Trooper',
+    1153658728: 'Factory Striders',
+    2664856027: 'Shredder Tanks',
+    4039692928: 'Troopers',
+    1371180916: 'Agitators',
+    23741406:   'Radicals',
     
     # Illuminate
     2880434041: 'Fleshmobs',
