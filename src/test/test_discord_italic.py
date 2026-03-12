@@ -15,7 +15,9 @@ def test():
         ("<i=3>test123</i>", "***test123***"),
         
         ("<i=1>test123</i> and <i=2>test123</i> and <i=3>test123</i>", "*test123* and **test123** and ***test123***"),
-        ("<i=1>Liberate Achernar Secundus</i> to restore the <i=1>AM Defense Factory Hub</i>, a vital asset of our most loyal contracting partner.", "*Liberate Achernar Secundus* to restore the *AM Defense Factory Hub*, a vital asset of our most loyal contracting partner.")
+        ("<i=1>Liberate Achernar Secundus</i> to restore the <i=1>AM Defense Factory Hub</i>, a vital asset of our most loyal contracting partner.", "*Liberate Achernar Secundus* to restore the *AM Defense Factory Hub*, a vital asset of our most loyal contracting partner."),
+        ("<i=1>hubert</i>", "*hubert*"),
+        ("<i=1>hubert</i> and <i=2>hubert</i> and <i=3>hubert</i>", "*hubert* and **hubert** and ***hubert***"),
         ]
     
     successful = failed = 0
