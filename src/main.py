@@ -62,6 +62,9 @@ async def main():
     os.chdir(current_dir)
 
     for path_object in os.listdir('./cogs'):
+        
+        if path_object.startswith("_"): continue
+        
         # load cog from folder
         if os.path.isdir(f'./cogs/{path_object}') and os.path.exists(f'./cogs/{path_object}/cog.py'):
             await client.load_extension(f'cogs.{path_object}.cog')
